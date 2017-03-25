@@ -1,4 +1,5 @@
 const Attribute = require('mongoose').model('Attribute')
+const Genre = require('mongoose').model('Genre')
 
 exports.create = function(req, res, next){
   const attribute = new Attribute(req.body) // perfect
@@ -8,6 +9,10 @@ exports.create = function(req, res, next){
         message: parseError(err)
       })
     } else {
+      Genre.findOne({_id: req.body.genre}, (err, genre) => {
+        genre.attributes.push(attribute)
+        genre.save()
+      })
       res.status(200).json(attribute)
     }
   })
@@ -32,6 +37,7 @@ exports.list = function(req, res, next){
       res.status(200).json(attributes)
     }
   })
+    .populate('SYS_GENRE')
 }
 
 // Actions with ID specified

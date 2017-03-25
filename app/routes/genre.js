@@ -3,4 +3,5 @@ module.exports = function(app) {
   app
     .route('/genre')
     .get(genre.list)
+    .post(genre.create)
 }
