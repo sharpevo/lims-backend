@@ -20,7 +20,8 @@ exports.list = function(req, res, next){
     let skip_params = ""
     let sort_params = ""
     let where_params = ""
-    console.log(req.query)
+    let select_params = ""
+    //console.log(req.query)
     if (req.query.limit){
         limit_params = parseInt(req.query.limit)
         delete req.query["limit"]
@@ -103,7 +104,7 @@ exports.list = function(req, res, next){
 
     // not support for the select array currently
     if (select_params){
-        console.log(select_params)
+        //console.log(select_params)
         query.select(select_params)
         //query.select('-SYS_IDENTIFIER')
     }

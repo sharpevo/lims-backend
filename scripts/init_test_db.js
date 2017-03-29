@@ -61,8 +61,12 @@ module.exports = function(){
                 Attribute({
                     label: '领域名称',
                     SYS_CODE: 'label',
+                    SYS_TYPE: 'text',
                     SYS_GENRE: genre.id
                 }).save((err, attr) => {
+                    if (err){
+                        console.error(err)
+                    }
                     genre.SYS_ATTRIBUTE_LIST.push(attr)
                     return genre.save()
                 })
@@ -259,48 +263,75 @@ module.exports = function(){
                 createGenre(domainEntity)
                     .then((domainGenre) => {
 
-                        // ENZYME
-                        createEntity(domainGenre.SYS_IDENTIFIER + "ENZYME", 1, "Enzyme " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
-
-                                        // KAPA
-                                        createEntity(classGenre.SYS_IDENTIFIER + "KAPA", 2, "Kapa " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "LOT160806", 3, "LOT160806")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "LOT170302", 3, "LOT170302")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                        // EXONUCLEASE
-                                        createEntity(classGenre.SYS_IDENTIFIER + "EXONUCLEASE", 2, "Exonuclease " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "001", 3, "in USA")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "002", 3, "in UK")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
+                        // KAPA
+                        createEntity(domainGenre.SYS_IDENTIFIER + "KAPA", 1, "Kapa Hifi " + domainGenre.label)
+                            .then((kapaEntity) =>{
+                                createGenre(kapaEntity)
+                                    .then((kapaGenre) => {
+                                        createEntity(kapaGenre.SYS_IDENTIFIER + "LOT160806", 2, "LOT160806")
+                                        createEntity(kapaGenre.SYS_IDENTIFIER + "LOT170312", 2, "LOT170312")
                                     }).catch((err) => {
                                         console.log(err)
                                     })
                             }).catch((err) => {
                                 console.log(err)
                             })
+
+                        // EXONUCLEASE
+                        createEntity(domainGenre.SYS_IDENTIFIER + "EXONUCLEASE", 1, " Exonuclease " + domainGenre.label)
+                            .then((kapaEntity) =>{
+                                createGenre(kapaEntity)
+                                    .then((kapaGenre) => {
+                                        createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+                                    }).catch((err) => {
+                                        console.log(err)
+                                    })
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+
+                        //// ENZYME
+                        //createEntity(domainGenre.SYS_IDENTIFIER + "ENZYME", 1, "Enzyme " + domainGenre.label)
+                        //.then((classEntity) => {
+                        //createGenre(classEntity)
+                        //.then((classGenre) => {
+
+                        //// KAPA
+                        //createEntity(classGenre.SYS_IDENTIFIER + "KAPA", 2, "Kapa " + classGenre.label)
+                        //.then((collectionEntity) => {
+                        //createGenre(collectionEntity)
+                        //.then((collectionGenre) => {
+                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "LOT160806", 3, "LOT160806")
+                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "LOT170302", 3, "LOT170302")
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
+
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
+
+                        //// EXONUCLEASE
+                        //createEntity(classGenre.SYS_IDENTIFIER + "EXONUCLEASE", 2, "Exonuclease " + classGenre.label)
+                        //.then((collectionEntity) => {
+                        //createGenre(collectionEntity)
+                        //.then((collectionGenre) => {
+                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "001", 3, "in USA")
+                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "002", 3, "in UK")
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
+
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
+
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
+                        //}).catch((err) => {
+                        //console.log(err)
+                        //})
 
                         // CONSUMABLE
                         createEntity(domainGenre.SYS_IDENTIFIER + "CONSUMABLE", 1, "Consumable " + domainGenre.label)
