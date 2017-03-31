@@ -13,7 +13,7 @@ function addAttribute(attr, genre){
     Attribute.create(
         attr,
         (err, attr) => {
-            genre.SYS_ATTRIBUTE_LIST.push(attr)
+            //genre.SYS_ATTRIBUTE_LIST.push(attr)
             genre.save()
         }
     )
@@ -27,7 +27,7 @@ function createGenre(entity){
     })
         .save()
         .then((genre) => {
-            entity.SYS_GENRE_LIST.push(genre)
+            //entity.SYS_GENRE_LIST.push(genre)
             entity.save()
             return genre
         })
@@ -51,351 +51,297 @@ module.exports = function(){
         console.log(">>> Building test database...")
 
         // "/"
-        Genre({
-            title: "Domain",
+        Entity({
             SYS_IDENTIFIER: "/",
-            SYS_LABEL: "title",
+            SYS_ENTITY_TYPE: "/",
+            label: "Root",
         })
             .save()
-            .then((genre) => {
-                Attribute({
-                    label: '领域名称',
-                    SYS_CODE: 'label',
-                    SYS_TYPE: 'text',
-                    SYS_GENRE: genre.id
-                }).save((err, attr) => {
-                    if (err){
-                        console.error(err)
-                    }
-                    genre.SYS_ATTRIBUTE_LIST.push(attr)
-                    return genre.save()
+            .then((domainEntity) => {
+                Genre({
+                    title: "Domain",
+                    SYS_IDENTIFIER: "/",
+                    SYS_LABEL: "title",
+                    SYS_ENTITY: domainEntity,
                 })
-            }).catch((err) => {
+                    .save()
+                    .then((genre) => {
+                        Attribute({
+                            label: '领域名称',
+                            SYS_CODE: 'label',
+                            SYS_TYPE: 'text',
+                            SYS_GENRE: genre.id
+                        }).save((err, attr) => {
+                            if (err){
+                                console.error(err)
+                            }
+                            //genre.SYS_ATTRIBUTE_LIST.push(attr)
+                            return genre.save()
+                        })
+                    }).catch((err) => {
+                        console.error(err)
+                    })
+            })
+
+        createEntity("/HUMAN_RESOURCE", 0, "Human Resource")
+            .then(humanEntity => {
+
+                createGenre(humanEntity)
+                    .then(humanGenre => {
+
+                        createEntity(humanGenre.SYS_IDENTIFIER + "PRODUCT", 1, "Product " + humanGenre.label)
+                            .then(productEntity => {
+
+                                createGenre(productEntity)
+                                    .then(productGenre => {
+
+                                        createEntity(productGenre.SYS_IDENTIFIER + "001", 2, "Neville")
+                                        createEntity(productGenre.SYS_IDENTIFIER + "002", 2, "Luna")
+
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+
+                            }).catch(err => {
+                                console.error(err)
+                            })
+
+                        createEntity(humanGenre.SYS_IDENTIFIER + "RESEARCH", 1, "Research " + humanGenre.label)
+                            .then(researchEntity => {
+
+                                createGenre(researchEntity)
+                                    .then(researchGenre => {
+
+                                        createEntity(researchGenre.SYS_IDENTIFIER + "003", 2, "Gandalf")
+                                        createEntity(researchGenre.SYS_IDENTIFIER + "004", 2, "Lummen")
+
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+
+                            }).catch(err => {
+                                console.error(err)
+                            })
+
+                    }).catch(err => {
+                        console.error(err)
+                    })
+
+            }).catch(err => {
                 console.error(err)
             })
 
-        createEntity("/RESOURCE",0, "Resources")
-            .then((resourceEntity) => {
-                createGenre(resourceEntity)
-                    .then((resourceGenre) => {
+        createEntity("/INSTRUMENT_RESOURCE", 0, "Instrument Resource")
+            .then(instrumentEntity => {
 
-                        // HUMAN
-                        createEntity(resourceGenre.SYS_IDENTIFIER + "HUMAN", 1, "Human " + resourceGenre.label)
-                            .then((humanEntity) => {
-                                createGenre(humanEntity)
-                                    .then((humanGenre) => {
-                                        createEntity(humanGenre.SYS_IDENTIFIER + "PRODUCT", 2, "Product " + humanGenre.label)
-                                            .then((productEntity) => {
-                                                createGenre(productEntity)
-                                                    .then((productGenre) => {
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "001", 3, "Neville")
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "002", 3, "Luna ")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                createGenre(instrumentEntity)
+                    .then(instrumentGenre => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                        createEntity(instrumentGenre.SYS_IDENTIFIER + "SHEARING", 1, "Shearing " + instrumentGenre.label)
+                            .then(shearingEntity => {
 
-                                    }).catch((err) => {
-                                        console.log(err)
+                                createGenre(shearingEntity)
+                                    .then(shearingGenre => {
+
+                                        createEntity(shearingGenre.SYS_IDENTIFIER + "COVARIS_II", 3, "Covaris II")
+                                        createEntity(shearingGenre.SYS_IDENTIFIER + "METARUPTOR_I", 3, "Metaruptor I")
+
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+                            }).catch(err => {
+                                console.error(err)
                             })
 
-                        // INSTRUMENT
-                        createEntity(resourceGenre.SYS_IDENTIFIER + "INSTRUMENT", 1, "Instrument " + resourceGenre.label)
-                            .then((humanEntity) => {
-                                createGenre(humanEntity)
-                                    .then((humanGenre) => {
 
-                                        // SHEARING
-                                        createEntity(humanGenre.SYS_IDENTIFIER + "SHEARING", 2, "Shearing " + humanGenre.label)
-                                            .then((productEntity) => {
-                                                createGenre(productEntity)
-                                                    .then((productGenre) => {
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "COVARIS_II", 3, "Covaris II")
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "METARUPTOR_I", 3, "Metaruptor I")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                        createEntity(instrumentGenre.SYS_IDENTIFIER + "GUN", 1, "Gun " + instrumentGenre.label)
+                            .then(gunEntity => {
 
-                                        // GUN
-                                        createEntity(humanGenre.SYS_IDENTIFIER + "GUN", 2, "Gun " + humanGenre.label)
-                                            .then((productEntity) => {
-                                                createGenre(productEntity)
-                                                    .then((productGenre) => {
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "LIAN_HUA", 3, "Lian Hua")
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "BAI_DE", 3, "Bai De")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                                createGenre(gunEntity)
+                                    .then(gunGenre => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                        createEntity(gunGenre.SYS_IDENTIFIER + "BAI_DE", 3, "BD_1")
+                                        createEntity(gunGenre.SYS_IDENTIFIER + "LIAN_HUA", 3, "LH_2")
 
-                                        // SEQUENCE
-                                        createEntity(humanGenre.SYS_IDENTIFIER + "SEQUENCING", 2, "Sequencing " + humanGenre.label)
-                                            .then((productEntity) => {
-                                                createGenre(productEntity)
-                                                    .then((productGenre) => {
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "NovaSeq_1", 3, "NovaSeq #1")
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "NovaSeq_2", 3, "NovaSeq #2")
-                                                        createEntity(productGenre.SYS_IDENTIFIER + "HiSeqX10", 3, "HiSeq X10")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                    }).catch((err) => {
-                                        console.log(err)
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+                            }).catch(err => {
+                                console.error(err)
                             })
 
-                    }).catch((err) => {
-                        console.log(err)
+
+                        createEntity(instrumentGenre.SYS_IDENTIFIER + "SEQUENCING", 1, "Sequencing " + instrumentGenre.label)
+                            .then(seqEntity => {
+
+                                createGenre(seqEntity)
+                                    .then(seqGenre => {
+
+                                        createEntity(seqGenre.SYS_IDENTIFIER + "X10", 3, "HiSeq X10")
+                                        createEntity(seqGenre.SYS_IDENTIFIER + "NOVASEQ", 3, "NovaSeq")
+
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+                            }).catch(err => {
+                                console.error(err)
+                            })
+
+
+                    }).catch(err => {
+                        console.error(err)
                     })
 
-            }).catch((err) => {
-                console.log(err)
+            }).catch(err => {
+                console.error(err)
             })
 
-        // "/PURCHASE"
-        createEntity("/PURCHASE",0, "Purchase")
-            .then((domainEntity) => {
-                createGenre(domainEntity)
-                    .then((domainGenre) => {
+        createEntity("/PURCHASE", 0, "Purchase")
+            .then(purchaseEntity => {
 
-                        // SUPPLIER
-                        createEntity(domainGenre.SYS_IDENTIFIER + "SUPPLIER", 1, "Supplier " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
+                createGenre(purchaseEntity)
+                    .then(purchaseGenre => {
 
-                                        // LOCAL
-                                        createEntity(classGenre.SYS_IDENTIFIER + "LOCAL", 2, "Local " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        createEntity(collectionGenre.SYS_IDENTIFIER + "001", 3, "in Beijing")
-                                                        createEntity(collectionGenre.SYS_IDENTIFIER + "002", 3, "in Hangzhao")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                        createEntity(purchaseGenre.SYS_IDENTIFIER + "SUPPLIER", 1, "Supplier " + purchaseGenre.label)
+                            .then(supplierEntity => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                createGenre(supplierEntity)
+                                    .then(supplierGenre => {
 
-                                        // Foreign
-                                        createEntity(classGenre.SYS_IDENTIFIER + "FOREIGN", 2, "Foreign " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        createEntity(collectionGenre.SYS_IDENTIFIER + "001", 3, "in USA")
-                                                        createEntity(collectionGenre.SYS_IDENTIFIER + "002", 3, "in UK")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                                        createEntity(supplierGenre.SYS_IDENTIFIER + "HANGZHOU", 2, "Company A")
+                                        createEntity(supplierGenre.SYS_IDENTIFIER + "BEIJING", 2, "Company B")
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                    }).catch((err) => {
-                                        console.log(err)
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+
+                            }).catch(err => {
+                                console.error(err)
                             })
 
-                        // ORDER
-                        createEntity(domainGenre.SYS_IDENTIFIER + "ORDER", 1, "Order " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
+                        createEntity(purchaseGenre.SYS_IDENTIFIER + "ORDER", 1, "Order " + purchaseGenre.label)
+                            .then(orderEntity => {
 
-                                        // DEFAULT
-                                        createEntity(classGenre.SYS_IDENTIFIER + "DEFAULT", 2, "Default " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        // Implement manually w/ operator and supplier
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                                createGenre(orderEntity)
+                                    .then(orderGenre => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                        //createEntity(supplierGenre.SYS_IDENTIFIER + "HANGZHOU", 2, "Company A")
+                                        //createEntity(supplierGenre.SYS_IDENTIFIER + "BEIJING", 2, "Company B")
 
-                                    }).catch((err) => {
-                                        console.log(err)
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+
+                            }).catch(err => {
+                                console.error(err)
                             })
-                    }).catch((err) => {
-                        console.log(err)
+
+
+                    }).catch(err => {
+                        console.error(err)
                     })
-            }).catch((err) => {
-                console.log(err)
+
+            }).catch(err => {
+                console.error(err)
             })
 
+        createEntity("/MATERIAL", 0, "Material")
+            .then(materialEntity => {
 
-        // MATERIAL
-        createEntity("/MATERIAL",0, "Material")
-            .then((domainEntity) => {
-                createGenre(domainEntity)
-                    .then((domainGenre) => {
+                createGenre(materialEntity)
+                    .then(materialGenre => {
 
-                        // KAPA
-                        createEntity(domainGenre.SYS_IDENTIFIER + "KAPA", 1, "Kapa Hifi " + domainGenre.label)
-                            .then((kapaEntity) =>{
+                        createEntity(materialGenre.SYS_IDENTIFIER + "KAPA_HIFI", 1, "Kapa " + materialGenre.label)
+                            .then(kapaEntity => {
+
                                 createGenre(kapaEntity)
-                                    .then((kapaGenre) => {
+                                    .then(kapaGenre => {
+
                                         createEntity(kapaGenre.SYS_IDENTIFIER + "LOT160806", 2, "LOT160806")
                                         createEntity(kapaGenre.SYS_IDENTIFIER + "LOT170312", 2, "LOT170312")
-                                    }).catch((err) => {
-                                        console.log(err)
+
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+
+                            }).catch(err => {
+                                console.error(err)
                             })
 
-                        // EXONUCLEASE
-                        createEntity(domainGenre.SYS_IDENTIFIER + "EXONUCLEASE", 1, " Exonuclease " + domainGenre.label)
-                            .then((kapaEntity) =>{
+                        createEntity(materialGenre.SYS_IDENTIFIER + "EXONUCLEASE", 1, "Exonuclease " + materialGenre.label)
+                            .then(kapaEntity => {
+
                                 createGenre(kapaEntity)
-                                    .then((kapaGenre) => {
+                                    .then(kapaGenre => {
+
                                         createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
-                                    }).catch((err) => {
-                                        console.log(err)
+
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+
+                            }).catch(err => {
+                                console.error(err)
                             })
 
-                        //// ENZYME
-                        //createEntity(domainGenre.SYS_IDENTIFIER + "ENZYME", 1, "Enzyme " + domainGenre.label)
-                        //.then((classEntity) => {
-                        //createGenre(classEntity)
-                        //.then((classGenre) => {
+                        createEntity(materialGenre.SYS_IDENTIFIER + "GLOVE", 1, "Glove " + materialGenre.label)
+                            .then(kapaEntity => {
 
-                        //// KAPA
-                        //createEntity(classGenre.SYS_IDENTIFIER + "KAPA", 2, "Kapa " + classGenre.label)
-                        //.then((collectionEntity) => {
-                        //createGenre(collectionEntity)
-                        //.then((collectionGenre) => {
-                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "LOT160806", 3, "LOT160806")
-                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "LOT170302", 3, "LOT170302")
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
+                                createGenre(kapaEntity)
+                                    .then(kapaGenre => {
 
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
+                                        //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
 
-                        //// EXONUCLEASE
-                        //createEntity(classGenre.SYS_IDENTIFIER + "EXONUCLEASE", 2, "Exonuclease " + classGenre.label)
-                        //.then((collectionEntity) => {
-                        //createGenre(collectionEntity)
-                        //.then((collectionGenre) => {
-                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "001", 3, "in USA")
-                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "002", 3, "in UK")
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
-
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
-
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
-                        //}).catch((err) => {
-                        //console.log(err)
-                        //})
-
-                        // CONSUMABLE
-                        createEntity(domainGenre.SYS_IDENTIFIER + "CONSUMABLE", 1, "Consumable " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
-
-                                        // GLOVE
-                                        createEntity(classGenre.SYS_IDENTIFIER + "GLOVE", 2, "Glove " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                        // TIP
-                                        createEntity(classGenre.SYS_IDENTIFIER + "TIP", 2, "Tip " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                        // PRIMER
-                                        createEntity(classGenre.SYS_IDENTIFIER + "PRIMER", 2, "Primer " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
-                                    }).catch((err) => {
-                                        console.log(err)
+                                    }).catch(err => {
+                                        console.error(err)
                                     })
-                            }).catch((err) => {
-                                console.log(err)
+
+                            }).catch(err => {
+                                console.error(err)
                             })
-                    }).catch((err) => {
-                        console.log(err)
+
+                        createEntity(materialGenre.SYS_IDENTIFIER + "TIP", 1, "Tips " + materialGenre.label)
+                            .then(kapaEntity => {
+
+                                createGenre(kapaEntity)
+                                    .then(kapaGenre => {
+
+                                        //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+
+                            }).catch(err => {
+                                console.error(err)
+                            })
+
+                        createEntity(materialGenre.SYS_IDENTIFIER + "PRIMER", 1, "Primer " + materialGenre.label)
+                            .then(kapaEntity => {
+
+                                createGenre(kapaEntity)
+                                    .then(kapaGenre => {
+
+                                        //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+
+                            }).catch(err => {
+                                console.error(err)
+                            })
+
+                    }).catch(err => {
+                        console.error(err)
                     })
-            }).catch((err) => {
-                console.log(err)
+
+            }).catch(err => {
+                console.error(err)
             })
+
+
 
         // BOM
         createEntity("/BOM",0, "BoMs")
@@ -590,32 +536,20 @@ module.exports = function(){
                 console.log(err)
             })
 
-        // SALE
-        createEntity("/SALE",0, "Sales")
-            .then((domainEntity) => {
-                createGenre(domainEntity)
-                    .then((domainGenre) => {
+        createEntity("/SALE", 0, "Sales")
+            .then(saleEntity => {
 
-                        // Client
-                        createEntity(domainGenre.SYS_IDENTIFIER + "CLIENT", 1, "Client " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
+                createGenre(saleEntity)
+                    .then(saleGenre => {
 
-                                        // EXTERNAL
-                                        createEntity(classGenre.SYS_IDENTIFIER + "EXTERNAL", 2, "External " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                        createEntity(saleGenre.SYS_IDENTIFIER + "CLIENT", 1, "Client " + saleGenre.label)
+                            .then(clientEntity => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                createGenre(clientEntity)
+                                    .then(clientGenre => {
+
+                                        createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_A", 2, "Client A")
+                                        createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_B", 2, "Client B")
 
                                     }).catch((err) => {
                                         console.log(err)
@@ -624,26 +558,14 @@ module.exports = function(){
                                 console.log(err)
                             })
 
-                        // CONTRACT
-                        createEntity(domainGenre.SYS_IDENTIFIER + "CONTRACT", 1, "Contract " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
+                        createEntity(saleGenre.SYS_IDENTIFIER + "CONTRACT", 1, "Contract " + saleGenre.label)
+                            .then(clientEntity => {
 
-                                        // TECHNOLOGY SERVICE
-                                        createEntity(classGenre.SYS_IDENTIFIER + "TECHNOLOGY_SERVICE", 2, "Technology Service " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                                createGenre(clientEntity)
+                                    .then(clientGenre => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                        //createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_A", 2, "Client A")
+                                        //createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_A", 2, "Client B")
 
                                     }).catch((err) => {
                                         console.log(err)
@@ -652,26 +574,14 @@ module.exports = function(){
                                 console.log(err)
                             })
 
-                        // BATCH
-                        createEntity(domainGenre.SYS_IDENTIFIER + "BATCH", 1, "Batch " + domainGenre.label)
-                            .then((classEntity) => {
-                                createGenre(classEntity)
-                                    .then((classGenre) => {
+                        createEntity(saleGenre.SYS_IDENTIFIER + "BATCH", 1, "Batch " + saleGenre.label)
+                            .then(clientEntity => {
 
-                                        // DEFAULT
-                                        createEntity(classGenre.SYS_IDENTIFIER + "DEFAULT", 2, "Default " + classGenre.label)
-                                            .then((collectionEntity) => {
-                                                createGenre(collectionEntity)
-                                                    .then((collectionGenre) => {
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
+                                createGenre(clientEntity)
+                                    .then(clientGenre => {
 
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                        //createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_A", 2, "Client A")
+                                        //createEntity(clientGenre.SYS_IDENTIFIER + "CLIENT_A", 2, "Client B")
 
                                     }).catch((err) => {
                                         console.log(err)
@@ -683,6 +593,7 @@ module.exports = function(){
                     }).catch((err) => {
                         console.log(err)
                     })
+
             }).catch((err) => {
                 console.log(err)
             })
