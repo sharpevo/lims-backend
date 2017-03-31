@@ -37,7 +37,7 @@ exports.list = function(req, res, next){
                 res.status(200).json(genres)
             }
         })
-        .populate('SYS_ATTRIBUTE_LIST SYS_ENTITY')
+        .populate('SYS_ENTITY')
 }
 
 // Actions with ID specified
@@ -57,7 +57,7 @@ exports.getGenreById = function(req, res, next, id) {
             }
         }
     )
-        .populate('SYS_ATTRIBUTE_LIST SYS_ENTITY')
+        .populate('SYS_ENTITY')
 }
 
 exports.read = function(req, res) {

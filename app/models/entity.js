@@ -22,7 +22,7 @@ const EntitySchema = new Schema(
         // It should be generated automatically, and only expose the SYS_CODE to end user.
         SYS_IDENTIFIER: {
             type: String,
-            match: /^\/[a-zA-Z0-9_\/]*$/,
+            match: /^\/[a-zA-Z0-9_\.\/]*$/,
             required: true,
             trim: true,
             unique: true, // unique and index
@@ -34,23 +34,37 @@ const EntitySchema = new Schema(
             trim: true,
         },
 
-        // Genres that owned by the entity.
-        // Each entity is allowed to have multiple genres.
-        SYS_GENRE_LIST: [{
-            type: Schema.ObjectId,
-            ref: 'Genre',
+        // Parents in different paths
+        // - identifier
+        // - id string -> 
+        // - objectid
+        // [
+        //   "58db71b5f8d94e2a89f39f28,58db71b5f8d94e2a89f39f0a",
+        //   "58db71b5f8d94e2a89f39f28,58db71b5f8d94e2a89f39f0a",
+        // ]
+        SYS_PARENT_LIST: [{
+            type: String,
         }],
 
-        SYS_GENRE_IDENTIFIER: {
-            type: String,
-            set: function(){
-                if (this.SYS_IDENTIFIER){
-                    return this.SYS_IDENTIFIER.substr(0,this.SYS_IDENTIFIER.lastIndexOf("/")+1)
-                } else{
-                    return ">>>"
-                }
-            }
-        },
+        // Genres that owned by the entity.
+        // Each entity is allowed to have multiple genres.
+        // commented for the reson as same as the attribute-genre
+        // i.e. avoid two sets of pointers
+        //SYS_GENRE_LIST: [{
+        //type: Schema.ObjectId,
+        //ref: 'Genre',
+        //}],
+
+        //SYS_GENRE_IDENTIFIER: {
+        //type: String,
+        //set: function(){
+        //if (this.SYS_IDENTIFIER){
+        //return this.SYS_IDENTIFIER.substr(0,this.SYS_IDENTIFIER.lastIndexOf("/")+1)
+        //} else{
+        //return ">>>"
+        //}
+        //}
+        //},
 
         ////
         // PRESET FUNCTION ATTRIBUTES
@@ -108,7 +122,7 @@ EntitySchema
 // TODO: sub object works like the split ape to flac in the same folder
 //       try to use other perimeter like "-"
 EntitySchema
-    .virtual('SYS_GENRE_IDENTIFIER_V')
+    .virtual('SYS_GENRE_IDENTIFIER')
     .get(function(){
         // e.g.
         // 1. SYS_IDENTIFIER = "/WORKCENTER/PRODUCT/TEST/V1/17R00221",

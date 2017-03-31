@@ -4,6 +4,8 @@ const Entity = require('mongoose').model('Entity')
 
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
+    // rather than setter modifier
+    entity.SYS_GENRE_IDENTIFIER = entity.SYS_IDENTIFIER.substr(0, entity.SYS_IDENTIFIER.lastIndexOf("/")+1)
     entity.save((err) => {
         if (err) {
             return res.status(400).send({
@@ -110,7 +112,7 @@ exports.list = function(req, res, next){
     }
 
     query
-        .populate('SYS_GENRE_LIST')
+    //.populate('SYS_GENRE_LIST')
         .exec((err, entities) => {
             if (err){
                 return res.status(400).send({
@@ -139,7 +141,7 @@ exports.getEntityById = function(req, res, next, id) {
             }
         }
     )
-        .populate('SYS_GENRE_LIST')
+    //.populate('SYS_GENRE_LIST')
 }
 
 exports.read = function(req, res) {

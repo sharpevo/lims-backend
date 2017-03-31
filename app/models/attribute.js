@@ -37,6 +37,12 @@ const AttributeSchema = new Schema(
             required: true,
         },
 
+        // Specify the SYS_LABEL for the entity
+        SYS_IS_ENTITY_LABEL: {
+            type: Boolean,
+            default: false,
+        },
+
         SYS_GENRE: {
             type: Schema.ObjectId,
             ref: 'Genre',
