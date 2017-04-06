@@ -69,7 +69,7 @@ const AttributeSchema = new Schema(
         // Indicate the expandabality for the sub entities
         SYS_TYPE_ENTITY_REF: {
             type: Boolean,
-            default: true,
+            default: false,
         },
 
         // Specify the type of entity candidate
