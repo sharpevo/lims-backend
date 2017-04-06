@@ -63,6 +63,13 @@ const AttributeSchema = new Schema(
         // will be generated from the ceiling entity to the floor entity type
         SYS_TYPE_ENTITY: {
             type: Schema.ObjectId,
+            ref: 'Entity',
+        },
+
+        // Indicate the expandabality for the sub entities
+        SYS_TYPE_ENTITY_REF: {
+            type: Boolean,
+            default: true,
         },
 
         // Specify the type of entity candidate

@@ -34,7 +34,7 @@ exports.list = function(req, res, next){
             res.status(200).json(attributes)
         }
     })
-        .populate('SYS_GENRE')
+        .populate('SYS_GENRE SYS_TYPE_ENTITY')
 }
 
 // Actions with ID specified

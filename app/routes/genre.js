@@ -13,4 +13,12 @@ module.exports = function(app) {
         .put(genre.update)
         .delete(genre.delete)
 
+    app
+        .route('/genre/:genreId/attribute')
+        .get(genre.attribute)
+
+    app
+        .route('/genre/:genreId/entity')
+        .get(genre.entity)
+
 }

@@ -178,6 +178,61 @@ exports.delete = function (req, res, next){
     })
 }
 
+exports.genre = function (req, res, next){
+    Genre.find(
+        {"SYS_ENTITY": req.entity.id},
+        '',
+        (err, genres) => {
+            if (err) {
+                return res.status(400).send({
+                    message: parseError(err)
+                })
+            } else {
+                res.status(200).json(genres)
+            }
+        })
+}
+
+exports.attribute = function (req, res, next){
+    console.log(req.entity.SYS_GENRE)
+    Attribute.find(
+        {"SYS_GENRE": req.entity.SYS_GENRE},
+        '',
+        (err, attributes) => {
+            if (err) {
+                return res.status(400).send({
+                    message: parseError(err)
+                })
+            } else {
+                res.status(200).json(attributes)
+            }
+        })
+        .populate("SYS_GENRE SYS_TYPE_ENTITY")
+}
+
+exports.entity = function (req, res, next){
+    let entityType = req.query["SYS_ENTITY_TYPE"]
+    if (!entityType){
+        entityType = "object"
+    }
+    Entity.find(
+        {
+            "SYS_ENTITY_TYPE": entityType,
+            "SYS_IDENTIFIER": new RegExp("^" + req.entity.SYS_IDENTIFIER),
+        },
+        '',
+        (err, entities) => {
+            if (err) {
+                return res.status(400).send({
+                    message: parseError(err)
+                })
+            } else {
+                res.status(200).json(entities)
+            }
+        }
+    )
+}
+
 const parseError = function(err) {
     if (err.errors) {
         for (const errName in err.errors){

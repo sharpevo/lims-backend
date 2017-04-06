@@ -1,4 +1,6 @@
 const Genre = require('mongoose').model('Genre')
+const Entity = require('mongoose').model('Entity')
+const Attribute = require('mongoose').model('Attribute')
 
 exports.create = function(req, res, next){
     const genre = new Genre(req.body)
@@ -92,6 +94,39 @@ exports.delete = function (req, res, next){
             res.status(200).json(req.genre)
         }
     })
+}
+
+exports.attribute = function (req, res, next){
+    let newAttributes = []
+    Attribute.find(
+        {"SYS_GENRE": req.genre.id},
+        '',
+        (err, attributes) => {
+            if (err) {
+                return res.status(400).send({
+                    message: parseError(err)
+                })
+            }else{
+                res.status(200).json(attributes)
+            }
+        })
+        .populate("SYS_TYPE_ENTITY")
+
+}
+
+exports.entity = function (req, res, next){
+    Entity.find(
+        {"SYS_GENRE": req.genre.id},
+        '',
+        (err, entities) => {
+            if (err) {
+                return res.status(400).send({
+                    message: parseError(err)
+                })
+            } else {
+                res.status(200).json(entities)
+            }
+        })
 }
 
 const parseError = function(err) {

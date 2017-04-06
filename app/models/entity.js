@@ -46,6 +46,17 @@ const EntitySchema = new Schema(
             type: String,
         }],
 
+
+        // Genre that provides attributes for the current entity.
+        // for the APIs:
+        // - /genre/xxx/entity, get all the entities for the genre
+        // - /entity/xxx/attribute, syntax sugar for the /entity/xxx/genre/xxx/attribute
+        SYS_GENRE: {
+            type: Schema.ObjectId,
+            ref: 'Genre',
+            //required: true, // the root entity does not generate from any genre.
+        },
+
         // Genres that owned by the entity.
         // Each entity is allowed to have multiple genres.
         // commented for the reson as same as the attribute-genre
