@@ -38,7 +38,7 @@ function createEntity(genre, identifier, typeIndex, label){
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
         SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
         SYS_GENRE: genre,
-        label: label,
+        label: label.replace(" Genre","")
     })
         .save()
 }
@@ -73,15 +73,6 @@ module.exports = function(){
                             SYS_TYPE: 'text',
                             SYS_GENRE: genre.id
                         }).save()
-
-
-
-
-
-
-
-
-
 
                         createEntity(genre, "HUMAN_RESOURCE", 0, "Human Resource")
                             .then(humanEntity => {
