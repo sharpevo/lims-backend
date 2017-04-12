@@ -80,32 +80,15 @@ module.exports = function(){
                                 createGenre(humanEntity)
                                     .then(humanGenre => {
 
-                                        createEntity(humanGenre, "PRODUCT", 1, "Product " + humanGenre.label)
-                                            .then(productEntity => {
+                                        createEntity(humanGenre, "IGENETECH", 1, "iGeneTech " + humanGenre.label)
+                                            .then(igenetechEntity => {
 
-                                                createGenre(productEntity)
-                                                    .then(productGenre => {
-
-                                                        createEntity(productGenre, "001", 2, "Neville")
-                                                        createEntity(productGenre, "002", 2, "Luna")
-
-                                                    }).catch(err => {
-                                                        console.error(err)
-                                                    })
-
-                                            }).catch(err => {
-                                                console.error(err)
-                                            })
-
-                                        createEntity(humanGenre, "RESEARCH", 1, "Research " + humanGenre.label)
-                                            .then(researchEntity => {
-
-                                                createGenre(researchEntity)
-                                                    .then(researchGenre => {
-
-                                                        createEntity(researchGenre, "003", 2, "Gandalf")
-                                                        createEntity(researchGenre, "004", 2, "Lummen")
-
+                                                createGenre(igenetechEntity)
+                                                    .then(igenetechGenre => {
+                                                        createEntity(igenetechGenre, "001", 2, "Neville")
+                                                        createEntity(igenetechGenre, "002", 2, "Luna")
+                                                        createEntity(igenetechGenre, "003", 2, "Gandalf")
+                                                        createEntity(igenetechGenre, "004", 2, "Lummen")
                                                     }).catch(err => {
                                                         console.error(err)
                                                     })
@@ -389,7 +372,6 @@ module.exports = function(){
                                                                 console.log(err)
                                                             })
 
-
                                                     }).catch((err) => {
                                                         console.log(err)
                                                     })
@@ -416,7 +398,7 @@ module.exports = function(){
                                                     .then((classGenre) => {
 
                                                         // EXTRACT_ASSIGN
-                                                        createEntity(classGenre, "EXTRACT_ASSIGN", 2, "Extract Assign " + classGenre.label)
+                                                        createEntity(classGenre, "EXTRACT_QC_ASSIGN", 2, "Sample Extract/Sample QC assignment " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -431,7 +413,7 @@ module.exports = function(){
                                                             })
 
                                                         // EXTRACT_RESULT
-                                                        createEntity(classGenre, "EXTRACT_RESULT", 2, "Extract Result " + classGenre.label)
+                                                        createEntity(classGenre, "EXTRACT_RESULT", 2, "Sample Extract Result " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -445,8 +427,8 @@ module.exports = function(){
                                                                 console.log(err)
                                                             })
 
-                                                        // LIBRARY
-                                                        createEntity(classGenre, "LIBRARY", 2, "Library " + classGenre.label)
+                                                        // QC_RESULT
+                                                        createEntity(classGenre, "SAMPLE_QC_RESULT", 2, "Sample QC Result " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -460,8 +442,8 @@ module.exports = function(){
                                                                 console.log(err)
                                                             })
 
-                                                        // SEQUENCE
-                                                        createEntity(classGenre, "SEQUENCE", 2, "Sequence " + classGenre.label)
+                                                        // QC_REVIEW
+                                                        createEntity(classGenre, "SAMPLE_QC_REVIEW", 2, "Sample QC Result Review " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -474,6 +456,22 @@ module.exports = function(){
                                                             }).catch((err) => {
                                                                 console.log(err)
                                                             })
+
+                                                        // Report
+                                                        createEntity(classGenre, "SAMPLE_QC_REPORT", 2, "Sample QC Report " + classGenre.label)
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
                                                     }).catch((err) => {
                                                         console.log(err)
                                                     })
@@ -596,7 +594,7 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         // DEFALUT
-                                        createEntity(domainGenre, "DEFAULT", 1, "Default Class " + domainGenre.label)
+                                        createEntity(domainGenre, "DEFAULT", 1, "Default " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
