@@ -128,10 +128,9 @@ EntitySchema
         }
     })
 
-// SYS_GENRE_IDENTIFIER is used to get the attribute list from genre collection
-// But not works fine for the sub object
-// TODO: sub object works like the split ape to flac in the same folder
-//       try to use other perimeter like "-"
+// SYS_GENRE_IDENTIFIER is NOT used to get the attribute list from genre
+// collection right now, but helps to create objects under the current object
+// with SYS_IDENTIFIER
 EntitySchema
     .virtual('SYS_GENRE_IDENTIFIER')
     .get(function(){
