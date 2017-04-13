@@ -398,7 +398,7 @@ module.exports = function(){
                                                     .then((classGenre) => {
 
                                                         // EXTRACT_ASSIGN
-                                                        createEntity(classGenre, "EXTRACT_QC_ASSIGN", 2, "Sample Extract/Sample QC assignment " + classGenre.label)
+                                                        createEntity(classGenre, "SAMPLE_EXTRACT", 2, "Sample Extract " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -413,7 +413,7 @@ module.exports = function(){
                                                             })
 
                                                         // EXTRACT_RESULT
-                                                        createEntity(classGenre, "EXTRACT_RESULT", 2, "Sample Extract Result " + classGenre.label)
+                                                        createEntity(classGenre, "SAMPLE_QC", 2, "Sample QC " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -428,7 +428,7 @@ module.exports = function(){
                                                             })
 
                                                         // QC_RESULT
-                                                        createEntity(classGenre, "SAMPLE_QC_RESULT", 2, "Sample QC Result " + classGenre.label)
+                                                        createEntity(classGenre, "SAMPLE_QC_REVIEW", 2, "Sample QC Review " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -443,7 +443,7 @@ module.exports = function(){
                                                             })
 
                                                         // QC_REVIEW
-                                                        createEntity(classGenre, "SAMPLE_QC_REVIEW", 2, "Sample QC Result Review " + classGenre.label)
+                                                        createEntity(classGenre, "LIBRARY_PREPARE", 2, "Library Prepare " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
@@ -458,7 +458,35 @@ module.exports = function(){
                                                             })
 
                                                         // Report
-                                                        createEntity(classGenre, "SAMPLE_QC_REPORT", 2, "Sample QC Report " + classGenre.label)
+                                                        createEntity(classGenre, "LIBRARY_PREPARE_REVIEW", 2, "Library Prepare Review" + classGenre.label)
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
+                                                        createEntity(classGenre, "LIBRARY_CAPTURE", 2, "Library Capture" + classGenre.label)
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
+                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
+                                                        createEntity(classGenre, "LIBRARY_CAPTURE_REVIEW", 2, "Library Capture Review" + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
