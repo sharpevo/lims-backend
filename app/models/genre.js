@@ -12,7 +12,7 @@ const GenreSchema = new Schema(
 
         SYS_IDENTIFIER: {
             type: String,
-            match: /^\/[a-zA-Z0-9_\/]*$/,
+            match: /^\/[a-zA-Z0-9_\.\/]*$/,
             required: true,
             trim: true,
             unique: true, // unique and index
