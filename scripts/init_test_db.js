@@ -46,11 +46,6 @@ function createGenre(entity){
         label: entity.label + " Genre",
     })
         .save()
-        .then((genre) => {
-            //entity.SYS_GENRE_LIST.push(genre)
-            entity.save()
-            return genre
-        })
 }
 
 function createEntity(genre, identifier, typeIndex, label){
