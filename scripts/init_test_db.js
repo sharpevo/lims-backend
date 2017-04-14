@@ -67,6 +67,7 @@ module.exports = function(){
         console.log(">>> Building test database...")
 
         let humanResourceClass = {}
+        let productWorkcenterClass = {}
 
         // "/"
         Entity({
@@ -412,10 +413,11 @@ module.exports = function(){
                                         // PRODUCT
                                         createEntity(domainGenre, "PRODUCT", 1, "Product " + domainGenre.label)
                                             .then((classEntity) => {
+                                                productWorkcenterClass = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
-                                                        // EXTRACT_ASSIGN
+                                                        // EXTRACT_ASSIGN//{{{
                                                         createEntity(classGenre, "SAMPLE_EXTRACT", 2, "Sample Extract " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -437,9 +439,9 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
-                                                        // EXTRACT_RESULT
+                                                        // EXTRACT_RESULT//{{{
                                                         createEntity(classGenre, "SAMPLE_QC", 2, "Sample QC " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -528,9 +530,9 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
-                                                        // QC_RESULT
+                                                        // QC_RESULT//{{{
                                                         createEntity(classGenre, "SAMPLE_QC_REVIEW", 2, "Sample QC Review " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -552,9 +554,9 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
-                                                        // QC_REVIEW
+                                                        // QC_REVIEW//{{{
                                                         createEntity(classGenre, "LIBRARY_PREPARE", 2, "Library Prepare " + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -645,9 +647,9 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
-                                                        // Report
+                                                        // LIBRARY_PREPARE_REVIEW//{{{
                                                         createEntity(classGenre, "LIBRARY_PREPARE_REVIEW", 2, "Library Prepare Review" + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -669,8 +671,9 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
+                                                        // LIBRARY_CAPTURE//{{{
                                                         createEntity(classGenre, "LIBRARY_CAPTURE", 2, "Library Capture" + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -685,6 +688,7 @@ module.exports = function(){
                                                                 console.log(err)
                                                             })
 
+                                                        // LIBRARY_CAPTURE_REVIEW
                                                         createEntity(classGenre, "LIBRARY_CAPTURE_REVIEW", 2, "Library Capture Review" + classGenre.label)
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
@@ -697,7 +701,7 @@ module.exports = function(){
 
                                                             }).catch((err) => {
                                                                 console.log(err)
-                                                            })
+                                                            })//}}}
 
                                                     }).catch((err) => {
                                                         console.log(err)
@@ -705,12 +709,91 @@ module.exports = function(){
                                             }).catch((err) => {
                                                 console.log(err)
                                             })
+
+                                        // PROJECT_MANAGEMENT//{{{
+                                        createEntity(domainGenre, "PROJECT_MANAGEMENT", 1, "Project Management " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+
+                                                        // SAMPLE_PREPARATION
+                                                        createEntity(classGenre, "SAMPLE_PREPARATION", 2, "Extraction and QC")
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+
+                                                                        createAttribute({
+                                                                            label: '样品编号',
+                                                                            SYS_CODE: 'SAMPLE_CODE',
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_TYPE: 'string',
+                                                                            SYS_IS_ENTITY_LABEL: true,
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: '样品名称',
+                                                                            SYS_CODE: 'SAMPLE_NAME',
+                                                                            SYS_ORDER: 20,
+                                                                            SYS_TYPE: 'string',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: '下达日期',
+                                                                            SYS_CODE: 'SYS_DATE_ARRIVED',
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_TYPE: 'date',
+                                                                            SYS_GENRE: collectionGenre.id})
+
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
+                                                        // LIBRARY_PREPARATION
+                                                        createEntity(classGenre, "LIBRARY_PREPARATION", 2, "Library Prepraration")
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+
+                                                                        // TODO: add attributes
+
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
+                                                        // RUN_PREPARATION
+                                                        createEntity(classGenre, "RUN_PREPARATION", 2, "Sequencing")
+                                                            .then((collectionEntity) => {
+                                                                createGenre(collectionEntity)
+                                                                    .then((collectionGenre) => {
+
+                                                                        // TODO: add attributes
+
+                                                                    }).catch((err) => {
+                                                                        console.log(err)
+                                                                    })
+                                                            }).catch((err) => {
+                                                                console.log(err)
+                                                            })
+
+
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })
+
+
                                     }).catch((err) => {
                                         console.log(err)
                                     })
                             }).catch((err) => {
                                 console.log(err)
-                            })
+                            })//}}}
 
                         // ROUTING
                         createEntity(genre, "ROUTING",0, "Routings")
@@ -719,25 +802,108 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         // PRODUCT
-                                        createEntity(domainGenre, "PRODUCT", 1, "Product " + domainGenre.label)
+                                        createEntity(domainGenre, "PRODUCT_ROUTING", 1, "Product " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
-                                                        // PRODUCT ROUTING V1
-                                                        createEntity(classGenre, "V1", 2, "V1 " + classGenre.label)
-                                                            .then((collectionEntity) => {
+                                                        //createAttribute({
+                                                        //label: 'Routing Title',
+                                                        //SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                        //SYS_ORDER: 10,
+                                                        //SYS_TYPE: 'string',
+                                                        //SYS_IS_ENTITY_LABEL: true,
+                                                        //SYS_GENRE: classGenre.id})
+
+                                                        //Entity({
+                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'SAMPLE_PREPARATION',
+                                                        //SYS_ENTITY_TYPE: 'collection',
+                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Extraction and QC',
+                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                        //SYS_GENRE: classGenre.id,
+                                                        //}).save()
+
+                                                        //Entity({
+                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARATION',
+                                                        //SYS_ENTITY_TYPE: 'collection',
+                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Library Preparation',
+                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                        //SYS_GENRE: classGenre.id,
+                                                        //}).save()
+
+                                                        //Entity({
+                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'RUN_PREPARATION',
+                                                        //SYS_ENTITY_TYPE: 'collection',
+                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Sequencing',
+                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                        //SYS_GENRE: classGenre.id,
+                                                        //}).save()
+
+                                                        createAttribute({
+                                                            label: 'Routing Title',
+                                                            SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_IS_ENTITY_LABEL: true,
+                                                            SYS_GENRE: classGenre.id})
+
+                                                        Entity({
+                                                            SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'ROUTING_V1',
+                                                            SYS_ENTITY_TYPE: 'collection',
+                                                            PRODUCT_ROUTING_ATTR_TITLE: 'Routing V1',
+                                                            SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
+                                                            SYS_GENRE: classGenre.id,
+                                                            label: 'Routing V1' // compatable with the createEntity
+                                                        })
+                                                            .save()
+                                                            .then(collectionEntity => {
                                                                 createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
+                                                                    .then(collectionGenre => {
+
+                                                                        createAttribute({
+                                                                            label: 'Routing',
+                                                                            SYS_CODE: 'SYS_SOURCE',
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_TYPE: 'entity',
+                                                                            SYS_TYPE_ENTITY: productWorkcenterClass.id,
+                                                                            SYS_TYPE_ENTITY_REF: true,
+                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: 'Order',
+                                                                            SYS_CODE: 'SYS_ORDER',
+                                                                            SYS_ORDER: 20,
+                                                                            SYS_TYPE: 'number',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: 'Duration',
+                                                                            SYS_CODE: 'SYS_DURATION',
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_TYPE: 'number',
+                                                                            SYS_GENRE: collectionGenre.id})
+
+                                                                    }).catch(err => {
                                                                         console.log(err)
                                                                     })
-
-                                                            }).catch((err) => {
+                                                            }).catch(err => {
                                                                 console.log(err)
                                                             })
+
+
+                                                        //// PRODUCT ROUTING V1
+                                                        //createEntity(classGenre, "V1", 2, "V1 " + classGenre.label)
+                                                        //.then((collectionEntity) => {
+                                                        //createGenre(collectionEntity)
+                                                        //.then((collectionGenre) => {
+                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
+                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
+                                                        //}).catch((err) => {
+                                                        //console.log(err)
+                                                        //})
+
+                                                        //}).catch((err) => {
+                                                        //console.log(err)
+                                                        //})
 
                                                     }).catch((err) => {
                                                         console.log(err)
