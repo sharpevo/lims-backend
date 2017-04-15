@@ -805,15 +805,11 @@ module.exports = function(){
                                                             .then(collectionEntity => {
                                                                 createGenre(collectionEntity)
                                                                     .then(collectionGenre => {
-
                                                                         createAttribute({
-                                                                            label: 'Routing',
-                                                                            SYS_CODE: 'SYS_SOURCE',
+                                                                            label: '', // leave blank since it's only a leading checkbox
+                                                                            SYS_CODE: 'SYS_AVAILABLE',
                                                                             SYS_ORDER: 10,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY: productWorkcenterClass.id,
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'class',
+                                                                            SYS_TYPE: 'boolean',
                                                                             SYS_GENRE: collectionGenre.id})
                                                                         createAttribute({
                                                                             label: 'Order',
@@ -822,11 +818,33 @@ module.exports = function(){
                                                                             SYS_TYPE: 'number',
                                                                             SYS_GENRE: collectionGenre.id})
                                                                         createAttribute({
+                                                                            label: 'Routing',
+                                                                            SYS_CODE: 'SYS_SOURCE',
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_TYPE: 'entity',
+                                                                            SYS_TYPE_ENTITY: productWorkcenterClass.id,
+                                                                            SYS_TYPE_ENTITY_REF: true,
+                                                                            SYS_FLOOR_ENTITY_TYPE: 'class',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
                                                                             label: 'Duration',
                                                                             SYS_CODE: 'SYS_DURATION',
-                                                                            SYS_ORDER: 30,
+                                                                            SYS_ORDER: 40,
                                                                             SYS_TYPE: 'number',
                                                                             SYS_GENRE: collectionGenre.id})
+
+                                                                        // In order to enable routings for genral project under project management workcenter,
+                                                                        // you should
+                                                                        // 1. "Routings/Product Routings/Routing V1", create routing entries
+                                                                        // 2. "Project management workcenter/General project", create attribute for the routing
+                                                                        //      key: ROUTING,
+                                                                        //      Title: Routing,
+                                                                        //      Order: 40,
+                                                                        //      Attribute data type: Entity(single),
+                                                                        //      Entity Level: Collection,
+                                                                        //      Select the entity: Routing V1,
+                                                                        //      Target Entity: Class
+                                                                        //  Then create entity
 
                                                                     }).catch(err => {
                                                                         console.log(err)
