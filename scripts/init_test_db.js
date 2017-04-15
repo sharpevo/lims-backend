@@ -405,303 +405,326 @@ module.exports = function(){
                             })
 
                         // WORKCENTER
-                        createEntity(genre, "WORKCENTER",0, "WorkCenters")
+                        createEntity(genre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
+                            .then((domainEntity) => {
+                                productWorkcenterClass = domainEntity
+                                createGenre(domainEntity)
+                                    .then((domainGenre) => {
+
+                                        // EXTRACT_ASSIGN//{{{
+                                        createEntity(domainGenre, "SAMPLE_EXTRACT", 1, "Sample Extraction")
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+
+                                                        createAttribute({
+                                                            label: '提取人',
+                                                            SYS_CODE: 'SAMPLE_EXTRACT_ATTR_OPERATOR',
+                                                            SYS_ORDER: 100,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // EXTRACT_RESULT//{{{
+                                        createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "Sample QC Result " + domainGenre.label)
+                                            .then(classEntity => {
+                                                createGenre(classEntity)
+                                                    .then(classGenre => {
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '样品体积',
+                                                            'VOLUME',
+                                                            'number',
+                                                            10)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '样品浓度',
+                                                            'CONC',
+                                                            'number',
+                                                            20)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '样品总量',
+                                                            'QUANTITY',
+                                                            'number',
+                                                            30)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            'OD 260/230',
+                                                            'OD230',
+                                                            'number',
+                                                            40)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            'OD 260/280',
+                                                            'OD280',
+                                                            'number',
+                                                            50)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '结果说明',
+                                                            'DESCRIPTION',
+                                                            'string',
+                                                            60)
+                                                        createAttribute({
+                                                            label: '检测结果',
+                                                            SYS_CODE: 'SAMPLE_QC_ATTR_RESULT',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '检测备注',
+                                                            SYS_CODE: 'SAMPLE_QC_ATTR_REMARK',
+                                                            SYS_ORDER: 80,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '检测状态',
+                                                            SYS_CODE: 'SAMPLE_QC_ATTR_STATUS',
+                                                            SYS_ORDER: 90,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:通过,-1:不通过',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '检测日期',
+                                                            SYS_CODE: 'SYS_DATE_COMPLETED',
+                                                            SYS_ORDER: 100,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '检测员',
+                                                            SYS_CODE: 'SAMPLE_QC_ATTR_OPERATOR',
+                                                            SYS_ORDER: 110,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+                                                        return classGenre
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // QC_RESULT//{{{
+                                        createEntity(domainGenre, "SAMPLE_QC_REVIEW", 1, "Sample QC Review " + domainGenre.label)
+                                            .then(classEntity => {
+                                                createGenre(classEntity)
+                                                    .then(classGenre => {
+
+                                                        createAttribute({
+                                                            label: '审核员',
+                                                            SYS_CODE: 'SAMPLE_QC_REVIEW_ATTR_OPERATOR',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // QC_REVIEW//{{{
+                                        createEntity(domainGenre, "LIBRARY_PREPARE_RESULT", 1, "Library Prepare Result " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '文库名称',
+                                                            'LIBRARY_NAME',
+                                                            'string',
+                                                            10)
+                                                        createAttribute({
+                                                            label: '建库结果',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_RESULT',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:合格,-1:不合格',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '建库开始时间',
+                                                            SYS_CODE: 'DATE_START',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '建库结束时间',
+                                                            SYS_CODE: 'SYS_DATE_COMPLETED',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '实验员',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
+                                                            SYS_ORDER: 50,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            'Qubit浓度',
+                                                            'QUBIT_CONC',
+                                                            'number',
+                                                            60)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '文库体积',
+                                                            'LIBRARY_VOLUME',
+                                                            'number',
+                                                            70)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '文库切胶长度',
+                                                            'LIBRARY_GEL_LENGTH',
+                                                            'number',
+                                                            80)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '文库片段大小',
+                                                            'LIBRARY_FRAGMENT_SIZE',
+                                                            'number',
+                                                            90)
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '文库体积',
+                                                            'LIBRARY_VOLUME',
+                                                            'number',
+                                                            100)
+                                                        createAttribute({
+                                                            label: '重建库原因',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_REBUILD_REASON',
+                                                            SYS_ORDER: 110,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'quality:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
+                                                            SYS_GENRE: classGenre.id})
+
+                                                        createWorkcenterAttribute(
+                                                            classGenre,
+                                                            '结果说明',
+                                                            'DESCRIPTION',
+                                                            'text',
+                                                            120)
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // LIBRARY_PREPARE_REVIEW//{{{
+                                        createEntity(domainGenre, "LIBRARY_PREPARE_REVIEW", 1, "Library Prepare Review " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '审核员',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // LIBRARY_CAPTURE//{{{
+                                        createEntity(domainGenre, "LIBRARY_CAPTURE_RESULT", 1, "Library Capture Result " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })
+
+                                        // LIBRARY_CAPTURE_REVIEW
+                                        createEntity(domainGenre, "LIBRARY_CAPTURE_REVIEW", 1, "Library Capture Review" + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                    }).catch((err) => {
+                                        console.log(err)
+                                    })
+
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+
+                        // PROJECT_MANAGEMENT//{{{
+                        createEntity(genre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
                             .then((domainEntity) => {
                                 createGenre(domainEntity)
                                     .then((domainGenre) => {
 
-                                        // PRODUCT
-                                        createEntity(domainGenre, "PRODUCT", 1, "Product " + domainGenre.label)
+                                        // SAMPLE_PREPARATION
+                                        createEntity(domainGenre, "GENERAL_PROJECT", 1, "General Project")
                                             .then((classEntity) => {
-                                                productWorkcenterClass = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
-                                                        // EXTRACT_ASSIGN//{{{
-                                                        createEntity(classGenre, "SAMPLE_EXTRACT", 2, "Sample Extract " + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        createAttribute({
-                                                                            label: '提取人',
-                                                                            SYS_CODE: 'SAMPLE_EXTRACT_ATTR_OPERATOR',
-                                                                            SYS_ORDER: 100,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
-
-                                                        // EXTRACT_RESULT//{{{
-                                                        createEntity(classGenre, "SAMPLE_QC", 2, "Sample QC " + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '样品体积',
-                                                                            'VOLUME',
-                                                                            'number',
-                                                                            10)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '样品浓度',
-                                                                            'CONC',
-                                                                            'number',
-                                                                            20)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '样品总量',
-                                                                            'QUANTITY',
-                                                                            'number',
-                                                                            30)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            'OD 260/230',
-                                                                            'OD230',
-                                                                            'number',
-                                                                            40)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            'OD 260/280',
-                                                                            'OD280',
-                                                                            'number',
-                                                                            50)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '结果说明',
-                                                                            'DESCRIPTION',
-                                                                            'string',
-                                                                            60)
-                                                                        createAttribute({
-                                                                            label: '检测结果',
-                                                                            SYS_CODE: 'SAMPLE_QC_ATTR_RESULT',
-                                                                            SYS_ORDER: 70,
-                                                                            SYS_TYPE: 'list',
-                                                                            SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '检测备注',
-                                                                            SYS_CODE: 'SAMPLE_QC_ATTR_REMARK',
-                                                                            SYS_ORDER: 80,
-                                                                            SYS_TYPE: 'list',
-                                                                            SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '检测状态',
-                                                                            SYS_CODE: 'SAMPLE_QC_ATTR_STATUS',
-                                                                            SYS_ORDER: 90,
-                                                                            SYS_TYPE: 'list',
-                                                                            SYS_TYPE_LIST: '1:通过,-1:不通过',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '检测日期',
-                                                                            SYS_CODE: 'SYS_DATE_COMPLETED',
-                                                                            SYS_ORDER: 100,
-                                                                            SYS_TYPE: 'date',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '检测员',
-                                                                            SYS_CODE: 'SAMPLE_QC_ATTR_OPERATOR',
-                                                                            SYS_ORDER: 110,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        return collectionGenre
-                                                                    })
-                                                                    .then((collectionGenre) => {
-                                                                        //console.log(collectionGenre)
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
-
-                                                        // QC_RESULT//{{{
-                                                        createEntity(classGenre, "SAMPLE_QC_REVIEW", 2, "Sample QC Review " + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        createAttribute({
-                                                                            label: '审核员',
-                                                                            SYS_CODE: 'SAMPLE_QC_REVIEW_ATTR_OPERATOR',
-                                                                            SYS_ORDER: 10,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
-
-                                                        // QC_REVIEW//{{{
-                                                        createEntity(classGenre, "LIBRARY_PREPARE", 2, "Library Prepare " + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '文库名称',
-                                                                            'LIBRARY_NAME',
-                                                                            'string',
-                                                                            10)
-                                                                        createAttribute({
-                                                                            label: '建库结果',
-                                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_RESULT',
-                                                                            SYS_ORDER: 20,
-                                                                            SYS_TYPE: 'list',
-                                                                            SYS_TYPE_LIST: '1:合格,-1:不合格',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '建库开始时间',
-                                                                            SYS_CODE: 'DATE_START',
-                                                                            SYS_ORDER: 30,
-                                                                            SYS_TYPE: 'date',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '建库结束时间',
-                                                                            SYS_CODE: 'SYS_DATE_COMPLETED',
-                                                                            SYS_ORDER: 40,
-                                                                            SYS_TYPE: 'date',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '实验员',
-                                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
-                                                                            SYS_ORDER: 50,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            'Qubit浓度',
-                                                                            'QUBIT_CONC',
-                                                                            'number',
-                                                                            60)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '文库体积',
-                                                                            'LIBRARY_VOLUME',
-                                                                            'number',
-                                                                            70)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '文库切胶长度',
-                                                                            'LIBRARY_GEL_LENGTH',
-                                                                            'number',
-                                                                            80)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '文库片段大小',
-                                                                            'LIBRARY_FRAGMENT_SIZE',
-                                                                            'number',
-                                                                            90)
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '文库体积',
-                                                                            'LIBRARY_VOLUME',
-                                                                            'number',
-                                                                            100)
-                                                                        createAttribute({
-                                                                            label: '重建库原因',
-                                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_REBUILD_REASON',
-                                                                            SYS_ORDER: 110,
-                                                                            SYS_TYPE: 'list',
-                                                                            SYS_TYPE_LIST: 'quality:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
-                                                                            SYS_GENRE: collectionGenre.id})
-
-                                                                        createWorkcenterAttribute(
-                                                                            collectionGenre,
-                                                                            '结果说明',
-                                                                            'DESCRIPTION',
-                                                                            'text',
-                                                                            120)
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
-
-                                                        // LIBRARY_PREPARE_REVIEW//{{{
-                                                        createEntity(classGenre, "LIBRARY_PREPARE_REVIEW", 2, "Library Prepare Review" + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        createAttribute({
-                                                                            label: '审核员',
-                                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
-                                                                            SYS_ORDER: 10,
-                                                                            SYS_TYPE: 'entity',
-                                                                            SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
-
-                                                        // LIBRARY_CAPTURE//{{{
-                                                        createEntity(classGenre, "LIBRARY_CAPTURE", 2, "Library Capture" + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })
-
-                                                        // LIBRARY_CAPTURE_REVIEW
-                                                        createEntity(classGenre, "LIBRARY_CAPTURE_REVIEW", 2, "Library Capture Review" + classGenre.label)
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })//}}}
+                                                        createAttribute({
+                                                            label: '样品编号',
+                                                            SYS_CODE: 'SAMPLE_CODE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_IS_ENTITY_LABEL: true,
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '样品名称',
+                                                            SYS_CODE: 'SAMPLE_NAME',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '下达日期',
+                                                            SYS_CODE: 'SYS_DATE_ARRIVED',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
 
                                                     }).catch((err) => {
                                                         console.log(err)
@@ -709,84 +732,6 @@ module.exports = function(){
                                             }).catch((err) => {
                                                 console.log(err)
                                             })
-
-                                        // PROJECT_MANAGEMENT//{{{
-                                        createEntity(domainGenre, "PROJECT_MANAGEMENT", 1, "Project Management " + domainGenre.label)
-                                            .then((classEntity) => {
-                                                createGenre(classEntity)
-                                                    .then((classGenre) => {
-
-                                                        // SAMPLE_PREPARATION
-                                                        createEntity(classGenre, "SAMPLE_PREPARATION", 2, "Extraction and QC")
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-
-                                                                        createAttribute({
-                                                                            label: '样品编号',
-                                                                            SYS_CODE: 'SAMPLE_CODE',
-                                                                            SYS_ORDER: 10,
-                                                                            SYS_TYPE: 'string',
-                                                                            SYS_IS_ENTITY_LABEL: true,
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '样品名称',
-                                                                            SYS_CODE: 'SAMPLE_NAME',
-                                                                            SYS_ORDER: 20,
-                                                                            SYS_TYPE: 'string',
-                                                                            SYS_GENRE: collectionGenre.id})
-                                                                        createAttribute({
-                                                                            label: '下达日期',
-                                                                            SYS_CODE: 'SYS_DATE_ARRIVED',
-                                                                            SYS_ORDER: 30,
-                                                                            SYS_TYPE: 'date',
-                                                                            SYS_GENRE: collectionGenre.id})
-
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })
-
-                                                        // LIBRARY_PREPARATION
-                                                        createEntity(classGenre, "LIBRARY_PREPARATION", 2, "Library Prepraration")
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-
-                                                                        // TODO: add attributes
-
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })
-
-                                                        // RUN_PREPARATION
-                                                        createEntity(classGenre, "RUN_PREPARATION", 2, "Sequencing")
-                                                            .then((collectionEntity) => {
-                                                                createGenre(collectionEntity)
-                                                                    .then((collectionGenre) => {
-
-                                                                        // TODO: add attributes
-
-                                                                    }).catch((err) => {
-                                                                        console.log(err)
-                                                                    })
-                                                            }).catch((err) => {
-                                                                console.log(err)
-                                                            })
-
-
-                                                    }).catch((err) => {
-                                                        console.log(err)
-                                                    })
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
-
 
                                     }).catch((err) => {
                                         console.log(err)
@@ -794,6 +739,7 @@ module.exports = function(){
                             }).catch((err) => {
                                 console.log(err)
                             })//}}}
+
 
                         // ROUTING
                         createEntity(genre, "ROUTING",0, "Routings")
@@ -867,7 +813,7 @@ module.exports = function(){
                                                                             SYS_TYPE: 'entity',
                                                                             SYS_TYPE_ENTITY: productWorkcenterClass.id,
                                                                             SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                                            SYS_FLOOR_ENTITY_TYPE: 'class',
                                                                             SYS_GENRE: collectionGenre.id})
                                                                         createAttribute({
                                                                             label: 'Order',
