@@ -106,6 +106,11 @@ exports.attribute = function (req, res, next){
     Attribute.find(
         {"SYS_GENRE": req.entity.SYS_GENRE},
         '',
+        {
+            sort:{
+                SYS_ORDER: 1
+            }
+        },
         (err, attributes) => {
             if (err) {
                 return res.status(400).send({
