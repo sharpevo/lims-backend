@@ -407,13 +407,13 @@ module.exports = function(){
                         // WORKCENTER
                         createEntity(genre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
                             .then((domainEntity) => {
+                                productWorkcenterClass = domainEntity
                                 createGenre(domainEntity)
                                     .then((domainGenre) => {
 
                                         // EXTRACT_ASSIGN//{{{
                                         createEntity(domainGenre, "SAMPLE_EXTRACT", 1, "Sample Extraction")
                                             .then((classEntity) => {
-                                                productWorkcenterClass = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
@@ -813,7 +813,7 @@ module.exports = function(){
                                                                             SYS_TYPE: 'entity',
                                                                             SYS_TYPE_ENTITY: productWorkcenterClass.id,
                                                                             SYS_TYPE_ENTITY_REF: true,
-                                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                                            SYS_FLOOR_ENTITY_TYPE: 'class',
                                                                             SYS_GENRE: collectionGenre.id})
                                                                         createAttribute({
                                                                             label: 'Order',
