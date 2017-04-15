@@ -66,8 +66,19 @@ module.exports = function(){
 
         console.log(">>> Building test database...")
 
+        let materialDomain = {}
+
         let humanResourceClass = {}
         let productWorkcenterClass = {}
+
+        let shearingIns = {}
+            , gunIns = {}
+            , sequencingIns = {}
+
+        let kapa = {}
+            , exonuclease = {}
+            , glove = {}
+
 
         // "/"
         Entity({
@@ -92,7 +103,7 @@ module.exports = function(){
                             SYS_GENRE: genre.id
                         }).save()
 
-                        createEntity(genre, "HUMAN_RESOURCE", 0, "Human Resource")
+                        createEntity(genre, "HUMAN_RESOURCE", 0, "Human Resource")//{{{
                             .then(humanEntity => {
 
                                 createGenre(humanEntity)
@@ -122,9 +133,9 @@ module.exports = function(){
 
                             }).catch(err => {
                                 console.error(err)
-                            })
+                            })//}}}
 
-                        createEntity(genre, "INSTRUMENT_RESOURCE", 0, "Instrument Resource")
+                        createEntity(genre, "INSTRUMENT_RESOURCE", 0, "Instrument Resource")//{{{
                             .then(instrumentEntity => {
 
                                 createGenre(instrumentEntity)
@@ -132,6 +143,7 @@ module.exports = function(){
 
                                         createEntity(instrumentGenre, "SHEARING", 1, "Shearing " + instrumentGenre.label)
                                             .then(shearingEntity => {
+                                                shearingIns = shearingEntity
 
                                                 createGenre(shearingEntity)
                                                     .then(shearingGenre => {
@@ -146,10 +158,9 @@ module.exports = function(){
                                                 console.error(err)
                                             })
 
-
-
                                         createEntity(instrumentGenre, "GUN", 1, "Gun " + instrumentGenre.label)
                                             .then(gunEntity => {
+                                                gunIns = gunEntity
 
                                                 createGenre(gunEntity)
                                                     .then(gunGenre => {
@@ -167,6 +178,7 @@ module.exports = function(){
 
                                         createEntity(instrumentGenre, "SEQUENCING", 1, "Sequencing " + instrumentGenre.label)
                                             .then(seqEntity => {
+                                                sequencingIns = seqEntity
 
                                                 createGenre(seqEntity)
                                                     .then(seqGenre => {
@@ -188,9 +200,9 @@ module.exports = function(){
 
                             }).catch(err => {
                                 console.error(err)
-                            })
+                            })//}}}
 
-                        createEntity(genre, "PURCHASE", 0, "Purchase")
+                        createEntity(genre, "PURCHASE", 0, "Purchase")//{{{
                             .then(purchaseEntity => {
 
                                 createGenre(purchaseEntity)
@@ -237,16 +249,18 @@ module.exports = function(){
 
                             }).catch(err => {
                                 console.error(err)
-                            })
+                            })//}}}
 
-                        createEntity(genre, "MATERIAL", 0, "Material")
+                        createEntity(genre, "MATERIAL", 0, "Material")//{{{
                             .then(materialEntity => {
+                                materialDomain = materialEntity
 
                                 createGenre(materialEntity)
                                     .then(materialGenre => {
 
                                         createEntity(materialGenre, "KAPA_HIFI", 1, "Kapa " + materialGenre.label)
                                             .then(kapaEntity => {
+                                                kapa = kapaEntity
 
                                                 createGenre(kapaEntity)
                                                     .then(kapaGenre => {
@@ -264,6 +278,7 @@ module.exports = function(){
 
                                         createEntity(materialGenre, "EXONUCLEASE", 1, "Exonuclease " + materialGenre.label)
                                             .then(kapaEntity => {
+                                                exonuclease = kapaEntity
 
                                                 createGenre(kapaEntity)
                                                     .then(kapaGenre => {
@@ -280,11 +295,12 @@ module.exports = function(){
 
                                         createEntity(materialGenre, "GLOVE", 1, "Glove " + materialGenre.label)
                                             .then(kapaEntity => {
+                                                glove = kapaEntity
 
                                                 createGenre(kapaEntity)
                                                     .then(kapaGenre => {
 
-                                                        //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+                                                        createEntity(kapaGenre, "001", 2, "Rubber")
 
                                                     }).catch(err => {
                                                         console.error(err)
@@ -332,9 +348,7 @@ module.exports = function(){
 
                             }).catch(err => {
                                 console.error(err)
-                            })
-
-
+                            })//}}}
 
                         // BOM
                         createEntity(genre, "BOM",0, "BoMs")
@@ -381,8 +395,29 @@ module.exports = function(){
                                                             .then((collectionEntity) => {
                                                                 createGenre(collectionEntity)
                                                                     .then((collectionGenre) => {
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                                        //createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
+
+                                                                        createAttribute({
+                                                                            label: 'Material',
+                                                                            SYS_CODE: 'SYS_SOURCE',
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_TYPE: 'entity',
+                                                                            SYS_TYPE_ENTITY: materialDomain.id,
+                                                                            SYS_TYPE_ENTITY_REF: true,
+                                                                            SYS_FLOOR_ENTITY_TYPE: 'class',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: 'Quantity',
+                                                                            SYS_CODE: 'SYS_QUANTITY',
+                                                                            SYS_ORDER: 20,
+                                                                            SYS_TYPE: 'number',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
+                                                                            label: 'Remark',
+                                                                            SYS_CODE: 'REMARK',
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_TYPE: 'string',
+                                                                            SYS_GENRE: collectionGenre.id})
+
                                                                     }).catch((err) => {
                                                                         console.log(err)
                                                                     })
