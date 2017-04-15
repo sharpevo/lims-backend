@@ -436,7 +436,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // EXTRACT_RESULT//{{{
-                                        createEntity(domainGenre, "SAMPLE_QC", 1, "Sample QC " + domainGenre.label)
+                                        createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "Sample QC Result " + domainGenre.label)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -546,7 +546,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_PREPARE", 1, "Library Prepare " + domainGenre.label)
+                                        createEntity(domainGenre, "LIBRARY_PREPARE_RESULT", 1, "Library Prepare Result " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -637,7 +637,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LIBRARY_PREPARE_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_PREPARE_REVIEW", 1, "Library Prepare Review" + domainGenre.label)
+                                        createEntity(domainGenre, "LIBRARY_PREPARE_REVIEW", 1, "Library Prepare Review " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -659,7 +659,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LIBRARY_CAPTURE//{{{
-                                        createEntity(domainGenre, "LIBRARY_CAPTURE", 1, "Library Capture" + domainGenre.label)
+                                        createEntity(domainGenre, "LIBRARY_CAPTURE_RESULT", 1, "Library Capture Result " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
