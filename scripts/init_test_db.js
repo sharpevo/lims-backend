@@ -397,9 +397,17 @@ module.exports = function(){
                                                                     .then((collectionGenre) => {
 
                                                                         createAttribute({
+                                                                            // leave label blank as a leading checkbox
+                                                                            label: '',
+                                                                            // CHECKED is more clarity
+                                                                            SYS_CODE: 'SYS_CHECKED',
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_TYPE: 'boolean',
+                                                                            SYS_GENRE: collectionGenre.id})
+                                                                        createAttribute({
                                                                             label: 'Material',
                                                                             SYS_CODE: 'SYS_SOURCE',
-                                                                            SYS_ORDER: 10,
+                                                                            SYS_ORDER: 20,
                                                                             SYS_TYPE: 'entity',
                                                                             SYS_TYPE_ENTITY: materialDomain.id,
                                                                             SYS_TYPE_ENTITY_REF: true,
@@ -408,13 +416,13 @@ module.exports = function(){
                                                                         createAttribute({
                                                                             label: 'Quantity',
                                                                             SYS_CODE: 'SYS_QUANTITY',
-                                                                            SYS_ORDER: 20,
+                                                                            SYS_ORDER: 30,
                                                                             SYS_TYPE: 'number',
                                                                             SYS_GENRE: collectionGenre.id})
                                                                         createAttribute({
                                                                             label: 'Remark',
                                                                             SYS_CODE: 'REMARK',
-                                                                            SYS_ORDER: 30,
+                                                                            SYS_ORDER: 40,
                                                                             SYS_TYPE: 'string',
                                                                             SYS_GENRE: collectionGenre.id})
 
@@ -743,7 +751,10 @@ module.exports = function(){
 
                                                         createAttribute({
                                                             label: '样品编号',
-                                                            SYS_CODE: 'SAMPLE_CODE',
+                                                            // SYS prefix to indicate importance
+                                                            // to get the all the workcenters in
+                                                            // plan for the specific sample
+                                                            SYS_CODE: 'SYS_SAMPLE_CODE',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'string',
                                                             SYS_IS_ENTITY_LABEL: true,
@@ -841,8 +852,10 @@ module.exports = function(){
                                                                 createGenre(collectionEntity)
                                                                     .then(collectionGenre => {
                                                                         createAttribute({
-                                                                            label: '', // leave blank since it's only a leading checkbox
-                                                                            SYS_CODE: 'SYS_AVAILABLE',
+                                                                            // leave label blank as a leading checkbox
+                                                                            label: '',
+                                                                            // CHECKED is more clarity
+                                                                            SYS_CODE: 'SYS_CHECKED',
                                                                             SYS_ORDER: 10,
                                                                             SYS_TYPE: 'boolean',
                                                                             SYS_GENRE: collectionGenre.id})
