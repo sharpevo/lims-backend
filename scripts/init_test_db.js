@@ -462,7 +462,7 @@ module.exports = function(){
 
                                                         createAttribute({
                                                             label: '提取人',
-                                                            SYS_CODE: 'SAMPLE_EXTRACT_ATTR_OPERATOR',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 100,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY: humanResourceClass.id,
@@ -548,7 +548,7 @@ module.exports = function(){
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '检测员',
-                                                            SYS_CODE: 'SAMPLE_QC_ATTR_OPERATOR',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 110,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY_REF: true,
@@ -572,7 +572,7 @@ module.exports = function(){
 
                                                         createAttribute({
                                                             label: '审核员',
-                                                            SYS_CODE: 'SAMPLE_QC_REVIEW_ATTR_OPERATOR',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY_REF: true,
@@ -620,7 +620,7 @@ module.exports = function(){
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '实验员',
-                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 50,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY_REF: true,
@@ -686,7 +686,7 @@ module.exports = function(){
                                                     .then((classGenre) => {
                                                         createAttribute({
                                                             label: '审核员',
-                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_OPERATOR',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY_REF: true,
