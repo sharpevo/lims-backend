@@ -455,7 +455,7 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         // EXTRACT_ASSIGN//{{{
-                                        createEntity(domainGenre, "SAMPLE_EXTRACT", 1, "Sample Extraction")
+                                        createEntity(domainGenre, "SAMPLE_EXTRACT", 1, "PW: Sample Extraction")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -479,7 +479,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_RESULT//{{{
-                                        createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "Sample QC Result " + domainGenre.label)
+                                        createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: Sample QC Result")
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -565,7 +565,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_REVIEW//{{{
-                                        createEntity(domainGenre, "SAMPLE_QC_REVIEW", 1, "Sample QC Review " + domainGenre.label)
+                                        createEntity(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: Sample QC Review")
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -681,7 +681,7 @@ module.exports = function(){
                                         //}}}
 
                                         // LIBRARY_RESULT//{{{
-                                        createEntity(domainGenre, "LIBRARY_RESULT", 1, "Library Result " + domainGenre.label)
+                                        createEntity(domainGenre, "LIBRARY_RESULT", 1, "PW: Library Result")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -785,7 +785,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LIBRARY_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_REVIEW", 1, "Library Review " + domainGenre.label)
+                                        createEntity(domainGenre, "LIBRARY_REVIEW", 1, "PW: Library Review")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -807,7 +807,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_PREPARE//{{{
-                                        createEntity(domainGenre, "CAPTURE_PREPARE", 1, "Capture Prepare " + domainGenre.label)
+                                        createEntity(domainGenre, "CAPTURE_PREPARE", 1, "PW: Capture Prepare")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -838,7 +838,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_RESULT//{{{
-                                        createEntity(domainGenre, "CAPTURE_RESULT", 1, "Capture Result " + domainGenre.label)
+                                        createEntity(domainGenre, "CAPTURE_RESULT", 1, "PW: Capture Result")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -863,7 +863,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LANE_PREPARE//{{{
-                                        createEntity(domainGenre, "LANE_PREPARE", 1, "Pooling " + domainGenre.label)
+                                        createEntity(domainGenre, "LANE_PREPARE", 1, "PW: Pooling")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -949,7 +949,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_PREPARE//{{{
-                                        createEntity(domainGenre, "RUN_PREPARE", 1, "Sequence Prepare " + domainGenre.label)
+                                        createEntity(domainGenre, "RUN_PREPARE", 1, "PW: Sequence Prepare")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -1002,7 +1002,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_RESULT//{{{
-                                        createEntity(domainGenre, "RUN_RESULT", 1, "Sequence Result " + domainGenre.label)
+                                        createEntity(domainGenre, "RUN_RESULT", 1, "PW: Sequence Result")
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
