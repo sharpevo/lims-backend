@@ -478,7 +478,7 @@ module.exports = function(){
                                                 console.log(err)
                                             })//}}}
 
-                                        // EXTRACT_RESULT//{{{
+                                        // QC_RESULT//{{{
                                         createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "Sample QC Result " + domainGenre.label)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
@@ -564,7 +564,7 @@ module.exports = function(){
                                                 console.log(err)
                                             })//}}}
 
-                                        // QC_RESULT//{{{
+                                        // QC_REVIEW//{{{
                                         createEntity(domainGenre, "SAMPLE_QC_REVIEW", 1, "Sample QC Review " + domainGenre.label)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
@@ -588,89 +588,194 @@ module.exports = function(){
                                                 console.log(err)
                                             })//}}}
 
-                                        // QC_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_PREPARE_RESULT", 1, "Library Prepare Result " + domainGenre.label)
+                                        // depreciated QC_REVIEW//{{{
+                                        //createEntity(domainGenre, "LIBRARY_PREPARE_RESULT", 1, "Library Prepare Result " + domainGenre.label)
+                                        //.then((classEntity) => {
+                                        //createGenre(classEntity)
+                                        //.then((classGenre) => {
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'文库名称',
+                                        //'LIBRARY_NAME',
+                                        //'string',
+                                        //10)
+                                        //createAttribute({
+                                        //label: '建库结果',
+                                        //SYS_CODE: 'LIBRARY_PREPARE_ATTR_RESULT',
+                                        //SYS_ORDER: 20,
+                                        //SYS_TYPE: 'list',
+                                        //SYS_TYPE_LIST: '1:合格,-1:不合格',
+                                        //SYS_GENRE: classGenre.id})
+                                        //createAttribute({
+                                        //label: '建库开始时间',
+                                        //SYS_CODE: 'DATE_START',
+                                        //SYS_ORDER: 30,
+                                        //SYS_TYPE: 'date',
+                                        //SYS_GENRE: classGenre.id})
+                                        //createAttribute({
+                                        //label: '建库结束时间',
+                                        //SYS_CODE: 'SYS_DATE_COMPLETED',
+                                        //SYS_ORDER: 40,
+                                        //SYS_TYPE: 'date',
+                                        //SYS_GENRE: classGenre.id})
+                                        //createAttribute({
+                                        //label: '实验员',
+                                        //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+                                        //SYS_ORDER: 50,
+                                        //SYS_TYPE: 'entity',
+                                        //SYS_TYPE_ENTITY_REF: true,
+                                        //SYS_TYPE_ENTITY: humanResourceClass.id,
+                                        //SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                        //SYS_GENRE: classGenre.id})
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'Qubit浓度',
+                                        //'QUBIT_CONC',
+                                        //'number',
+                                        //60)
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'文库体积',
+                                        //'LIBRARY_VOLUME',
+                                        //'number',
+                                        //70)
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'文库切胶长度',
+                                        //'LIBRARY_GEL_LENGTH',
+                                        //'number',
+                                        //80)
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'文库片段大小',
+                                        //'LIBRARY_FRAGMENT_SIZE',
+                                        //'number',
+                                        //90)
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'文库体积',
+                                        //'LIBRARY_VOLUME',
+                                        //'number',
+                                        //100)
+                                        //createAttribute({
+                                        //label: '重建库原因',
+                                        //SYS_CODE: 'LIBRARY_PREPARE_ATTR_REBUILD_REASON',
+                                        //SYS_ORDER: 110,
+                                        //SYS_TYPE: 'list',
+                                        //SYS_TYPE_LIST: 'quality:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
+                                        //SYS_GENRE: classGenre.id})
+
+                                        //createWorkcenterAttribute(
+                                        //classGenre,
+                                        //'结果说明',
+                                        //'DESCRIPTION',
+                                        //'text',
+                                        //120)
+                                        //}).catch((err) => {
+                                        //console.log(err)
+                                        //})
+
+                                        //}).catch((err) => {
+                                        //console.log(err)
+                                        //})
+                                        //}}}
+
+                                        // LIBRARY_RESULT//{{{
+                                        createEntity(domainGenre, "LIBRARY_RESULT", 1, "Library Result " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '文库名称',
-                                                            'LIBRARY_NAME',
-                                                            'string',
-                                                            10)
                                                         createAttribute({
-                                                            label: '建库结果',
-                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_RESULT',
-                                                            SYS_ORDER: 20,
-                                                            SYS_TYPE: 'list',
-                                                            SYS_TYPE_LIST: '1:合格,-1:不合格',
+                                                            label: '文库名称',
+                                                            SYS_CODE: 'LIBRARY_CODE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '建库开始时间',
-                                                            SYS_CODE: 'DATE_START',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_START_DATE',
                                                             SYS_ORDER: 30,
                                                             SYS_TYPE: 'date',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '建库结束时间',
-                                                            SYS_CODE: 'SYS_DATE_COMPLETED',
+                                                            SYS_CODE: 'LIBRARY_PREPARE_END_DATE',
                                                             SYS_ORDER: 40,
                                                             SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '样品使用量',
+                                                            SYS_CODE: 'SAMPLE_USAGE',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '文库切胶长度',
+                                                            SYS_CODE: 'LIBRARY_GEL_SIZE',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '文库片段大小',
+                                                            SYS_CODE: 'LIBRARY_FRAGMENT_SIZE',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '是否重建库',
+                                                            SYS_CODE: 'IS_REPEATED',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:是,-1:否',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '重建库原因',
+                                                            SYS_CODE: 'LANE_REPEAT_REASON',
+                                                            SYS_ORDER: 90,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'sample:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'Panel编号',
+                                                            SYS_CODE: 'PANEL_CODE',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '建库结果',
+                                                            SYS_CODE: 'LIBRARY_QUALIFIED',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:合格,-1:不合格',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '实验员',
                                                             SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
                                                             SYS_ORDER: 50,
                                                             SYS_TYPE: 'entity',
-                                                            SYS_TYPE_ENTITY_REF: true,
                                                             SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_TYPE_ENTITY_REF: true,
                                                             SYS_FLOOR_ENTITY_TYPE: 'collection',
                                                             SYS_GENRE: classGenre.id})
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            'Qubit浓度',
-                                                            'QUBIT_CONC',
-                                                            'number',
-                                                            60)
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '文库体积',
-                                                            'LIBRARY_VOLUME',
-                                                            'number',
-                                                            70)
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '文库切胶长度',
-                                                            'LIBRARY_GEL_LENGTH',
-                                                            'number',
-                                                            80)
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '文库片段大小',
-                                                            'LIBRARY_FRAGMENT_SIZE',
-                                                            'number',
-                                                            90)
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '文库体积',
-                                                            'LIBRARY_VOLUME',
-                                                            'number',
-                                                            100)
                                                         createAttribute({
-                                                            label: '重建库原因',
-                                                            SYS_CODE: 'LIBRARY_PREPARE_ATTR_REBUILD_REASON',
-                                                            SYS_ORDER: 110,
-                                                            SYS_TYPE: 'list',
-                                                            SYS_TYPE_LIST: 'quality:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
+                                                            label: 'Qubit浓度',
+                                                            SYS_CODE: 'QUBIT_CONC',
+                                                            SYS_ORDER: 50,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '文库体积',
+                                                            SYS_CODE: 'LIBRARY_VOLUME',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'index编号',
+                                                            SYS_CODE: 'INDEX_CODE',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'number',
                                                             SYS_GENRE: classGenre.id})
 
-                                                        createWorkcenterAttribute(
-                                                            classGenre,
-                                                            '结果说明',
-                                                            'DESCRIPTION',
-                                                            'text',
-                                                            120)
                                                     }).catch((err) => {
                                                         console.log(err)
                                                     })
@@ -679,8 +784,8 @@ module.exports = function(){
                                                 console.log(err)
                                             })//}}}
 
-                                        // LIBRARY_PREPARE_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_PREPARE_REVIEW", 1, "Library Prepare Review " + domainGenre.label)
+                                        // LIBRARY_REVIEW//{{{
+                                        createEntity(domainGenre, "LIBRARY_REVIEW", 1, "Library Review " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -701,11 +806,139 @@ module.exports = function(){
                                                 console.log(err)
                                             })//}}}
 
-                                        // LIBRARY_CAPTURE//{{{
-                                        createEntity(domainGenre, "LIBRARY_CAPTURE_RESULT", 1, "Library Capture Result " + domainGenre.label)
+                                        // CAPTURE_PREPARE//{{{
+                                        createEntity(domainGenre, "CAPTURE_PREPARE", 1, "Capture Prepare " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '捕获编号',
+                                                            SYS_CODE: 'CAPTURE_CODE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '捕获日期',
+                                                            SYS_CODE: 'CAPTURE_DATE',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '杂交数',
+                                                            SYS_CODE: 'HYBRID_COUNT',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // CAPTURE_RESULT//{{{
+                                        createEntity(domainGenre, "CAPTURE_RESULT", 1, "Capture Result " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '捕获后文库浓度',
+                                                            SYS_CODE: 'CAPTURE_CONC',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '片段大小',
+                                                            SYS_CODE: 'CAPTURE_FRAGMENT_SIZE',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
+
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // LANE_PREPARE//{{{
+                                        createEntity(domainGenre, "LANE_PREPARE", 1, "Pooling " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '混合文库编号',
+                                                            SYS_CODE: 'POOLING_CODE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'Pooling日期',
+                                                            SYS_CODE: 'POOLING_DATE',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '混合实际浓度',
+                                                            SYS_CODE: 'HYBRID_CONC_PRACTICAL',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '混合理论浓度',
+                                                            SYS_CODE: 'HYBRID_CONC_THEORETICAL',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '混合平均片段长度',
+                                                            SYS_CODE: 'HYBRID_FRAGMENT_AVERAGE_SIZE',
+                                                            SYS_ORDER: 50,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '混合后体积',
+                                                            SYS_CODE: 'HYBRID_VOLUME',
+                                                            SYS_ORDER: 60,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '测序类型',
+                                                            SYS_CODE: 'SEQUENCE_TYPE',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'pe:PE测序,se:SE测序',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '实验员',
+                                                            SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+                                                            SYS_ORDER: 80,
+                                                            SYS_TYPE: 'entity',
+                                                            SYS_TYPE_ENTITY: humanResourceClass.id,
+                                                            SYS_TYPE_ENTITY_REF: true,
+                                                            SYS_FLOOR_ENTITY_TYPE: 'collection',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '重做原因',
+                                                            SYS_CODE: 'LANE_REPEAT_REASON',
+                                                            SYS_ORDER: 90,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'device:仪器故障,operation:操作步骤不当,reagent:试剂原因,server:服务器原因,other:其他原因',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '是否外送',
+                                                            SYS_CODE: 'IS_OUTBOUND',
+                                                            SYS_ORDER: 100,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:是,-1:否',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '预计下机日期',
+                                                            SYS_CODE: 'EXPECTED_COMPLETED_DATE',
+                                                            SYS_ORDER: 110,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
 
                                                     }).catch((err) => {
                                                         console.log(err)
@@ -713,14 +946,91 @@ module.exports = function(){
 
                                             }).catch((err) => {
                                                 console.log(err)
-                                            })
+                                            })//}}}
 
-                                        // LIBRARY_CAPTURE_REVIEW
-                                        createEntity(domainGenre, "LIBRARY_CAPTURE_REVIEW", 1, "Library Capture Review" + domainGenre.label)
+                                        // RUN_PREPARE//{{{
+                                        createEntity(domainGenre, "RUN_PREPARE", 1, "Sequence Prepare " + domainGenre.label)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '方案名称',
+                                                            SYS_CODE: 'RUN_CODE',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '机器类型',
+                                                            SYS_CODE: 'RUN_INSTRUMENT',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'hiseq:HiSeq,miseq:MiSeq,novaseq:NovaSeq',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '重做原因',
+                                                            SYS_CODE: 'REPEAT_REASON',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'device:仪器故障,operation:操作步骤不当,reagent:试剂原因,server:服务器原因,other:其他原因',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '机器编号',
+                                                            SYS_CODE: 'INSTURMENT_CODE',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'alane:A,blane:B',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '测序类型',
+                                                            SYS_CODE: 'SEQUENCE_TYPE',
+                                                            SYS_ORDER: 50,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'pe:PE测序,se:SE测序',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '备注',
+                                                            SYS_CODE: 'SEQUENCE_REMARK',
+                                                            SYS_ORDER: 60,
+                                                            SYS_TYPE: 'text',
+                                                            SYS_GENRE: classGenre.id})
+                                                    }).catch((err) => {
+                                                        console.log(err)
+                                                    })
 
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })//}}}
+
+                                        // RUN_RESULT//{{{
+                                        createEntity(domainGenre, "RUN_RESULT", 1, "Sequence Result " + domainGenre.label)
+                                            .then((classEntity) => {
+                                                createGenre(classEntity)
+                                                    .then((classGenre) => {
+                                                        createAttribute({
+                                                            label: '下机数据路径',
+                                                            SYS_CODE: 'RUN_DATA_PATH',
+                                                            SYS_ORDER: 10,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '仪器状态',
+                                                            SYS_CODE: 'RUN_INSTRUMENT_STATUS',
+                                                            SYS_ORDER: 20,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: '1:正常,-1:异常',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '确认下机时间',
+                                                            SYS_CODE: 'RUN_COMPLETED_DATE',
+                                                            SYS_ORDER: 30,
+                                                            SYS_TYPE: 'date',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '仪器备注',
+                                                            SYS_CODE: 'RUN_INSTRUMENT_REMARK',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'text',
+                                                            SYS_GENRE: classGenre.id})
                                                     }).catch((err) => {
                                                         console.log(err)
                                                     })
