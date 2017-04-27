@@ -766,8 +766,8 @@ module.exports = function(){
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
-                                                            label: '下达日期',
-                                                            SYS_CODE: 'SYS_DATE_ARRIVED',
+                                                            label: '计划进度',
+                                                            SYS_CODE: 'SYS_DATE_SCHEDULED',
                                                             SYS_ORDER: 30,
                                                             SYS_TYPE: 'date',
                                                             SYS_GENRE: classGenre.id})
