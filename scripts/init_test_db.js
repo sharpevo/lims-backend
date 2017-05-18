@@ -58,6 +58,17 @@ function createEntity(genre, identifier, typeIndex, label){
         .save()
 }
 
+function createEntityWithOrder(genre, identifier, typeIndex, label, order){
+    return Entity({
+        SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
+        SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
+        SYS_GENRE: genre,
+        ORDER: order,
+        label: label.replace(" Genre","")
+    })
+        .save()
+}
+
 module.exports = function(){
     Genre.findOne({}, (err, found) => {
         if (found) {
@@ -109,7 +120,7 @@ module.exports = function(){
                                 createGenre(humanEntity)
                                     .then(humanGenre => {
 
-                                        createEntity(humanGenre, "IGENETECH", 1, "iGeneTech " + humanGenre.label)
+                                        createEntity(humanGenre, "IGENETECH", 1, "Staff")
                                             .then(igenetechEntity => {
                                                 humanResourceClass = igenetechEntity
 
@@ -455,7 +466,7 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         // EXTRACT_ASSIGN//{{{
-                                        createEntity(domainGenre, "SAMPLE_EXTRACT", 1, "PW: Sample Extraction")
+                                        createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: Sample Extraction", 10)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -479,7 +490,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_RESULT//{{{
-                                        createEntity(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: Sample QC Result")
+                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: Sample QC Result", 20)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -565,7 +576,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_REVIEW//{{{
-                                        createEntity(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: Sample QC Review")
+                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: Sample QC Review", 30)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -681,7 +692,7 @@ module.exports = function(){
                                         //}}}
 
                                         // LIBRARY_RESULT//{{{
-                                        createEntity(domainGenre, "LIBRARY_RESULT", 1, "PW: Library Result")
+                                        createEntityWithOrder(domainGenre, "LIBRARY_RESULT", 1, "PW: Library Result", 40)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -785,7 +796,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LIBRARY_REVIEW//{{{
-                                        createEntity(domainGenre, "LIBRARY_REVIEW", 1, "PW: Library Review")
+                                        createEntityWithOrder(domainGenre, "LIBRARY_REVIEW", 1, "PW: Library Review", 50)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -807,13 +818,13 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_PREPARE//{{{
-                                        createEntity(domainGenre, "CAPTURE_PREPARE", 1, "PW: Capture Prepare")
+                                        createEntityWithOrder(domainGenre, "CAPTURE_PREPARE", 1, "PW: Capture Prepare", 60)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
                                                             label: '捕获编号',
-                                                            SYS_CODE: 'CAPTURE_CODE',
+                                                            SYS_CODE: 'SYS_CAPTURE_CODE',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
@@ -838,7 +849,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_RESULT//{{{
-                                        createEntity(domainGenre, "CAPTURE_RESULT", 1, "PW: Capture Result")
+                                        createEntityWithOrder(domainGenre, "CAPTURE_RESULT", 1, "PW: Capture Result", 70)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -863,13 +874,13 @@ module.exports = function(){
                                             })//}}}
 
                                         // LANE_PREPARE//{{{
-                                        createEntity(domainGenre, "LANE_PREPARE", 1, "PW: Pooling")
+                                        createEntityWithOrder(domainGenre, "LANE_PREPARE", 1, "PW: Pooling", 80)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
                                                             label: '混合文库编号',
-                                                            SYS_CODE: 'POOLING_CODE',
+                                                            SYS_CODE: 'SYS_LANE_CODE',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
@@ -949,13 +960,13 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_PREPARE//{{{
-                                        createEntity(domainGenre, "RUN_PREPARE", 1, "PW: Sequence Prepare")
+                                        createEntityWithOrder(domainGenre, "RUN_PREPARE", 1, "PW: Sequence Prepare", 90)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
                                                             label: '方案名称',
-                                                            SYS_CODE: 'RUN_CODE',
+                                                            SYS_CODE: 'SYS_RUN_CODE',
                                                             SYS_ORDER: 10,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
@@ -1002,7 +1013,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_RESULT//{{{
-                                        createEntity(domainGenre, "RUN_RESULT", 1, "PW: Sequence Result")
+                                        createEntityWithOrder(domainGenre, "RUN_RESULT", 1, "PW: Sequence Result", 100)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
