@@ -152,6 +152,7 @@ const parseError = function(err) {
             if (err.errors[errName].message) return err.errors[errName].message
         }
     } else {
+        console.error(err)
         return 'Unknown server errer'
     }
 }
