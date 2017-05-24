@@ -466,7 +466,7 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         // EXTRACT_ASSIGN//{{{
-                                        createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: Sample Extraction", 10)
+                                        createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -490,7 +490,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_RESULT//{{{
-                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: Sample QC Result", 20)
+                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: 样品提取结果", 20)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -576,7 +576,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // QC_REVIEW//{{{
-                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: Sample QC Review", 30)
+                                        createEntityWithOrder(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: 样品质检", 30)
                                             .then(classEntity => {
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
@@ -692,7 +692,7 @@ module.exports = function(){
                                         //}}}
 
                                         // LIBRARY_RESULT//{{{
-                                        createEntityWithOrder(domainGenre, "LIBRARY_RESULT", 1, "PW: Library Result", 40)
+                                        createEntityWithOrder(domainGenre, "LIBRARY_RESULT", 1, "PW: 文库制备", 40)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -796,7 +796,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // LIBRARY_REVIEW//{{{
-                                        createEntityWithOrder(domainGenre, "LIBRARY_REVIEW", 1, "PW: Library Review", 50)
+                                        createEntityWithOrder(domainGenre, "LIBRARY_REVIEW", 1, "PW: 文库制备结果审核", 50)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -818,7 +818,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_PREPARE//{{{
-                                        createEntityWithOrder(domainGenre, "CAPTURE_PREPARE", 1, "PW: Capture Prepare", 60)
+                                        createEntityWithOrder(domainGenre, "CAPTURE_PREPARE", 1, "PW: 文库捕获", 60)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -849,7 +849,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // CAPTURE_RESULT//{{{
-                                        createEntityWithOrder(domainGenre, "CAPTURE_RESULT", 1, "PW: Capture Result", 70)
+                                        createEntityWithOrder(domainGenre, "CAPTURE_RESULT", 1, "PW: 文库捕获结果", 70)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -960,7 +960,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_PREPARE//{{{
-                                        createEntityWithOrder(domainGenre, "RUN_PREPARE", 1, "PW: Sequence Prepare", 90)
+                                        createEntityWithOrder(domainGenre, "RUN_PREPARE", 1, "PW: 上机测序", 90)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
@@ -1013,7 +1013,7 @@ module.exports = function(){
                                             })//}}}
 
                                         // RUN_RESULT//{{{
-                                        createEntityWithOrder(domainGenre, "RUN_RESULT", 1, "PW: Sequence Result", 100)
+                                        createEntityWithOrder(domainGenre, "RUN_RESULT", 1, "PW: 测序结果", 100)
                                             .then((classEntity) => {
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
