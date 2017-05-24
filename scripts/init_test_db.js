@@ -1092,6 +1092,36 @@ module.exports = function(){
                                                             SYS_ORDER: 30,
                                                             SYS_TYPE: 'date',
                                                             SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'Panel编号',
+                                                            SYS_CODE: 'PANEL_CODE',
+                                                            SYS_ORDER: 40,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '数据量',
+                                                            SYS_CODE: 'DATASIZE',
+                                                            SYS_ORDER: 50,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '测序深度',
+                                                            SYS_CODE: 'SEQUENCING_DEPTH',
+                                                            SYS_ORDER: 60,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'Index编号',
+                                                            SYS_CODE: 'INDEX_CODE',
+                                                            SYS_ORDER: 70,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: 'Index序列(内部Index只填编号即可)',
+                                                            SYS_CODE: 'INDEX_SEQUENCE',
+                                                            SYS_ORDER: 80,
+                                                            SYS_TYPE: 'string',
+                                                            SYS_GENRE: classGenre.id})
 
                                                     }).catch((err) => {
                                                         console.log(err)
