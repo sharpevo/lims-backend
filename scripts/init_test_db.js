@@ -465,6 +465,28 @@ module.exports = function(){
                                 createGenre(domainEntity)
                                     .then((domainGenre) => {
 
+                                        createAttribute({
+                                            label: '工作中心名称',
+                                            SYS_CODE: 'label',
+                                            SYS_ORDER: 10,
+                                            SYS_TYPE: 'string',
+                                            SYS_GENRE: domainGenre.id
+                                        })
+                                        createAttribute({
+                                            label: 'Plugin: Index Indicator',
+                                            SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_INDICATOR',
+                                            SYS_ORDER: 20,
+                                            SYS_TYPE: 'boolean',
+                                            SYS_GENRE: domainGenre.id
+                                        })
+                                        createAttribute({
+                                            label: 'Plugin: Index Validator',
+                                            SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR',
+                                            SYS_ORDER: 30,
+                                            SYS_TYPE: 'boolean',
+                                            SYS_GENRE: domainGenre.id
+                                        })
+
                                         // EXTRACT_ASSIGN//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
                                             .then((classEntity) => {
