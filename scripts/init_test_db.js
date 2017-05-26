@@ -1094,13 +1094,13 @@ module.exports = function(){
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: 'Panel编号',
-                                                            SYS_CODE: 'PANEL_CODE',
+                                                            SYS_CODE: 'SYS_PANEL_CODE',
                                                             SYS_ORDER: 40,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '数据量',
-                                                            SYS_CODE: 'DATASIZE',
+                                                            SYS_CODE: 'SYS_DATA_SIZE',
                                                             SYS_ORDER: 50,
                                                             SYS_TYPE: 'number',
                                                             SYS_GENRE: classGenre.id})
@@ -1112,13 +1112,13 @@ module.exports = function(){
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: 'Index编号',
-                                                            SYS_CODE: 'INDEX_CODE',
+                                                            SYS_CODE: 'SYS_INDEX_CODE',
                                                             SYS_ORDER: 70,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: 'Index序列(内部Index只填编号即可)',
-                                                            SYS_CODE: 'INDEX_SEQUENCE',
+                                                            SYS_CODE: 'SYS_INDEX_SEQUENCE',
                                                             SYS_ORDER: 80,
                                                             SYS_TYPE: 'string',
                                                             SYS_GENRE: classGenre.id})
