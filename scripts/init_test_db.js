@@ -1180,7 +1180,7 @@ module.exports = function(){
                             })//}}}
 
 
-                        // ROUTING
+                        // ROUTING{{{
                         createEntity(genre, "ROUTING",0, "Routings")
                             .then((domainEntity) => {
                                 createGenre(domainEntity)
@@ -1366,8 +1366,9 @@ module.exports = function(){
                                     })
                             }).catch((err) => {
                                 console.log(err)
-                            })
+                            })//}}}
 
+                        //SALE
                         createEntity(genre, "SALE", 0, "Sales")
                             .then(saleEntity => {
 
