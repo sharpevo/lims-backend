@@ -80,7 +80,17 @@ module.exports = function(){
         let materialDomain = {}
 
         let humanResourceClass = {}
-        let productWorkcenterClass = {}
+            , productWorkcenterClass = {}
+            , pwExtractionAssign = {}
+            , pwExtractionResult = {}
+            , pwSampleQC = {}
+            , pwLibraryPrepare = {}
+            , pwLibraryReview = {}
+            , pwCapturePrepare = {}
+            , pwCaptureResult = {}
+            , pwPooling = {}
+            , pwSequencePrepare = {}
+            , pwSequenceResult = {}
 
         let shearingIns = {}
             , gunIns = {}
@@ -361,7 +371,7 @@ module.exports = function(){
                                 console.error(err)
                             })//}}}
 
-                        // BOM
+                        // BOM{{{
                         createEntity(genre, "BOM",0, "BoMs")
                             .then((domainEntity) => {
                                 createGenre(domainEntity)
@@ -456,7 +466,7 @@ module.exports = function(){
                                     })
                             }).catch((err) => {
                                 console.log(err)
-                            })
+                            })//}}}
 
                         // WORKCENTER
                         createEntity(genre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
@@ -490,6 +500,7 @@ module.exports = function(){
                                         // EXTRACT_ASSIGN//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
                                             .then((classEntity) => {
+                                                pwExtractionAssign = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
@@ -514,6 +525,7 @@ module.exports = function(){
                                         // QC_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: 样品提取结果", 20)
                                             .then(classEntity => {
+                                                pwExtractionResult = classEntity
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
                                                         createWorkcenterAttribute(
@@ -600,6 +612,7 @@ module.exports = function(){
                                         // QC_REVIEW//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: 样品质检", 30)
                                             .then(classEntity => {
+                                                pwSampleQC = classEntity
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
 
@@ -716,6 +729,7 @@ module.exports = function(){
                                         // LIBRARY_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "LIBRARY_RESULT", 1, "PW: 文库制备", 40)
                                             .then((classEntity) => {
+                                                pwLibraryPrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -820,6 +834,7 @@ module.exports = function(){
                                         // LIBRARY_REVIEW//{{{
                                         createEntityWithOrder(domainGenre, "LIBRARY_REVIEW", 1, "PW: 文库制备结果审核", 50)
                                             .then((classEntity) => {
+                                                pwLibraryReview = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -842,6 +857,7 @@ module.exports = function(){
                                         // CAPTURE_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "CAPTURE_PREPARE", 1, "PW: 文库捕获", 60)
                                             .then((classEntity) => {
+                                                pwCapturePrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -873,6 +889,7 @@ module.exports = function(){
                                         // CAPTURE_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "CAPTURE_RESULT", 1, "PW: 文库捕获结果", 70)
                                             .then((classEntity) => {
+                                                pwCaptureResult = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -898,6 +915,7 @@ module.exports = function(){
                                         // LANE_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "LANE_PREPARE", 1, "PW: Pooling", 80)
                                             .then((classEntity) => {
+                                                pwPooling = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -984,6 +1002,7 @@ module.exports = function(){
                                         // RUN_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "RUN_PREPARE", 1, "PW: 上机测序", 90)
                                             .then((classEntity) => {
+                                                pwSequencePrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -1037,6 +1056,7 @@ module.exports = function(){
                                         // RUN_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "RUN_RESULT", 1, "PW: 测序结果", 100)
                                             .then((classEntity) => {
+                                                pwSequenceResult = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -1172,38 +1192,6 @@ module.exports = function(){
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
-                                                        //createAttribute({
-                                                        //label: 'Routing Title',
-                                                        //SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_ORDER: 10,
-                                                        //SYS_TYPE: 'string',
-                                                        //SYS_IS_ENTITY_LABEL: true,
-                                                        //SYS_GENRE: classGenre.id})
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'SAMPLE_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Extraction and QC',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Library Preparation',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'RUN_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Sequencing',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
                                                         createAttribute({
                                                             label: 'Routing Title',
                                                             SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
@@ -1266,29 +1254,106 @@ module.exports = function(){
                                                                         //      Select the entity: Routing V1,
                                                                         //      Target Entity: Class
                                                                         //  Then create entity
-
+                                                                        return collectionGenre
+                                                                    }).then(collectionGenre => {
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'EXTRACTION_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_SOURCE: pwExtractionAssign.id,
+                                                                            SYS_DURATION: 3,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'EXTRACTION_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 20,
+                                                                            SYS_SOURCE: pwExtractionResult.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_SOURCE: pwSampleQC.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 40,
+                                                                            SYS_SOURCE: pwLibraryPrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'LIBRARY_REVIEW',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 50,
+                                                                            SYS_SOURCE: pwLibraryReview.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'CAPTURE_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 60,
+                                                                            SYS_SOURCE: pwCapturePrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'CAPTURE_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 70,
+                                                                            SYS_SOURCE: pwCaptureResult.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'POOLING',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 80,
+                                                                            SYS_SOURCE: pwPooling.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SEQUENCE_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: false,
+                                                                            SYS_ORDER: 90,
+                                                                            SYS_SOURCE: pwSequencePrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SEQUENCE_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: false,
+                                                                            SYS_ORDER: 100,
+                                                                            SYS_SOURCE: pwSequenceResult.id,
+                                                                            SYS_DURATION: 10,
+                                                                        }).save()
                                                                     }).catch(err => {
                                                                         console.log(err)
                                                                     })
+
                                                             }).catch(err => {
                                                                 console.log(err)
                                                             })
 
-
-                                                        //// PRODUCT ROUTING V1
-                                                        //createEntity(classGenre, "V1", 2, "V1 " + classGenre.label)
-                                                        //.then((collectionEntity) => {
-                                                        //createGenre(collectionEntity)
-                                                        //.then((collectionGenre) => {
-                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                        //}).catch((err) => {
-                                                        //console.log(err)
-                                                        //})
-
-                                                        //}).catch((err) => {
-                                                        //console.log(err)
-                                                        //})
 
                                                     }).catch((err) => {
                                                         console.log(err)
