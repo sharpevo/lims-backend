@@ -1254,7 +1254,98 @@ module.exports = function(){
                                                                         //      Select the entity: Routing V1,
                                                                         //      Target Entity: Class
                                                                         //  Then create entity
-
+                                                                        return collectionGenre
+                                                                    }).then(collectionGenre => {
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'EXTRACTION_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 10,
+                                                                            SYS_SOURCE: pwExtractionAssign.id,
+                                                                            SYS_DURATION: 3,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'EXTRACTION_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 20,
+                                                                            SYS_SOURCE: pwExtractionResult.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 30,
+                                                                            SYS_SOURCE: pwSampleQC.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 40,
+                                                                            SYS_SOURCE: pwLibraryPrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'LIBRARY_REVIEW',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 50,
+                                                                            SYS_SOURCE: pwLibraryReview.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'CAPTURE_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 60,
+                                                                            SYS_SOURCE: pwCapturePrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'CAPTURE_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 70,
+                                                                            SYS_SOURCE: pwCaptureResult.id,
+                                                                            SYS_DURATION: 2,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'POOLING',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: true,
+                                                                            SYS_ORDER: 80,
+                                                                            SYS_SOURCE: pwPooling.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SEQUENCE_PREPARE',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: false,
+                                                                            SYS_ORDER: 90,
+                                                                            SYS_SOURCE: pwSequencePrepare.id,
+                                                                            SYS_DURATION: 5,
+                                                                        }).save()
+                                                                        Entity({
+                                                                            SYS_IDENTIFIER: collectionGenre.SYS_IDENTIFIER + 'SEQUENCE_RESULT',
+                                                                            SYS_ENTITY_TYPE: 'object',
+                                                                            SYS_GENRE: collectionGenre.id,
+                                                                            SYS_CHECKED: false,
+                                                                            SYS_ORDER: 100,
+                                                                            SYS_SOURCE: pwSequenceResult.id,
+                                                                            SYS_DURATION: 10,
+                                                                        }).save()
                                                                     }).catch(err => {
                                                                         console.log(err)
                                                                     })
