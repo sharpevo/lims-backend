@@ -63,7 +63,7 @@ function createEntityWithOrder(genre, identifier, typeIndex, label, order){
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
         SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
         SYS_GENRE: genre,
-        ORDER: order,
+        SYS_ORDER: order,
         label: label.replace(" Genre","")
     })
         .save()
@@ -476,23 +476,30 @@ module.exports = function(){
                                     .then((domainGenre) => {
 
                                         createAttribute({
+                                            label: 'Order',
+                                            SYS_CODE: 'SYS_ORDER',
+                                            SYS_ORDER: 10,
+                                            SYS_TYPE: 'number',
+                                            SYS_GENRE: domainGenre.id
+                                        })
+                                        createAttribute({
                                             label: '工作中心名称',
                                             SYS_CODE: 'label',
-                                            SYS_ORDER: 10,
+                                            SYS_ORDER: 20,
                                             SYS_TYPE: 'string',
                                             SYS_GENRE: domainGenre.id
                                         })
                                         createAttribute({
                                             label: 'Plugin: Index Indicator',
                                             SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_INDICATOR',
-                                            SYS_ORDER: 20,
+                                            SYS_ORDER: 30,
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
                                         createAttribute({
                                             label: 'Plugin: Index Validator',
                                             SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR',
-                                            SYS_ORDER: 30,
+                                            SYS_ORDER: 40,
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
