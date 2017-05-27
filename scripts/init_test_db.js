@@ -1192,38 +1192,6 @@ module.exports = function(){
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
-                                                        //createAttribute({
-                                                        //label: 'Routing Title',
-                                                        //SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_ORDER: 10,
-                                                        //SYS_TYPE: 'string',
-                                                        //SYS_IS_ENTITY_LABEL: true,
-                                                        //SYS_GENRE: classGenre.id})
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'SAMPLE_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Extraction and QC',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Library Preparation',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
-                                                        //Entity({
-                                                        //SYS_IDENTIFIER: classGenre.SYS_IDENTIFIER + 'RUN_PREPARATION',
-                                                        //SYS_ENTITY_TYPE: 'collection',
-                                                        //PRODUCT_ROUTING_ATTR_TITLE: 'Sequencing',
-                                                        //SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
-                                                        //SYS_GENRE: classGenre.id,
-                                                        //}).save()
-
                                                         createAttribute({
                                                             label: 'Routing Title',
                                                             SYS_CODE: 'PRODUCT_ROUTING_ATTR_TITLE',
@@ -1290,25 +1258,11 @@ module.exports = function(){
                                                                     }).catch(err => {
                                                                         console.log(err)
                                                                     })
+
                                                             }).catch(err => {
                                                                 console.log(err)
                                                             })
 
-
-                                                        //// PRODUCT ROUTING V1
-                                                        //createEntity(classGenre, "V1", 2, "V1 " + classGenre.label)
-                                                        //.then((collectionEntity) => {
-                                                        //createGenre(collectionEntity)
-                                                        //.then((collectionGenre) => {
-                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20170303", 3, "订单20170303")
-                                                        ////createEntity(collectionGenre.SYS_IDENTIFIER + "20160708", 3, "订单20170708")
-                                                        //}).catch((err) => {
-                                                        //console.log(err)
-                                                        //})
-
-                                                        //}).catch((err) => {
-                                                        //console.log(err)
-                                                        //})
 
                                                     }).catch((err) => {
                                                         console.log(err)
