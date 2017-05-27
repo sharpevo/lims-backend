@@ -80,7 +80,17 @@ module.exports = function(){
         let materialDomain = {}
 
         let humanResourceClass = {}
-        let productWorkcenterClass = {}
+            , productWorkcenterClass = {}
+            , pwExtractionAssign = {}
+            , pwExtractionResult = {}
+            , pwSampleQC = {}
+            , pwLibraryPrepare = {}
+            , pwLibraryReview = {}
+            , pwCapturePrepare = {}
+            , pwCaptureResult = {}
+            , pwPooling = {}
+            , pwSequencePrepare = {}
+            , pwSequenceResult = {}
 
         let shearingIns = {}
             , gunIns = {}
@@ -361,7 +371,7 @@ module.exports = function(){
                                 console.error(err)
                             })//}}}
 
-                        // BOM
+                        // BOM{{{
                         createEntity(genre, "BOM",0, "BoMs")
                             .then((domainEntity) => {
                                 createGenre(domainEntity)
@@ -456,7 +466,7 @@ module.exports = function(){
                                     })
                             }).catch((err) => {
                                 console.log(err)
-                            })
+                            })//}}}
 
                         // WORKCENTER
                         createEntity(genre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
@@ -490,6 +500,7 @@ module.exports = function(){
                                         // EXTRACT_ASSIGN//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
                                             .then((classEntity) => {
+                                                pwExtractionAssign = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
 
@@ -514,6 +525,7 @@ module.exports = function(){
                                         // QC_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_QC_RESULT", 1, "PW: 样品提取结果", 20)
                                             .then(classEntity => {
+                                                pwExtractionResult = classEntity
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
                                                         createWorkcenterAttribute(
@@ -600,6 +612,7 @@ module.exports = function(){
                                         // QC_REVIEW//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_QC_REVIEW", 1, "PW: 样品质检", 30)
                                             .then(classEntity => {
+                                                pwSampleQC = classEntity
                                                 createGenre(classEntity)
                                                     .then(classGenre => {
 
@@ -716,6 +729,7 @@ module.exports = function(){
                                         // LIBRARY_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "LIBRARY_RESULT", 1, "PW: 文库制备", 40)
                                             .then((classEntity) => {
+                                                pwLibraryPrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -820,6 +834,7 @@ module.exports = function(){
                                         // LIBRARY_REVIEW//{{{
                                         createEntityWithOrder(domainGenre, "LIBRARY_REVIEW", 1, "PW: 文库制备结果审核", 50)
                                             .then((classEntity) => {
+                                                pwLibraryReview = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -842,6 +857,7 @@ module.exports = function(){
                                         // CAPTURE_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "CAPTURE_PREPARE", 1, "PW: 文库捕获", 60)
                                             .then((classEntity) => {
+                                                pwCapturePrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -873,6 +889,7 @@ module.exports = function(){
                                         // CAPTURE_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "CAPTURE_RESULT", 1, "PW: 文库捕获结果", 70)
                                             .then((classEntity) => {
+                                                pwCaptureResult = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -898,6 +915,7 @@ module.exports = function(){
                                         // LANE_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "LANE_PREPARE", 1, "PW: Pooling", 80)
                                             .then((classEntity) => {
+                                                pwPooling = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -984,6 +1002,7 @@ module.exports = function(){
                                         // RUN_PREPARE//{{{
                                         createEntityWithOrder(domainGenre, "RUN_PREPARE", 1, "PW: 上机测序", 90)
                                             .then((classEntity) => {
+                                                pwSequencePrepare = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
@@ -1037,6 +1056,7 @@ module.exports = function(){
                                         // RUN_RESULT//{{{
                                         createEntityWithOrder(domainGenre, "RUN_RESULT", 1, "PW: 测序结果", 100)
                                             .then((classEntity) => {
+                                                pwSequenceResult = classEntity
                                                 createGenre(classEntity)
                                                     .then((classGenre) => {
                                                         createAttribute({
