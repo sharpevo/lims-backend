@@ -490,16 +490,23 @@ module.exports = function(){
                                             SYS_GENRE: domainGenre.id
                                         })
                                         createAttribute({
+                                            label: 'Plugin: Panel Indicator',
+                                            SYS_CODE: 'SYS_WORKCENTER_PLUGIN_PANEL_INDICATOR',
+                                            SYS_ORDER: 30,
+                                            SYS_TYPE: 'boolean',
+                                            SYS_GENRE: domainGenre.id
+                                        })
+                                        createAttribute({
                                             label: 'Plugin: Index Indicator',
                                             SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_INDICATOR',
-                                            SYS_ORDER: 30,
+                                            SYS_ORDER: 40,
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
                                         createAttribute({
                                             label: 'Plugin: Index Validator',
                                             SYS_CODE: 'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR',
-                                            SYS_ORDER: 40,
+                                            SYS_ORDER: 50,
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
