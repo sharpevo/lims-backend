@@ -137,10 +137,28 @@ exports.JSONToExcel = function(req, res, next){
                                     'mySheet': Object.assign({}, output, { '!ref': ref })
                                 }
                             }
-                            XLSX.writeFile(wb, `sampleList-${req.query.workcenter}.xlsx`)
+
+                            let timestamp = getTimestamp()
+                            let tempfile = `tempfolder/${timestamp}.${req.query.workcenter}.xlsx`
+                            XLSX.writeFile(wb, tempfile)
                             //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                             //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                            res.download(`sampleList-${req.query.workcenter}.xlsx`)
+                            res.download(tempfile)
+
+                            //let stream = XLSX.stream.to_csv(wb)//.pipe(res)
+                            //fs.createWriteStream('tttt.xlsx')
+                            //res.end()
+                            //var output_file_name = "out.csv";
+                            //var stream = XLSX.stream.to_csv(wb);
+                            //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                            //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
+                            //console.log(stream)
+                            //let file = fs.createWriteStream(output_file_name)
+                            //res.pipe(wb)
+                            //stream.pipe(fs.createWriteStream(output_file_name))
+                            //res.download(output_file_name)
+                            //stream.pipe(res)
+                            //res.send(stream)
                         }
                     )
 
@@ -150,4 +168,31 @@ exports.JSONToExcel = function(req, res, next){
         }
     )
 
+}
+
+function getTimestamp() {
+    let str = ""
+
+    let currentTime = new Date()
+    let year = currentTime.getFullYear()
+    let month = currentTime.getMonth() + 1
+    let day = currentTime.getDate()
+    let hours = currentTime.getHours()
+    let minutes = currentTime.getMinutes()
+    let seconds = currentTime.getSeconds()
+
+    if (month < 10) {
+        month = "0" + month
+    }
+    if (day < 10) {
+        day = "0" + day
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds
+    }
+    str += year + month + day + '_' + hours + minutes + seconds
+    return str
 }
