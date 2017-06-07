@@ -75,7 +75,6 @@ exports.excelToJSON = function(req, res, next){
 
 exports.JSONToExcel = function(req, res, next){
     if (!req.query.ids){
-        console.log('invalid ids')
         res.status(400).json('invalid arguments')
         return
     }
@@ -138,7 +137,10 @@ exports.JSONToExcel = function(req, res, next){
                                     'mySheet': Object.assign({}, output, { '!ref': ref })
                                 }
                             }
-                            XLSX.writeFile(wb, 'sampleexport.xlsx')
+                            XLSX.writeFile(wb, `sampleList-${req.query.workcenter}.xlsx`)
+                            //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                            //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
+                            res.download(`sampleList-${req.query.workcenter}.xlsx`)
                         }
                     )
 
