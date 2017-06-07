@@ -2,11 +2,11 @@ const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 
-var formidable = require('formidable')
-var XLSX = require('xlsx')
+const formidable = require('formidable')
+const XLSX = require('xlsx')
 
 exports.excelToJSON = function(req, res, next){
-    var form = new formidable.IncomingForm()
+    let form = new formidable.IncomingForm()
 
     form.parse(req)
 
@@ -14,34 +14,34 @@ exports.excelToJSON = function(req, res, next){
         console.log(name)
         console.log(file.path)
 
-        var workbook = XLSX.readFile(file.path)
-        //var workbook = XLSX.read(file, {type:'binary'})
-        var sheet_name_list = workbook.SheetNames
-        var jsonObject = []
+        let workbook = XLSX.readFile(file.path)
+        //let workbook = XLSX.read(file, {type:'binary'})
+        let sheet_name_list = workbook.SheetNames
+        let jsonObject = []
         sheet_name_list.forEach(function(y) {
-            var worksheet = workbook.Sheets[y]
-            var headers = {}
-            var data = []
+            let worksheet = workbook.Sheets[y]
+            let headers = {}
+            let data = []
             for(z in worksheet) {
                 if(z[0] === '!') continue
                 //parse out the column, row, and value
-                var tt = 0
-                for (var i = 0; i < z.length; i++) {
+                let tt = 0
+                for (let i = 0; i < z.length; i++) {
                     if (!isNaN(z[i])) {
                         tt = i
                         break
                     }
                 }
 
-                var col = z.substring(0,tt)
-                var row = parseInt(z.substring(tt))
-                var value = worksheet[z].v
+                let col = z.substring(0,tt)
+                let row = parseInt(z.substring(tt))
+                let value = worksheet[z].v
                 //console.log(col)
                 //console.log(row)
                 //console.log(value)
 
                 //store header names
-                if(row == 2 && value) {
+                if(row == 1 && value) {
                     headers[col] = value
                     continue
                 }
