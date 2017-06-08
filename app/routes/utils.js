@@ -4,4 +4,5 @@ module.exports = function(app){
         .route('/excel')
         .get(utils.JSONToExcel)
         .post(utils.excelToJSON)
+        .put(utils.updateInBatch)
 }
