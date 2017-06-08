@@ -170,6 +170,78 @@ exports.JSONToExcel = function(req, res, next){
 
 }
 
+exports.updateInBatch = function(req, res, next){
+    //console.log(req.body)
+    let entityList = req.body
+    let errMsg = {}
+
+    // Get attributes
+
+    // TODO: Validate attributes
+
+    // update
+    entityList.forEach(entityObject => {
+        if (!entityObject['IDENTIFIER']){
+            errMsg['identifier'] = 'Invalid identifier'
+        }
+        Entity.findOne(
+            {_id: entityObject['IDENTIFIER']},
+            (err, entity) => {
+                if (!entity){
+                    console.log('ttt')
+                    errMsg[entityObject['IDENTIFIER']] = 'Invalid sample'
+                    return
+                }
+                let obj = {}
+                let isUpdated = false
+                Attribute.find(
+                    {'SYS_GENRE': entity.SYS_GENRE},
+                    '',
+                    (err, attributes) => {
+                        let attrMap = {}
+                        attributes.forEach(attribute => {
+                            let attr = JSON.parse(JSON.stringify(attribute))
+                            attrMap[attr[attr['SYS_LABEL']]] = attr['SYS_CODE']
+                        })
+
+                        Object.keys(entityObject).forEach(key => {
+                            if (attrMap[key]){
+                                isUpdated = true
+                                obj[attrMap[key]] = entityObject[key]
+                            }
+                        })
+
+                        if (isUpdated){
+                            console.log(obj)
+                            Entity.findByIdAndUpdate(
+                                entity.id,
+                                obj,
+                                {'new': true},
+                                (err, entity) => {
+                                    if (err) {
+                                        errMsg[entity.id] = parseError(err)
+                                    }
+                                }
+                            )
+                        }
+
+
+                    }
+                )
+
+            })
+
+    })
+
+    console.log(errMsg)
+    if (Object.keys(errMsg).length > 0) {
+        res.status(400).json(JSON.stringify(errMsg))
+    } else {
+        res.status(200).json('success')
+    }
+
+}
+
 function getTimestamp() {
     let str = ""
 
@@ -195,4 +267,15 @@ function getTimestamp() {
     }
     str += year + month + day + '_' + hours + minutes + seconds
     return str
+}
+
+const parseError = function(err) {
+    if (err.errors) {
+        for (const errName in err.errors){
+            if (err.errors[errName].message) return err.errors[errName].message
+        }
+    } else {
+        console.error(err)
+        return 'Unknown server errer'
+    }
 }
