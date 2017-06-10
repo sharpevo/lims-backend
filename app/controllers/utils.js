@@ -171,7 +171,6 @@ exports.JSONToExcel = function(req, res, next){
 }
 
 exports.updateInBatch = function(req, res, next){
-    //console.log(req.body)
     let entityList = req.body
     let errMsg = {}
 
@@ -188,7 +187,6 @@ exports.updateInBatch = function(req, res, next){
             {_id: entityObject['IDENTIFIER']},
             (err, entity) => {
                 if (!entity){
-                    console.log('ttt')
                     errMsg[entityObject['IDENTIFIER']] = 'Invalid sample'
                     return
                 }
@@ -212,7 +210,6 @@ exports.updateInBatch = function(req, res, next){
                         })
 
                         if (isUpdated){
-                            console.log(obj)
                             Entity.findByIdAndUpdate(
                                 entity.id,
                                 obj,
@@ -233,7 +230,6 @@ exports.updateInBatch = function(req, res, next){
 
     })
 
-    console.log(errMsg)
     if (Object.keys(errMsg).length > 0) {
         res.status(400).json(JSON.stringify(errMsg))
     } else {
