@@ -49,8 +49,28 @@ exports.getEntityById = function(req, res, next, id) {
                 })
                 // without next method, IMO
             } else {
-                req.entity = entity
-                next() // important
+
+                Attribute.find(
+                    {"SYS_GENRE": entity.SYS_GENRE},
+                    '',
+                    {
+                        sort:{
+                            SYS_ORDER: 1
+                        }
+                    },
+                    (err, attributes) => {
+                        var entityObj = entity.toObject()
+                        entityObj['SYS_SCHEMA'] = []
+                        attributes.forEach(attr => {
+                            var attrObj = attr.toObject()
+                            entityObj['SYS_SCHEMA'].push({
+                                "SYS_CODE": attrObj['SYS_CODE'],
+                                "SYS_LABEL": attrObj[attrObj['SYS_LABEL']]
+                            })
+                        })
+                        req.entity = entityObj
+                        next() // important
+                    })
             }
         }
     )
