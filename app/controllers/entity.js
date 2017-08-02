@@ -65,6 +65,7 @@ exports.getEntityById = function(req, res, next, id) {
                             var attrObj = attr.toObject()
                             entityObj['SYS_SCHEMA'].push({
                                 "SYS_CODE": attrObj['SYS_CODE'],
+                                "SYS_TYPE": attrObj['SYS_TYPE'],
                                 "SYS_LABEL": attrObj[attrObj['SYS_LABEL']]
                             })
                         })
