@@ -6,6 +6,10 @@ const Utils = require('../utils/controller')
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
     // rather than setter modifier
+    if (!entity.SYS_IDENTIFIER){
+        console.log(entity.SYS_IDENTIFIER)
+        return res.status(400).json("Invalid SYS_IDENTIFIER")
+    }
     entity.SYS_GENRE_IDENTIFIER = entity.SYS_IDENTIFIER.substr(0, entity.SYS_IDENTIFIER.lastIndexOf("/")+1)
     entity.save((err) => {
         if (err) {

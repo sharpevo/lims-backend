@@ -510,6 +510,13 @@ module.exports = function(){
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
+                                        createAttribute({
+                                            label: 'Plugin: Excel Processor',
+                                            SYS_CODE: 'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR',
+                                            SYS_ORDER: 60,
+                                            SYS_TYPE: 'boolean',
+                                            SYS_GENRE: domainGenre.id
+                                        })
 
                                         // EXTRACT_ASSIGN//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
