@@ -69,7 +69,7 @@ exports.getEntityById = function(req, res, next, id) {
                                 "SYS_LABEL": attrObj[attrObj['SYS_LABEL']]
                             })
                         })
-                        req.entity = entityObj
+                        req.entity = Entity.hydrate(entityObj)
                         next() // important
                     })
             }
