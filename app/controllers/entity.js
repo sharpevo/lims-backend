@@ -49,6 +49,10 @@ exports.getEntityById = function(req, res, next, id) {
                 })
                 // without next method, IMO
             } else {
+                if (!entity){
+                    res.status(400).json("Invalid id")
+                    return
+                }
 
                 Attribute.find(
                     {"SYS_GENRE": entity.SYS_GENRE},
