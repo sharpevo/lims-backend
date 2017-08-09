@@ -2,6 +2,7 @@ const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 const Utils = require('../utils/controller')
+var async = require('async')
 
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
@@ -31,8 +32,48 @@ exports.list = function(req, res, next){
                     message: parseError(err)
                 })
             } else {
-                res.status(200).json(entities)
+                let calls = []
+                entities.forEach(entity => {
+                    calls.push(callback =>{
+                        addEntitySchema(entity, entityObj => {
+                            callback(null, entityObj)
+                        })
+                    })
+                })
+                async.parallel(calls, (err, results) => {
+                    if (err) {
+                        return res.status(400).send({
+                            message:err
+                        })
+                    }
+                    res.status(200).json(results)
+                })
             }
+        })
+}
+
+addEntitySchema = function(entity, callback){
+    console.log(entity.SYS_GENRE)
+    Attribute.find(
+        {"SYS_GENRE": entity.SYS_GENRE},
+        '',
+        {
+            sort:{
+                SYS_ORDER: 1
+            }
+        },
+        (err, attributes) => {
+            var entityObj = entity.toObject()
+            entityObj['SYS_SCHEMA'] = []
+            attributes.forEach(attr => {
+                var attrObj = attr.toObject()
+                entityObj['SYS_SCHEMA'].push({
+                    "SYS_CODE": attrObj['SYS_CODE'],
+                    "SYS_TYPE": attrObj['SYS_TYPE'],
+                    "SYS_LABEL": attrObj[attrObj['SYS_LABEL']]
+                })
+            })
+            callback(entityObj)
         })
 
 }
