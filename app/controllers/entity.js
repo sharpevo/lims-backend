@@ -2,7 +2,8 @@ const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 const Utils = require('../utils/controller')
-var async = require('async')
+const async = require('async')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
@@ -86,6 +87,12 @@ addEntitySchema = function(entity, callback){
 // Actions with ID specified
 
 exports.getEntityById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Entity.findOne(
         {_id: id},
         (err, entity) => {
