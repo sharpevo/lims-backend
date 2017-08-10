@@ -65,6 +65,11 @@ addEntitySchema = function(entity, callback){
         (err, attributes) => {
             var entityObj = entity.toObject()
             entityObj['SYS_SCHEMA'] = []
+
+            // assign id before the attribtues loop
+            // for entities without any attributes
+            entityObj['id'] = entityObj['_id']
+
             attributes.forEach(attr => {
                 var attrObj = attr.toObject()
                 entityObj['SYS_SCHEMA'].push({
