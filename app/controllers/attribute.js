@@ -34,6 +34,12 @@ exports.list = function(req, res, next){
 // Actions with ID specified
 
 exports.getAttributeById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Attribute.findOne(
         {_id: id},
         (err, attribute) => {
