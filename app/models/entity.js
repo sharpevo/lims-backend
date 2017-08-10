@@ -155,4 +155,11 @@ EntitySchema.set(
     }
 )
 
+EntitySchema.set(
+    'toObject',
+    {
+        getters: true,
+        virtuals: true
+    }
+)
 mongoose.model('Entity', EntitySchema)
