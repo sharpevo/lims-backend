@@ -1,6 +1,7 @@
 const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Utils = require('../utils/controller')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     let attribute = new Attribute(req.body) // perfect

@@ -2,6 +2,7 @@ const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 const Attribute = require('mongoose').model('Attribute')
 const Utils = require('../utils/controller')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     const genre = new Genre(req.body)
