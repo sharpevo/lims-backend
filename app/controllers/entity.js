@@ -204,7 +204,22 @@ exports.entity = function (req, res, next){
                     message: parseError(err)
                 })
             } else {
-                res.status(200).json(entities)
+                let calls = []
+                entities.forEach(entity => {
+                    calls.push(callback =>{
+                        addEntitySchema(entity, entityObj => {
+                            callback(null, entityObj)
+                        })
+                    })
+                })
+                async.parallel(calls, (err, results) => {
+                    if (err) {
+                        return res.status(400).send({
+                            message:err
+                        })
+                    }
+                    res.status(200).json(results)
+                })
             }
         }
     )
