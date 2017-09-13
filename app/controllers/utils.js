@@ -89,82 +89,100 @@ exports.JSONToExcel = function(req, res, next){
                 res.status(400).json('invalid id')
                 return
             }
-            Attribute.find(
-                {'SYS_GENRE': entity.SYS_GENRE},
-                '',
-                {
-                    sort:{
-                        SYS_ORDER: 1
-                    }
-                },
-                (err, attributes) => {
-                    let headers = []
-                    let fields = []
-                    attributes.forEach(attribute => {
-                        let attr = JSON.parse(JSON.stringify(attribute))
-                        headers.push(attr[attr['SYS_LABEL']])
-                        fields.push(attr['SYS_CODE'])
-                    })
-                    headers.push('IDENTIFIER')
-                    fields.push('id')
 
-                    let data = []
-                    Entity.find(
-                        {_id: {$in: ids}},
-                        (err, entities) => {
-                            entities.forEach(entity => {
-                                let e = JSON.parse(JSON.stringify(entity))
-                                let object = {}
-                                fields.forEach(key => {
-                                    object[key] = e[key]?e[key]:''
-                                })
-                                data.push(object)
+            Entity.findOne(
+                {_id: req.query.workcenter},
+                (err, entity) => {
+                    if (entity){
+                        Genre.findOne(
+                            {"SYS_ENTITY": entity._id},
+                            (err, genre) => {
+
+                                Attribute.find(
+                                    {'SYS_GENRE': genre._id},
+                                    '',
+                                    {
+                                        sort:{
+                                            SYS_ORDER: 1
+                                        }
+                                    },
+                                    (err, attributes) => {
+                                        let headers = []
+                                        let fields = []
+                                        attributes.forEach(attribute => {
+                                            let attr = JSON.parse(JSON.stringify(attribute))
+                                            headers.push(attr[attr['SYS_LABEL']])
+                                            fields.push(attr['SYS_CODE'])
+                                        })
+                                        headers.push('IDENTIFIER')
+                                        fields.push('id')
+
+                                        let data = []
+                                        Entity.find(
+                                            {_id: {$in: ids}},
+                                            (err, entities) => {
+                                                entities.forEach(entity => {
+                                                    let e = JSON.parse(JSON.stringify(entity))
+                                                    let object = {}
+                                                    fields.forEach(key => {
+                                                        object[key] = e[key]?e[key]:''
+                                                    })
+                                                    data.push(object)
+                                                })
+
+                                                let _headers = headers
+                                                    .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                                let _data = data
+                                                    .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+                                                    .reduce((prev, next) => prev.concat(next))
+                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                                let output = Object.assign({}, _headers, _data)
+                                                let outputPos = Object.keys(output)
+                                                let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+                                                let wb = {
+                                                    SheetNames: ['mySheet'],
+                                                    Sheets: {
+                                                        'mySheet': Object.assign({}, output, { '!ref': ref })
+                                                    }
+                                                }
+
+                                                let timestamp = getTimestamp()
+                                                let tempfile = `tempfolder/${timestamp}.${req.query.workcenter}.xlsx`
+                                                XLSX.writeFile(wb, tempfile)
+                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
+                                                res.download(tempfile)
+
+                                                //let stream = XLSX.stream.to_csv(wb)//.pipe(res)
+                                                //fs.createWriteStream('tttt.xlsx')
+                                                //res.end()
+                                                //var output_file_name = "out.csv";
+                                                //var stream = XLSX.stream.to_csv(wb);
+                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
+                                                //console.log(stream)
+                                                //let file = fs.createWriteStream(output_file_name)
+                                                //res.pipe(wb)
+                                                //stream.pipe(fs.createWriteStream(output_file_name))
+                                                //res.download(output_file_name)
+                                                //stream.pipe(res)
+                                                //res.send(stream)
+                                            })
+
+
+                                    }
+                                )
                             })
+                    } else {
 
-                            let _headers = headers
-                                .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                            let _data = data
-                                .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                .reduce((prev, next) => prev.concat(next))
-                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                            let output = Object.assign({}, _headers, _data)
-                            let outputPos = Object.keys(output)
-                            let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
-                            let wb = {
-                                SheetNames: ['mySheet'],
-                                Sheets: {
-                                    'mySheet': Object.assign({}, output, { '!ref': ref })
-                                }
-                            }
-
-                            let timestamp = getTimestamp()
-                            let tempfile = `tempfolder/${timestamp}.${req.query.workcenter}.xlsx`
-                            XLSX.writeFile(wb, tempfile)
-                            //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                            //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                            res.download(tempfile)
-
-                            //let stream = XLSX.stream.to_csv(wb)//.pipe(res)
-                            //fs.createWriteStream('tttt.xlsx')
-                            //res.end()
-                            //var output_file_name = "out.csv";
-                            //var stream = XLSX.stream.to_csv(wb);
-                            //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                            //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                            //console.log(stream)
-                            //let file = fs.createWriteStream(output_file_name)
-                            //res.pipe(wb)
-                            //stream.pipe(fs.createWriteStream(output_file_name))
-                            //res.download(output_file_name)
-                            //stream.pipe(res)
-                            //res.send(stream)
-                        }
-                    )
+                        res.status(400).json('invalid workcenter id: '+req.query.workcenter)
+                        return
+                    }
+                })
 
 
-                }
-            )
+
         }
     )
 
@@ -221,7 +239,6 @@ exports.updateInBatch = function(req, res, next){
                                 }
                             )
                         }
-
 
                     }
                 )
