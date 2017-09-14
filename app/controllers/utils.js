@@ -111,8 +111,14 @@ exports.JSONToExcel = function(req, res, next){
                                         let fields = []
                                         attributes.forEach(attribute => {
                                             let attr = JSON.parse(JSON.stringify(attribute))
-                                            headers.push(attr[attr['SYS_LABEL']])
-                                            fields.push(attr['SYS_CODE'])
+
+                                            // Export non-entity attributes or refered entities
+                                            // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
+                                            if (attr.SYS_TYPE != 'entity' || attr.SYS_TYPE_ENTITY_REF){ // Never export BoM or Routing
+                                                console.log("export", attr.SYS_CODE, attr.SYS_TYPE_ENTITY_REF)
+                                                headers.push(attr[attr['SYS_LABEL']])
+                                                fields.push(attr['SYS_CODE'])
+                                            }
                                         })
                                         headers.push('IDENTIFIER')
                                         fields.push('id')
