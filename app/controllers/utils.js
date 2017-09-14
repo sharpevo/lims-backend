@@ -109,19 +109,21 @@ exports.JSONToExcel = function(req, res, next){
                                     (err, attributes) => {
                                         let headers = []
                                         let fields = []
+                                        let types = []
                                         attributes.forEach(attribute => {
                                             let attr = JSON.parse(JSON.stringify(attribute))
 
                                             // Export non-entity attributes or refered entities
                                             // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
                                             if (attr.SYS_TYPE != 'entity' || attr.SYS_TYPE_ENTITY_REF){ // Never export BoM or Routing
-                                                console.log("export", attr.SYS_CODE, attr.SYS_TYPE_ENTITY_REF)
                                                 headers.push(attr[attr['SYS_LABEL']])
                                                 fields.push(attr['SYS_CODE'])
+                                                types.push(attr['SYS_TYPE'])
                                             }
                                         })
                                         headers.push('IDENTIFIER')
                                         fields.push('id')
+                                        types.push('string')
 
                                         let data = []
                                         Entity.find(
@@ -130,7 +132,21 @@ exports.JSONToExcel = function(req, res, next){
                                                 entities.forEach(entity => {
                                                     let e = JSON.parse(JSON.stringify(entity))
                                                     let object = {}
-                                                    fields.forEach(key => {
+                                                    fields.forEach((key, index) => {
+
+                                                        // Export SYS_LABEL rather id
+                                                        if (types[index] == 'entity'){
+
+                                                            // TODO: async
+                                                            Entity.findOne(
+                                                                {_id: e[key]},
+                                                                (err, _entityAttr) => {
+                                                                    let entityAttr = JSON.parse(JSON.stringify(_entityAttr))
+                                                                    object[key] = entityAttr[entityAttr['SYS_LABEL']]
+                                                                })
+
+                                                            //} else {
+                                                        }
                                                         object[key] = e[key]?e[key]:''
                                                     })
                                                     data.push(object)
