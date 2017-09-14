@@ -517,6 +517,13 @@ module.exports = function(){
                                             SYS_TYPE: 'boolean',
                                             SYS_GENRE: domainGenre.id
                                         })
+                                        createAttribute({
+                                            label: 'Plugin: Auxiliary Attribute Manager',
+                                            SYS_CODE: 'SYS_WORKCENTER_PLUGIN_ATTRIBUTE_INTRODUCER',
+                                            SYS_ORDER: 70,
+                                            SYS_TYPE: 'boolean',
+                                            SYS_GENRE: domainGenre.id
+                                        })
 
                                         // EXTRACT_ASSIGN//{{{
                                         createEntityWithOrder(domainGenre, "SAMPLE_EXTRACT", 1, "PW: 样品提取", 10)
