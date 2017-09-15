@@ -22,6 +22,7 @@ exports.excelToJSON = function(req, res, next){
             let worksheet = workbook.Sheets[y]
             let headers = {}
             let data = []
+            let auxiliaryCol = ""
             for(z in worksheet) {
                 if(z[0] === '!') continue
                 //parse out the column, row, and value
@@ -41,13 +42,21 @@ exports.excelToJSON = function(req, res, next){
                 //console.log(value)
 
                 //store header names
-                if(row == 1 && value) {
+                // Note that string comparision of js is lexicographically.
+                // i.e., "A" < "B"
+                if(row == 1 && value &&
+                    (!auxiliaryCol || col <= auxiliaryCol)) {
                     headers[col] = value
+                    if (value.startsWith("IDENTIFIER")){
+                        auxiliaryCol = col
+                    }
                     continue
                 }
 
                 if(!data[row]) data[row]={}
-                data[row][headers[col]] = value
+                if (!auxiliaryCol || col <= auxiliaryCol){
+                    data[row][headers[col]] = value
+                }
             }
             //drop those first two rows which are empty
             data.shift()
@@ -163,9 +172,9 @@ exports.JSONToExcel = function(req, res, next){
                                                 let outputPos = Object.keys(output)
                                                 let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
                                                 let wb = {
-                                                    SheetNames: ['mySheet'],
+                                                    SheetNames: ['samples'],
                                                     Sheets: {
-                                                        'mySheet': Object.assign({}, output, { '!ref': ref })
+                                                        'samples': Object.assign({}, output, { '!ref': ref })
                                                     }
                                                 }
 
