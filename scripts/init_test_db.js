@@ -769,13 +769,13 @@ module.exports = function(){
                                                         createAttribute({
                                                             label: '建库开始时间',
                                                             SYS_CODE: 'LIBRARY_PREPARE_START_DATE',
-                                                            SYS_ORDER: 30,
+                                                            SYS_ORDER: 20,
                                                             SYS_TYPE: 'date',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '建库结束时间',
                                                             SYS_CODE: 'LIBRARY_PREPARE_END_DATE',
-                                                            SYS_ORDER: 40,
+                                                            SYS_ORDER: 30,
                                                             SYS_TYPE: 'date',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
@@ -787,13 +787,13 @@ module.exports = function(){
                                                         createAttribute({
                                                             label: '文库切胶长度',
                                                             SYS_CODE: 'LIBRARY_GEL_SIZE',
-                                                            SYS_ORDER: 40,
+                                                            SYS_ORDER: 50,
                                                             SYS_TYPE: 'number',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
                                                             label: '文库片段大小',
                                                             SYS_CODE: 'LIBRARY_FRAGMENT_SIZE',
-                                                            SYS_ORDER: 40,
+                                                            SYS_ORDER: 60,
                                                             SYS_TYPE: 'number',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
@@ -804,51 +804,39 @@ module.exports = function(){
                                                             SYS_TYPE_LIST: '1:是,-1:否',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
-                                                            label: '重建库原因',
-                                                            SYS_CODE: 'LANE_REPEAT_REASON',
-                                                            SYS_ORDER: 90,
-                                                            SYS_TYPE: 'list',
-                                                            SYS_TYPE_LIST: 'sample:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
-                                                            SYS_GENRE: classGenre.id})
-                                                        createAttribute({
-                                                            label: 'Panel编号',
-                                                            SYS_CODE: 'PANEL_CODE',
-                                                            SYS_ORDER: 70,
-                                                            SYS_TYPE: 'string',
-                                                            SYS_GENRE: classGenre.id})
-                                                        createAttribute({
                                                             label: '建库结果',
                                                             SYS_CODE: 'LIBRARY_QUALIFIED',
-                                                            SYS_ORDER: 20,
+                                                            SYS_ORDER: 80,
                                                             SYS_TYPE: 'list',
                                                             SYS_TYPE_LIST: '1:合格,-1:不合格',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
+                                                            label: 'Qubit浓度',
+                                                            SYS_CODE: 'QUBIT_CONC',
+                                                            SYS_ORDER: 90,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
+                                                            label: '文库体积',
+                                                            SYS_CODE: 'LIBRARY_VOLUME',
+                                                            SYS_ORDER: 100,
+                                                            SYS_TYPE: 'number',
+                                                            SYS_GENRE: classGenre.id})
+                                                        createAttribute({
                                                             label: '实验员',
                                                             SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-                                                            SYS_ORDER: 50,
+                                                            SYS_ORDER: 110,
                                                             SYS_TYPE: 'entity',
                                                             SYS_TYPE_ENTITY: humanResourceClass.id,
                                                             SYS_TYPE_ENTITY_REF: true,
                                                             SYS_FLOOR_ENTITY_TYPE: 'collection',
                                                             SYS_GENRE: classGenre.id})
                                                         createAttribute({
-                                                            label: 'Qubit浓度',
-                                                            SYS_CODE: 'QUBIT_CONC',
-                                                            SYS_ORDER: 50,
-                                                            SYS_TYPE: 'number',
-                                                            SYS_GENRE: classGenre.id})
-                                                        createAttribute({
-                                                            label: '文库体积',
-                                                            SYS_CODE: 'LIBRARY_VOLUME',
-                                                            SYS_ORDER: 70,
-                                                            SYS_TYPE: 'number',
-                                                            SYS_GENRE: classGenre.id})
-                                                        createAttribute({
-                                                            label: 'index编号',
-                                                            SYS_CODE: 'INDEX_CODE',
-                                                            SYS_ORDER: 70,
-                                                            SYS_TYPE: 'number',
+                                                            label: '重建库原因',
+                                                            SYS_CODE: 'LANE_REPEAT_REASON',
+                                                            SYS_ORDER: 120,
+                                                            SYS_TYPE: 'list',
+                                                            SYS_TYPE_LIST: 'sample:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
                                                             SYS_GENRE: classGenre.id})
 
                                                     }).catch((err) => {
