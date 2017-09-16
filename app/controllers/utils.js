@@ -134,6 +134,14 @@ exports.JSONToExcel = function(req, res, next){
                                         fields.push('id')
                                         types.push('string')
 
+                                        let entityObj = JSON.parse(JSON.stringify(entity))
+                                        // Append auxiliary attributes
+                                        entityObj.SYS_AUXILIARY_ATTRIBUTE_LIST.forEach(auxAttr => {
+                                            headers.push(auxAttr[auxAttr['SYS_LABEL']])
+                                            fields.push(auxAttr['SYS_CODE'])
+                                            types.push(auxAttr['SYS_TYPE'])
+                                        })
+
                                         let data = []
                                         Entity.find(
                                             {_id: {$in: ids}},
@@ -143,6 +151,7 @@ exports.JSONToExcel = function(req, res, next){
                                                     let object = {}
                                                     fields.forEach((key, index) => {
 
+                                                        console.log(".", key)
                                                         // Export SYS_LABEL rather id
                                                         if (types[index] == 'entity'){
 
@@ -150,8 +159,13 @@ exports.JSONToExcel = function(req, res, next){
                                                             Entity.findOne(
                                                                 {_id: e[key]},
                                                                 (err, _entityAttr) => {
-                                                                    let entityAttr = JSON.parse(JSON.stringify(_entityAttr))
-                                                                    object[key] = entityAttr[entityAttr['SYS_LABEL']]
+                                                                    if (_entityAttr){
+                                                                        let entityAttr = JSON.parse(JSON.stringify(_entityAttr))
+                                                                        object[key] = entityAttr[entityAttr['SYS_LABEL']]
+                                                                    } else {
+                                                                        console.log("!", key)
+                                                                    }
+
                                                                 })
 
                                                             //} else {
