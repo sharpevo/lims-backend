@@ -83,24 +83,31 @@ exports.excelToJSON = function(req, res, next){
 }
 
 exports.JSONToExcel = function(req, res, next){
-    if (!req.query.ids){
-        res.status(400).json('invalid arguments')
-        return
-    }
+    //if (!req.query.ids){
+    //res.status(400).json('invalid arguments')
+    //return
+    //}
+    //let ids = req.query.ids.split(',')
+    console.log(">>", req.body)
+    let ids = []
+    Object.keys(req.body['sampleIdList']).forEach(hybridKey => {
+        ids.push(req.body['sampleIdList'][hybridKey][0])
+    })
+    console.log("ids", ids)
+    //return
 
-    let ids = req.query.ids.split(',')
 
     let entity = Entity.findOne(
         {_id: ids[0]},
         (err, entity) => {
             if (!entity){
-                console.log(entity)
+                console.log("entity:", entity)
                 res.status(400).json('invalid id')
                 return
             }
 
             Entity.findOne(
-                {_id: req.query.workcenter},
+                {_id: req.body.workcenterId},
                 (err, entity) => {
                     if (entity){
                         Genre.findOne(
@@ -134,11 +141,19 @@ exports.JSONToExcel = function(req, res, next){
                                         fields.push('id')
                                         types.push('string')
 
+                                        // Prepare data
                                         let data = []
                                         Entity.find(
                                             {_id: {$in: ids}},
                                             (err, entities) => {
-                                                entities.forEach(entity => {
+                                                let hybridCode = {}
+
+
+                                                entities.filter(entity => {
+                                                    console.log("!", entity)
+                                                    //console.log("!", entity.SYS_HYBRID_INFO)
+                                                    return true
+                                                }).forEach(entity => {
                                                     let e = JSON.parse(JSON.stringify(entity))
                                                     let object = {}
                                                     fields.forEach((key, index) => {
@@ -179,7 +194,7 @@ exports.JSONToExcel = function(req, res, next){
                                                 }
 
                                                 let timestamp = getTimestamp()
-                                                let tempfile = `tempfolder/${timestamp}.${req.query.workcenter}.xlsx`
+                                                let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
                                                 XLSX.writeFile(wb, tempfile)
                                                 //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                                                 //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
@@ -207,7 +222,7 @@ exports.JSONToExcel = function(req, res, next){
                             })
                     } else {
 
-                        res.status(400).json('invalid workcenter id: '+req.query.workcenter)
+                        res.status(400).json('invalid workcenter id: '+req.body.workcenterId)
                         return
                     }
                 })
