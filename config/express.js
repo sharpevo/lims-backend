@@ -28,6 +28,7 @@ module.exports = function() {
     require('../app/routes/entity')(app)
     require('../app/routes/genre')(app)
     require('../app/routes/attribute')(app)
+    require('../app/routes/utils')(app)
     //app.use(session({
     //saveUninitialized: true,
     //resave: true,

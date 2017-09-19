@@ -77,6 +77,17 @@ const EntitySchema = new Schema(
         //}
         //},
 
+        SYS_CAPTURE_CODE: {
+            type: String,
+        },
+        SYS_LANE_CODE: {
+            type: String,
+        },
+        SYS_RUN_CODE: {
+            type: String,
+        },
+
+
         ////
         // PRESET FUNCTION ATTRIBUTES
         ////
@@ -147,6 +158,44 @@ EntitySchema
 
     })
 
+EntitySchema
+    .virtual('SYS_HYBRID_INFO')
+    .get(function(){
+
+        let runString = 'SYS_RUN_CODE'
+        let lanString = 'SYS_LANE_CODE'
+        let capString = 'SYS_CAPTURE_CODE'
+        let runCode = this[runString]
+        let lanCode = this[lanString]
+        let capCode = this[capString]
+
+        //console.log("...", obj)
+        //console.log("..", JSON.stringify(this))
+        if (runCode){
+            return {
+                "type":"RUN",
+                "HYBRID_CODE": runString,
+                [runString]: runCode
+            }
+        }
+        if (lanCode){
+            return {
+                "type":"LANE",
+                "HYBRID_CODE": lanString,
+                [lanString]: lanCode
+            }
+        }
+        if (capCode){
+            return {
+                "type":"CAPTURE",
+                "HYBRID_CODE": capString,
+                [capString]: capCode
+            }
+        }
+        return {}
+
+    })
+
 EntitySchema.set(
     'toJSON', 
     {
@@ -155,4 +204,11 @@ EntitySchema.set(
     }
 )
 
+EntitySchema.set(
+    'toObject',
+    {
+        getters: true,
+        virtuals: true
+    }
+)
 mongoose.model('Entity', EntitySchema)
