@@ -173,23 +173,23 @@ EntitySchema
         //console.log("..", JSON.stringify(this))
         if (runCode){
             return {
-                "type":"RUN",
-                "HYBRID_CODE": runString,
-                [runString]: runCode
+                "HYBRID_TYPE":"RUN",
+                "HYBRID_KEY": runString,
+                "HYBRID_CODE": runCode
             }
         }
         if (lanCode){
             return {
-                "type":"LANE",
-                "HYBRID_CODE": lanString,
-                [lanString]: lanCode
+                "HYBRID_TYPE":"LANE",
+                "HYBRID_KEY": lanString,
+                "HYBRID_CODE": lanCode
             }
         }
         if (capCode){
             return {
-                "type":"CAPTURE",
-                "HYBRID_CODE": capString,
-                [capString]: capCode
+                "HYBRID_TYPE":"CAPTURE",
+                "HYBRID_KEY": capString,
+                "HYBRID_CODE": capCode
             }
         }
         return {}
