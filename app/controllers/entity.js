@@ -54,7 +54,6 @@ exports.list = function(req, res, next){
 }
 
 addEntitySchema = function(entity, callback){
-    console.log(entity.SYS_GENRE)
     Attribute.find(
         {"SYS_GENRE": entity.SYS_GENRE},
         '',
@@ -112,8 +111,11 @@ exports.getEntityById = function(req, res, next, id) {
                     next() // important
                 })
             }
-        }
-    )
+        })
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
     //.populate('SYS_GENRE_LIST')
 }
 
