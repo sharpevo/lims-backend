@@ -77,6 +77,17 @@ const EntitySchema = new Schema(
         //}
         //},
 
+        SYS_CAPTURE_CODE: {
+            type: String,
+        },
+        SYS_LANE_CODE: {
+            type: String,
+        },
+        SYS_RUN_CODE: {
+            type: String,
+        },
+
+
         ////
         // PRESET FUNCTION ATTRIBUTES
         ////
@@ -144,6 +155,44 @@ EntitySchema
         } else{
             return ""
         }
+
+    })
+
+EntitySchema
+    .virtual('SYS_HYBRID_INFO')
+    .get(function(){
+
+        let runString = 'SYS_RUN_CODE'
+        let lanString = 'SYS_LANE_CODE'
+        let capString = 'SYS_CAPTURE_CODE'
+        let runCode = this[runString]
+        let lanCode = this[lanString]
+        let capCode = this[capString]
+
+        //console.log("...", obj)
+        //console.log("..", JSON.stringify(this))
+        if (runCode){
+            return {
+                "HYBRID_TYPE":"RUN",
+                "HYBRID_KEY": runString,
+                "HYBRID_CODE": runCode
+            }
+        }
+        if (lanCode){
+            return {
+                "HYBRID_TYPE":"LANE",
+                "HYBRID_KEY": lanString,
+                "HYBRID_CODE": lanCode
+            }
+        }
+        if (capCode){
+            return {
+                "HYBRID_TYPE":"CAPTURE",
+                "HYBRID_KEY": capString,
+                "HYBRID_CODE": capCode
+            }
+        }
+        return {}
 
     })
 

@@ -83,24 +83,151 @@ exports.excelToJSON = function(req, res, next){
 }
 
 exports.JSONToExcel = function(req, res, next){
-    if (!req.query.ids){
-        res.status(400).json('invalid arguments')
-        return
-    }
+    //if (!req.query.ids){
+    //res.status(400).json('invalid arguments')
+    //return
+    //}
+    //let ids = req.query.ids.split(',')
+    //console.log(">>", req.body)
+    // e.g., key = "cap-20170201"
+    let workcenterId = req.body['workcenterId']
+    let hybridSampleObject = req.body['sampleIdList']
+    let exportSampleIdListObject = {} // only one sample for each hybrid sample
+    Object.keys(hybridSampleObject).forEach(hybridCode => {
+        let sampleIdList = hybridSampleObject[hybridCode]
+        exportSampleIdListObject[sampleIdList[0]] = sampleIdList
+        //exportSampleIdList.push(sampleIdList[0])
+    })
+    //console.log(">", exportSampleIdListObject)
 
-    let ids = req.query.ids.split(',')
+    // Get workcenter
+    Entity.findOne(
+        {_id: workcenterId},
+        (err, workcenterDoc) => {
+            if(workcenterDoc){
+
+                // Get genre
+                Genre.findOne(
+                    {"SYS_ENTITY": workcenterDoc},
+                    (err, genreDoc) => {
+
+                        // Get attribute
+                        Attribute.find(
+                            {"SYS_GENRE": genreDoc._id},
+                            '',
+                            {
+                                sort: {
+                                    SYS_ORDER: 1
+                                }
+                            },
+                            (err, attributeDocList) => {
+                                let headers = []
+                                let fields = []
+                                let types = []
+
+                                attributeDocList.forEach(attributeDoc => {
+
+                                    let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
+
+                                    // Export non-entity attributes or refered entities
+                                    // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
+                                    if (attributeObject.SYS_TYPE != 'entity' ||
+                                        attributeObject.SYS_TYPE_ENTITY_REF){ // Not export BoM or Routing
+                                        headers.push(attributeObject[attributeObject['SYS_LABEL']])
+                                        fields.push(attributeObject['SYS_CODE'])
+                                        types.push(attributeObject['SYS_TYPE'])
+                                    }
+                                })
+
+                                headers.push('IDENTIFIER')
+                                fields.push('id')
+                                types.push('string')
+
+                                let data = []
+
+                                Entity.find(
+                                    {_id: {$in: Object.keys(exportSampleIdListObject)}},
+                                    (err, entityDocList) => {
+
+                                        let hybridCode = {}
+
+                                        entityDocList.filter(entityDoc => {
+                                            console.log("!", entityDoc)
+                                            return true
+                                        }).forEach(entityDoc => {
+                                            let entityObject = JSON.parse(JSON.stringify(entityDoc))
+                                            let result = {}
+                                            fields.forEach((key, index) => {
+
+                                                // Export SYS_LABEL rather id
+                                                if (types[index] == 'entity'){
+
+                                                    // TODO: async
+                                                    Entity.findOne(
+                                                        {_id: entityObject[key]},
+                                                        (err, innerEntityDoc) => {
+                                                            let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
+                                                            result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                                                        })
+
+                                                } else if (key == 'id'){
+                                                    //let position = exportSampleIdList.indexOf(result[key])
+                                                    result[key] = exportSampleIdListObject[entityObject[key]]
+                                                } else {
+                                                    result[key] = entityObject[key]?entityObject[key]:''
+                                                }
+                                                console.log("..", result)
+                                            })
+                                            data.push(result)
+                                        })
+
+
+                                        let _headers = headers
+                                            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                        let _data = data
+                                            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+                                            .reduce((prev, next) => prev.concat(next))
+                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                        let output = Object.assign({}, _headers, _data)
+                                        let outputPos = Object.keys(output)
+                                        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+                                        let wb = {
+                                            SheetNames: ['samples'],
+                                            Sheets: {
+                                                'samples': Object.assign({}, output, { '!ref': ref })
+                                            }
+                                        }
+
+                                        let timestamp = getTimestamp()
+                                        let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
+                                        XLSX.writeFile(wb, tempfile)
+                                        res.download(tempfile)
+
+                                    })
+                            })
+
+                    })
+            } else {
+                res.status(400).json('invalid workcenter id: ' + workcenterId)
+                return
+            }
+        })
+
+
+    return
 
     let entity = Entity.findOne(
         {_id: ids[0]},
         (err, entity) => {
             if (!entity){
-                console.log(entity)
+                console.log("entity:", entity)
                 res.status(400).json('invalid id')
                 return
             }
 
             Entity.findOne(
-                {_id: req.query.workcenter},
+                {_id: req.body.workcenterId},
                 (err, entity) => {
                     if (entity){
                         Genre.findOne(
@@ -134,6 +261,7 @@ exports.JSONToExcel = function(req, res, next){
                                         fields.push('id')
                                         types.push('string')
 
+<<<<<<< HEAD
                                         let entityObj = JSON.parse(JSON.stringify(entity))
                                         // Append auxiliary attributes
                                         entityObj.SYS_AUXILIARY_ATTRIBUTE_LIST.forEach(auxAttr => {
@@ -142,11 +270,21 @@ exports.JSONToExcel = function(req, res, next){
                                             types.push(auxAttr['SYS_TYPE'])
                                         })
 
+=======
+                                        // Prepare data
+>>>>>>> fea/hybrid_sample_manipulated_in_excel
                                         let data = []
                                         Entity.find(
                                             {_id: {$in: ids}},
                                             (err, entities) => {
-                                                entities.forEach(entity => {
+                                                let hybridCode = {}
+
+
+                                                entities.filter(entity => {
+                                                    console.log("!", entity)
+                                                    //console.log("!", entity.SYS_HYBRID_INFO)
+                                                    return true
+                                                }).forEach(entity => {
                                                     let e = JSON.parse(JSON.stringify(entity))
                                                     let object = {}
                                                     fields.forEach((key, index) => {
@@ -193,7 +331,7 @@ exports.JSONToExcel = function(req, res, next){
                                                 }
 
                                                 let timestamp = getTimestamp()
-                                                let tempfile = `tempfolder/${timestamp}.${req.query.workcenter}.xlsx`
+                                                let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
                                                 XLSX.writeFile(wb, tempfile)
                                                 //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                                                 //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
@@ -221,7 +359,7 @@ exports.JSONToExcel = function(req, res, next){
                             })
                     } else {
 
-                        res.status(400).json('invalid workcenter id: '+req.query.workcenter)
+                        res.status(400).json('invalid workcenter id: '+req.body.workcenterId)
                         return
                     }
                 })
