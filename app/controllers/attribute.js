@@ -1,6 +1,7 @@
 const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Utils = require('../utils/controller')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     let attribute = new Attribute(req.body) // perfect
@@ -34,6 +35,12 @@ exports.list = function(req, res, next){
 // Actions with ID specified
 
 exports.getAttributeById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Attribute.findOne(
         {_id: id},
         (err, attribute) => {

@@ -2,6 +2,7 @@ const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 const Attribute = require('mongoose').model('Attribute')
 const Utils = require('../utils/controller')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     const genre = new Genre(req.body)
@@ -34,6 +35,12 @@ exports.list = function(req, res, next){
 // Actions with ID specified
 
 exports.getGenreById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Genre.findOne(
         {_id: id},
         (err, genre) => {
