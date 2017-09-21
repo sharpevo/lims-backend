@@ -230,6 +230,10 @@ exports.entity = function (req, res, next){
             }
         }
     )
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
 }
 
 const parseError = function(err) {
