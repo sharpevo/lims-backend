@@ -27,6 +27,11 @@ exports.create = function(req, res, next){
 exports.list = function(req, res, next){
     let query = Utils.list(req, Entity)
     query
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
+    query
         .exec((err, entities) => {
             if (err){
                 return res.status(400).send({
