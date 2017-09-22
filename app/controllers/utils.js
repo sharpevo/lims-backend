@@ -91,10 +91,12 @@ exports.JSONToExcel = function(req, res, next){
     //console.log(">>", req.body)
     // e.g., key = "cap-20170201"
     let workcenterId = req.body['workcenterId']
-    let hybridSampleObject = req.body['sampleIdList']
+    let hybridObjectMap = req.body['hybridObjectMap']
     let exportSampleIdListObject = {} // only one sample for each hybrid sample
-    Object.keys(hybridSampleObject).forEach(hybridCode => {
-        let sampleIdList = hybridSampleObject[hybridCode]
+    let hybridObjectMapKeyList = Object.keys(hybridObjectMap)
+    let auxiliaryAttributeObject = hybridObjectMap[hybridObjectMapKeyList[0]]['attributeObject']
+    hybridObjectMapKeyList.forEach(key => { // key = sample id
+        let sampleIdList = hybridObjectMap[key]['sampleIdList']
         exportSampleIdListObject[sampleIdList[0]] = sampleIdList
         //exportSampleIdList.push(sampleIdList[0])
     })
@@ -143,6 +145,14 @@ exports.JSONToExcel = function(req, res, next){
                                 fields.push('id')
                                 types.push('string')
 
+                                // Processing auxiliary attributes
+                                Object.keys(auxiliaryAttributeObject).forEach(key => {
+                                    let attributeObject = auxiliaryAttributeObject[key]
+                                    headers.push(attributeObject['SYS_LABEL'])
+                                    fields.push(attributeObject['SYS_CODE'])
+                                    types.push(attributeObject['SYS_TYPE'])
+                                })
+
                                 let data = []
 
                                 Entity.find(
@@ -152,31 +162,42 @@ exports.JSONToExcel = function(req, res, next){
                                         let hybridCode = {}
 
                                         entityDocList.filter(entityDoc => {
-                                            console.log("!", entityDoc)
+                                            //console.log("!", entityDoc)
                                             return true
                                         }).forEach(entityDoc => {
                                             let entityObject = JSON.parse(JSON.stringify(entityDoc))
                                             let result = {}
+                                            let isAuxiliaryAttribute = false
                                             fields.forEach((key, index) => {
 
-                                                // Export SYS_LABEL rather id
-                                                if (types[index] == 'entity'){
+                                                if (!isAuxiliaryAttribute){
+                                                    // Export SYS_LABEL rather id
+                                                    if (types[index] == 'entity'){
 
-                                                    // TODO: async
-                                                    Entity.findOne(
-                                                        {_id: entityObject[key]},
-                                                        (err, innerEntityDoc) => {
-                                                            let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
-                                                            result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
-                                                        })
+                                                        // TODO: async
+                                                        Entity.findOne(
+                                                            {_id: entityObject[key]},
+                                                            (err, innerEntityDoc) => {
+                                                                let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
+                                                                result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                                                            })
 
-                                                } else if (key == 'id'){
-                                                    //let position = exportSampleIdList.indexOf(result[key])
-                                                    result[key] = exportSampleIdListObject[entityObject[key]]
+                                                    } else if (key == 'id'){
+                                                        isAuxiliaryAttribute = true
+                                                        //let position = exportSampleIdList.indexOf(result[key])
+                                                        result[key] = exportSampleIdListObject[entityObject[key]]
+                                                    } else {
+                                                        result[key] = entityObject[key]?entityObject[key]:''
+                                                    }
                                                 } else {
-                                                    result[key] = entityObject[key]?entityObject[key]:''
+                                                    //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
+                                                    console.log("-------", entityObject._id)
+                                                    if (hybridObjectMap[entityObject._id]['attributeObject']) {
+                                                        result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
+                                                    }
+
                                                 }
-                                                console.log("..", result)
+                                                //console.log("..", result)
                                             })
                                             data.push(result)
                                         })

@@ -27,6 +27,11 @@ exports.create = function(req, res, next){
 exports.list = function(req, res, next){
     let query = Utils.list(req, Entity)
     query
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
+    query
         .exec((err, entities) => {
             if (err){
                 return res.status(400).send({
@@ -54,7 +59,6 @@ exports.list = function(req, res, next){
 }
 
 addEntitySchema = function(entity, callback){
-    console.log(entity.SYS_GENRE)
     Attribute.find(
         {"SYS_GENRE": entity.SYS_GENRE},
         '',
@@ -112,8 +116,11 @@ exports.getEntityById = function(req, res, next, id) {
                     next() // important
                 })
             }
-        }
-    )
+        })
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
     //.populate('SYS_GENRE_LIST')
 }
 
@@ -223,6 +230,10 @@ exports.entity = function (req, res, next){
             }
         }
     )
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
 }
 
 const parseError = function(err) {
