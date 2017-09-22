@@ -100,7 +100,7 @@ exports.JSONToExcel = function(req, res, next){
         exportSampleIdListObject[sampleIdList[0]] = sampleIdList
         //exportSampleIdList.push(sampleIdList[0])
     })
-    //console.log(">", exportSampleIdListObject)
+    console.log("Export Excel:", hybridObjectMap)
 
     // Get workcenter
     Entity.findOne(
@@ -146,12 +146,15 @@ exports.JSONToExcel = function(req, res, next){
                                 types.push('string')
 
                                 // Processing auxiliary attributes
-                                Object.keys(auxiliaryAttributeObject).forEach(key => {
-                                    let attributeObject = auxiliaryAttributeObject[key]
-                                    headers.push(attributeObject['SYS_LABEL'])
-                                    fields.push(attributeObject['SYS_CODE'])
-                                    types.push(attributeObject['SYS_TYPE'])
-                                })
+                                // null or undefined can not be converted to object
+                                if (auxiliaryAttributeObject){
+                                    Object.keys(auxiliaryAttributeObject).forEach(key => {
+                                        let attributeObject = auxiliaryAttributeObject[key]
+                                        headers.push(attributeObject['SYS_LABEL'])
+                                        fields.push(attributeObject['SYS_CODE'])
+                                        types.push(attributeObject['SYS_TYPE'])
+                                    })
+                                }
 
                                 let data = []
 
@@ -178,8 +181,10 @@ exports.JSONToExcel = function(req, res, next){
                                                         Entity.findOne(
                                                             {_id: entityObject[key]},
                                                             (err, innerEntityDoc) => {
-                                                                let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
-                                                                result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                                                                if (innerEntityDoc){
+                                                                    let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
+                                                                    result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                                                                }
                                                             })
 
                                                     } else if (key == 'id'){
