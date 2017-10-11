@@ -1,0 +1,21 @@
+{
+  "name": "lims-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "compression": "^1.6.2",
+    "express": "^4.15.2",
+    "formidable": "^1.1.1",
+    "method-override": "^2.3.7",
+    "mongoose": "^4.9.1",
+    "morgan": "^1.8.1",
+    "xlsx": "^0.10.3"
+  }
+}
