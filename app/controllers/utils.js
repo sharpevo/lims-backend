@@ -18,6 +18,7 @@ exports.excelToJSON = function(req, res, next){
         //let workbook = XLSX.read(file, {type:'binary'})
         let sheet_name_list = workbook.SheetNames
         let jsonObject = []
+        let dateRegexp = /^[0-9]{4}[\.][0-9]{2}[\.][0-9]{2}$/i
         sheet_name_list.forEach(function(y) {
             let worksheet = workbook.Sheets[y]
             let headers = {}
@@ -37,9 +38,13 @@ exports.excelToJSON = function(req, res, next){
                 let col = z.substring(0,tt)
                 let row = parseInt(z.substring(tt))
                 let value = worksheet[z].v
-                //console.log(col)
-                //console.log(row)
-                //console.log(value)
+                let type = worksheet[z].t
+
+                if (type == 's' && dateRegexp.test(value)) {
+                    test = new Date(value)
+                    test.setUTCHours(test.getUTCHours() + 8)
+                    value = test
+                }
 
                 //store header names
                 // Note that string comparision of js is lexicographically.
