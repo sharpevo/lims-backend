@@ -18,7 +18,7 @@ exports.excelToJSON = function(req, res, next){
         //let workbook = XLSX.read(file, {type:'binary'})
         let sheet_name_list = workbook.SheetNames
         let jsonObject = []
-        let dateRegexp = /^[0-9]{4}[\.][0-9]{2}[\.][0-9]{2}$/g
+        let dateRegexp = /^[0-9]{4}[\.][0-9]{2}[\.][0-9]{2}$/i
         sheet_name_list.forEach(function(y) {
             let worksheet = workbook.Sheets[y]
             let headers = {}
