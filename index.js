@@ -4,10 +4,10 @@ const configureMongoose = require('./config/mongoose')
 const configureExpress = require('./config/express')
 
 const db = configureMongoose()
-if (process.env.NODE_ENV === 'development') {
-  // after configureMongoose()
-  const configureTestDatabase = require('./scripts/init_test_db')
-  configureTestDatabase()
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    // after configureMongoose()
+    const configureTestDatabase = require('./scripts/init_test_db')
+    configureTestDatabase()
 }
 const app = configureExpress()
 app.listen(3000)

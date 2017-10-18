@@ -1,3 +1,13 @@
 #!/bin/bash
-docker build -t lims-backend:test .
-docker save -o docker/lims-backend.test lims-backend:test
+imageFolder="docker"
+app="lims-backend"
+if [ -z "$1" ]
+then
+    version="test"
+else
+    version=$1
+fi
+echo ">>> building images: $app:$version"
+docker build -t $app:$version .
+echo ">>> saving images: $app.$version"
+docker save -o $imageFolder/$app.$version $app:$version
