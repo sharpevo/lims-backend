@@ -708,6 +708,19 @@ module.exports = async function(){
         SYS_GENRE: productRoutingClassGenre.id,
         label: 'Routing V1' // compatable with the createEntity
     }).save()
+
+    // add routing v1 to the general project
+    createAttribute({
+        label: 'Routing',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 100,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: v1CollEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_GENRE:generalProjectClassGenre.id
+    })
+
     let v1CollGenre = await createGenre(v1CollEntity)
     await createAttribute({
         // leave label blank as a leading checkbox
