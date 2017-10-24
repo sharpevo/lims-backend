@@ -58,14 +58,20 @@ function createEntity(genre, identifier, typeIndex, label){
         })
 }
 
-function createEntityWithOrder(genre, identifier, typeIndex, label, order){
-    return Entity({
+function createEntityWithOrder(genre, identifier, typeIndex, label, order, entityObject){
+    let entity = {
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
         SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
         SYS_GENRE: genre,
         SYS_ORDER: order,
         label: label.replace(" Genre","")
-    })
+    }
+    if (entityObject) {
+        Object.keys(entityObject).forEach(key => {
+            entity[key] = entityObject[key]
+        })
+    }
+    return Entity(entity)
         .save()
         .catch(err => {
             console.log("createEntityWithOrder", err)
@@ -272,7 +278,11 @@ module.exports = async function(){
         SYS_GENRE: prodWCDomainGenre.id
     })
 
-    let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT", 1, "样品提取", 10)
+    // Sample Extraction{{{
+    let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT", 1, "样品提取", 10,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
     let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
     await createAttribute({
         label: '提取人',
@@ -283,7 +293,14 @@ module.exports = async function(){
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleExtractClassGenre.id})
-    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_RESULT", 1, "样品提取结果", 20)
+    //}}}
+
+    // Sample Extract Result{{{
+    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_RESULT", 1, "样品提取结果", 20,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    sampleExtractResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let sampleExtractResultClassGenre = await createGenre(sampleExtractResultClassEntity)
     createWorkcenterAttribute(
         sampleExtractResultClassGenre,
@@ -357,8 +374,14 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleExtractResultClassGenre.id})
+    //}}}
 
-    let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30)
+    // Sample QC Review{{{
+    let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
     await createAttribute({
         label: '审核员',
@@ -369,7 +392,14 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleQCReviewClassGenre.id})
-    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40)
+    //}}}
+
+    // Library Prepare{{{
+    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    libraryPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let libraryPrepareClassGenre = await createGenre(libraryPrepareClassEntity)
     createAttribute({
         label: '文库名称',
@@ -449,8 +479,14 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'sample:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
         SYS_GENRE: libraryPrepareClassGenre.id})
+    //}}}
 
-    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50)
+    // Library Review{{{
+    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    libraryReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let libraryReviewClassGenre = await createGenre(libraryReviewClassEntity)
     await createAttribute({
         label: '审核员',
@@ -461,7 +497,14 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryReviewClassGenre.id})
-    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60)
+    //}}}
+
+    // Capture Prepare{{{
+    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    capturePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
     createAttribute({
         label: '捕获编号',
@@ -481,8 +524,14 @@ module.exports = async function(){
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
+    //}}}
 
-    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70)
+    // Capture Result{{{
+    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    captureResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let captureResultClassGenre = await createGenre(captureResultClassEntity)
     createAttribute({
         label: '捕获后文库浓度',
@@ -496,8 +545,14 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
         SYS_GENRE: captureResultClassGenre.id})
+    //}}}
 
-    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80)
+    // Lane Prepare{{{
+    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    lanePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let lanePrepareClassGenre = await createGenre(lanePrepareClassEntity)
     createAttribute({
         label: '混合文库编号',
@@ -571,7 +626,14 @@ module.exports = async function(){
         SYS_ORDER: 110,
         SYS_TYPE: 'date',
         SYS_GENRE: lanePrepareClassGenre.id})
-    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90)
+    //}}}
+
+    // Run Prepare{{{
+    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    runPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let runPrepareClassGenre = await createGenre(runPrepareClassEntity)
     createAttribute({
         label: '方案名称',
@@ -613,8 +675,14 @@ module.exports = async function(){
         SYS_ORDER: 60,
         SYS_TYPE: 'text',
         SYS_GENRE: runPrepareClassGenre.id})
+    //}}}
 
-    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100)
+    // Run Result{{{
+    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+        })
+    runResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let runResultClassGenre = await createGenre(runResultClassEntity)
     createAttribute({
         label: '下机数据路径',
@@ -641,6 +709,8 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'text',
         SYS_GENRE: runResultClassGenre.id})
+    //}}}
+
     //}}}
 
     // Project Workcenter Domain{{{
