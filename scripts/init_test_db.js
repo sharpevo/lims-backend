@@ -87,7 +87,7 @@ module.exports = async function(){
     }
     console.log(">>> Running database initialization")
 
-
+    // Domain Entity{{{
     let domainEntity = await Entity({
         SYS_IDENTIFIER: "/",
         SYS_ENTITY_TYPE: "/",
@@ -107,7 +107,9 @@ module.exports = async function(){
         SYS_TYPE: 'text',
         SYS_GENRE: domainGenre.id
     })
+    //}}}
 
+    // Human Resource Domain{{{
     let hrDomainEntity = await createEntity(domainGenre, "HUMAN_RESOURCE", 0, "Human Resource")
     let hrDomainGenre = await createGenre(hrDomainEntity)
     let hrClassEntity = await createEntity(hrDomainGenre, "IGENETECH", 1, "Staff")
@@ -116,7 +118,9 @@ module.exports = async function(){
     createEntity(hrClassGenre, "002", 2, "Luna")
     createEntity(hrClassGenre, "003", 2, "Gandalf")
     createEntity(hrClassGenre, "004", 2, "Lummen")
+    //}}}
 
+    // Instrument Domain{{{
     let instrumentDomainEntity = await createEntity(domainGenre, "INSTRUMENT_RESOURCE", 0, "Instrument Resource")
     let instrumentDomainGenre = await createGenre(instrumentDomainEntity)
     let shearingClassEntity = await createEntity(instrumentDomainGenre, "SHEARING", 1, "Shearing " + instrumentDomainGenre.label)
@@ -133,7 +137,9 @@ module.exports = async function(){
     let sequencingClassGenre = await createGenre(sequencingClassEntity)
     createEntity(sequencingClassGenre, "X10", 3, "HiSeq X10")
     createEntity(sequencingClassGenre, "NOVASEQ", 3, "NovaSeq")
+    //}}}
 
+    // Purchase Domain{{{
     let purchaseDomainEntity = await createEntity(domainGenre, "PURCHASE", 0, "Purchase")
     let purchaseDomainGenre = await createGenre(purchaseDomainEntity)
     let supplierClassEntity = await createEntity(purchaseDomainGenre, "SUPPLIER", 1, "Supplier " + purchaseDomainGenre.label) 
@@ -145,7 +151,9 @@ module.exports = async function(){
     let orderClassGenre = await createGenre(orderClassEntity)
     //createEntity(supplierGenre.SYS_IDENTIFIER + "HANGZHOU", 2, "Company A")
     //createEntity(supplierGenre.SYS_IDENTIFIER + "BEIJING", 2, "Company B")
+    //}}}
 
+    // Material Domain{{{
     let materialDomainEntity = await createEntity(domainGenre, "MATERIAL", 0, "Material")
     let materialDomainGenre = await createGenre(materialDomainEntity)
     let kapaClassEntity = await createEntity(materialDomainGenre, "KAPA_HIFI", 1, "Kapa " + materialDomainGenre.label)
@@ -168,12 +176,13 @@ module.exports = async function(){
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+    //}}}
 
+    // BoM Domain{{{
     let bomDomainEntity = await createEntity(domainGenre, "BOM",0, "BoMs")
     let bomDomainGenre = await createGenre(bomDomainEntity)
     let saleClassEntity = await createEntity(bomDomainGenre, "SALE", 1, "Sale " + bomDomainGenre.label)
     let saleClassGenre = await createGenre(saleClassEntity)
-    //
 
     let manuClassEntity = await createEntity(bomDomainGenre, "MANUFACTURING", 1, "Manufacturing " + bomDomainGenre.label)
     let manuClassGenre = await createGenre(manuClassEntity)
@@ -208,7 +217,9 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: extractCollGenre.id})
+    //}}}
 
+    // Product Workcenter Domain{{{
     let prodWCDomainEntity = await createEntity(domainGenre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
     let prodWCDomainGenre = await createGenre(prodWCDomainEntity)
     createAttribute({
@@ -630,7 +641,9 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'text',
         SYS_GENRE: runResultClassGenre.id})
+    //}}}
 
+    // Project Workcenter Domain{{{
     let projectWCDomainEntity = await createEntity(domainGenre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
     let projectWCDomainGenre = await createGenre(projectWCDomainEntity)
     let generalProjectClassEntity = await createEntity(projectWCDomainGenre, "GENERAL_PROJECT", 1, "General Project")
@@ -687,7 +700,9 @@ module.exports = async function(){
         SYS_ORDER: 80,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
+    //}}}
 
+    // Routing Domain{{{
     let routingDomainEntity = await createEntity(domainGenre, "ROUTING",0, "Routings")
     let routingDomainGenre = await createGenre(routingDomainEntity)
     let productRoutingClassEntity = await createEntity(routingDomainGenre, "PRODUCT_ROUTING", 1, "Product " + routingDomainGenre.label)
@@ -842,7 +857,9 @@ module.exports = async function(){
         SYS_SOURCE: runResultClassEntity.id,
         SYS_DURATION: 10,
     }).save()
+    //}}}
 
+    // Sale Domain{{{
     let saleDomainEntity = await createEntity(domainGenre, "SALE", 0, "Sales")
     let saleDomainGenre = await createGenre(saleDomainEntity)
     let clientClassEntity = await createEntity(saleDomainGenre, "CLIENT", 1, "Client " + saleDomainGenre.label)
@@ -854,16 +871,17 @@ module.exports = async function(){
     let contractClassGenre = await createGenre(contractClassEntity)
     let batchClassEntity = await createEntity(saleDomainGenre, "BATCH", 1, "Batch " + saleDomainGenre.label)
     let batchClassGenre = await createGenre(batchClassEntity)
+    //}}}
 
+    // Sample Domain{{{
     let sampleDomainEntity = await createEntity(domainGenre, "SAMPLE",0, "Samples")
     let sampleDomainGenre = await createGenre(sampleDomainEntity)
     let defaultSampleClassEntity = await createEntity(sampleDomainGenre, "DEFAULT", 1, "Default " + sampleDomainGenre.label)
     let defaultSampleClassGenre = await createGenre(defaultSampleClassEntity)
     let defaultSampleCollEntity = await createEntity(defaultSampleClassGenre, "DEFAULT", 2, "Default Collection " + defaultSampleClassGenre.label)
     let defaultSampleCollGenre = await createGenre(defaultSampleCollEntity)
+    //}}}
 
     console.log(">>> done!")
-
-
 
 }
