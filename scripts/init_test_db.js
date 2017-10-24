@@ -503,6 +503,7 @@ module.exports = async function(){
     let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
         })
     capturePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
@@ -551,6 +552,7 @@ module.exports = async function(){
     let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
         })
     lanePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let lanePrepareClassGenre = await createGenre(lanePrepareClassEntity)
@@ -632,6 +634,7 @@ module.exports = async function(){
     let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
         })
     runPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let runPrepareClassGenre = await createGenre(runPrepareClassEntity)
