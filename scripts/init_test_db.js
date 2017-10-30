@@ -23,11 +23,7 @@ function createWorkcenterAttribute(genre, label, code, type, order){
 
 function createAttribute(attribute){
     return Attribute(attribute)
-        .save((err, attribute) =>{
-            if (err) {
-                console.log(err)
-            }
-        })
+        .save()
         .catch(err => {
             console.log("createAttribute", err)
         })
@@ -58,14 +54,20 @@ function createEntity(genre, identifier, typeIndex, label){
         })
 }
 
-function createEntityWithOrder(genre, identifier, typeIndex, label, order){
-    return Entity({
+function createEntityWithOrder(genre, identifier, typeIndex, label, order, entityObject){
+    let entity = {
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
         SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
         SYS_GENRE: genre,
         SYS_ORDER: order,
         label: label.replace(" Genre","")
-    })
+    }
+    if (entityObject) {
+        Object.keys(entityObject).forEach(key => {
+            entity[key] = entityObject[key]
+        })
+    }
+    return Entity(entity)
         .save()
         .catch(err => {
             console.log("createEntityWithOrder", err)
@@ -87,7 +89,7 @@ module.exports = async function(){
     }
     console.log(">>> Running database initialization")
 
-
+    // Domain Entity{{{
     let domainEntity = await Entity({
         SYS_IDENTIFIER: "/",
         SYS_ENTITY_TYPE: "/",
@@ -107,7 +109,9 @@ module.exports = async function(){
         SYS_TYPE: 'text',
         SYS_GENRE: domainGenre.id
     })
+    //}}}
 
+    // Human Resource Domain{{{
     let hrDomainEntity = await createEntity(domainGenre, "HUMAN_RESOURCE", 0, "Human Resource")
     let hrDomainGenre = await createGenre(hrDomainEntity)
     let hrClassEntity = await createEntity(hrDomainGenre, "IGENETECH", 1, "Staff")
@@ -116,7 +120,9 @@ module.exports = async function(){
     createEntity(hrClassGenre, "002", 2, "Luna")
     createEntity(hrClassGenre, "003", 2, "Gandalf")
     createEntity(hrClassGenre, "004", 2, "Lummen")
+    //}}}
 
+    // Instrument Domain{{{
     let instrumentDomainEntity = await createEntity(domainGenre, "INSTRUMENT_RESOURCE", 0, "Instrument Resource")
     let instrumentDomainGenre = await createGenre(instrumentDomainEntity)
     let shearingClassEntity = await createEntity(instrumentDomainGenre, "SHEARING", 1, "Shearing " + instrumentDomainGenre.label)
@@ -133,7 +139,9 @@ module.exports = async function(){
     let sequencingClassGenre = await createGenre(sequencingClassEntity)
     createEntity(sequencingClassGenre, "X10", 3, "HiSeq X10")
     createEntity(sequencingClassGenre, "NOVASEQ", 3, "NovaSeq")
+    //}}}
 
+    // Purchase Domain{{{
     let purchaseDomainEntity = await createEntity(domainGenre, "PURCHASE", 0, "Purchase")
     let purchaseDomainGenre = await createGenre(purchaseDomainEntity)
     let supplierClassEntity = await createEntity(purchaseDomainGenre, "SUPPLIER", 1, "Supplier " + purchaseDomainGenre.label) 
@@ -145,7 +153,9 @@ module.exports = async function(){
     let orderClassGenre = await createGenre(orderClassEntity)
     //createEntity(supplierGenre.SYS_IDENTIFIER + "HANGZHOU", 2, "Company A")
     //createEntity(supplierGenre.SYS_IDENTIFIER + "BEIJING", 2, "Company B")
+    //}}}
 
+    // Material Domain{{{
     let materialDomainEntity = await createEntity(domainGenre, "MATERIAL", 0, "Material")
     let materialDomainGenre = await createGenre(materialDomainEntity)
     let kapaClassEntity = await createEntity(materialDomainGenre, "KAPA_HIFI", 1, "Kapa " + materialDomainGenre.label)
@@ -168,12 +178,13 @@ module.exports = async function(){
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+    //}}}
 
+    // BoM Domain{{{
     let bomDomainEntity = await createEntity(domainGenre, "BOM",0, "BoMs")
     let bomDomainGenre = await createGenre(bomDomainEntity)
     let saleClassEntity = await createEntity(bomDomainGenre, "SALE", 1, "Sale " + bomDomainGenre.label)
     let saleClassGenre = await createGenre(saleClassEntity)
-    //
 
     let manuClassEntity = await createEntity(bomDomainGenre, "MANUFACTURING", 1, "Manufacturing " + bomDomainGenre.label)
     let manuClassGenre = await createGenre(manuClassEntity)
@@ -208,7 +219,68 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: extractCollGenre.id})
+    //}}}
 
+    // Project Workcenter Domain{{{
+    let projectWCDomainEntity = await createEntity(domainGenre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
+    let projectWCDomainGenre = await createGenre(projectWCDomainEntity)
+    let generalProjectClassEntity = await createEntity(projectWCDomainGenre, "GENERAL_PROJECT", 1, "General Project")
+    let generalProjectClassGenre = await createGenre(generalProjectClassEntity)
+    let attrGPSampleCode = await createAttribute({
+        label: '样品编号',
+        // SYS prefix to indicate importance
+        // to get the all the workcenters in
+        // plan for the specific sample
+        SYS_CODE: 'SYS_SAMPLE_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_IS_ENTITY_LABEL: true,
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPSampleName = await createAttribute({
+        label: '样品名称',
+        SYS_CODE: 'SAMPLE_NAME',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPDateScheduled = await createAttribute({
+        label: '计划进度',
+        SYS_CODE: 'SYS_DATE_SCHEDULED',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'date',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPPanelCode = await createAttribute({
+        label: 'Panel编号',
+        SYS_CODE: 'SYS_PANEL_CODE',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPDataSize = await createAttribute({
+        label: '数据量',
+        SYS_CODE: 'SYS_DATA_SIZE',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'number',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPDepth = await createAttribute({
+        label: '测序深度',
+        SYS_CODE: 'SEQUENCING_DEPTH',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPIndexCode = await createAttribute({
+        label: 'Index编号',
+        SYS_CODE: 'SYS_INDEX_CODE',
+        SYS_ORDER: 70,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPIndexSequence = await createAttribute({
+        label: 'Index序列',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_ORDER: 80,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    //}}}
+
+    // Product Workcenter Domain{{{
     let prodWCDomainEntity = await createEntity(domainGenre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
     let prodWCDomainGenre = await createGenre(prodWCDomainEntity)
     createAttribute({
@@ -261,7 +333,15 @@ module.exports = async function(){
         SYS_GENRE: prodWCDomainGenre.id
     })
 
-    let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT", 1, "样品提取", 10)
+    // Sample Extraction{{{
+    let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_ASSIGN", 1, "样品提取", 10,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id
+            ],
+        })
     let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
     await createAttribute({
         label: '提取人',
@@ -272,7 +352,18 @@ module.exports = async function(){
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleExtractClassGenre.id})
-    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_RESULT", 1, "样品提取结果", 20)
+    //}}}
+
+    // Sample Extract Result{{{
+    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_RESULT", 1, "样品提取结果", 20,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id
+            ],
+        })
+    sampleExtractResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let sampleExtractResultClassGenre = await createGenre(sampleExtractResultClassEntity)
     createWorkcenterAttribute(
         sampleExtractResultClassGenre,
@@ -310,7 +401,7 @@ module.exports = async function(){
         'DESCRIPTION',
         'string',
         60)
-    createAttribute({
+    let attrSERResult = await createAttribute({
         label: '检测结果',
         SYS_CODE: 'SAMPLE_QC_ATTR_RESULT',
         SYS_ORDER: 70,
@@ -324,7 +415,7 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
         SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+    let attrSERStatus = await createAttribute({
         label: '检测状态',
         SYS_CODE: 'SAMPLE_QC_ATTR_STATUS',
         SYS_ORDER: 90,
@@ -346,8 +437,20 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleExtractResultClassGenre.id})
+    //}}}
 
-    let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30)
+    // Sample QC Review{{{
+    let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrSERResult.id,
+                attrSERStatus.id
+            ],
+        })
+    sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
     await createAttribute({
         label: '审核员',
@@ -358,9 +461,22 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: sampleQCReviewClassGenre.id})
-    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40)
+    //}}}
+
+    // Library Prepare{{{
+    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+            ],
+        })
+    libraryPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let libraryPrepareClassGenre = await createGenre(libraryPrepareClassEntity)
-    createAttribute({
+    let attrLRName = await createAttribute({
         label: '文库名称',
         SYS_CODE: 'LIBRARY_CODE',
         SYS_ORDER: 10,
@@ -410,13 +526,13 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,-1:不合格',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
+    let attrLRConc = await createAttribute({
         label: 'Qubit浓度',
         SYS_CODE: 'QUBIT_CONC',
         SYS_ORDER: 90,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
+    let attrLRVolume = await createAttribute({
         label: '文库体积',
         SYS_CODE: 'LIBRARY_VOLUME',
         SYS_ORDER: 100,
@@ -438,8 +554,21 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'sample:样品质量差,risk:风险建库,operation:操作步骤不当,reagent:试剂原因,amount:总量不足,other:其他原因',
         SYS_GENRE: libraryPrepareClassGenre.id})
+    //}}}
 
-    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50)
+    // Library Review{{{
+    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrLRName.id,
+                attrLRConc.id,
+                attrLRVolume.id
+            ],
+        })
+    libraryReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let libraryReviewClassGenre = await createGenre(libraryReviewClassEntity)
     await createAttribute({
         label: '审核员',
@@ -450,9 +579,18 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryReviewClassGenre.id})
-    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60)
+    //}}}
+
+    // Capture Prepare{{{
+    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [attrGPSampleCode.id, attrGPSampleName.id, attrGPIndexCode, attrGPIndexSequence, attrGPPanelCode],
+        })
+    capturePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
-    createAttribute({
+    let attrCPCode = await createAttribute({
         label: '捕获编号',
         SYS_CODE: 'SYS_CAPTURE_CODE',
         SYS_ORDER: 10,
@@ -464,31 +602,54 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'date',
         SYS_GENRE: capturePrepareClassGenre.id})
-    createAttribute({
+    let attrCPCount = await createAttribute({
         label: '杂交数',
         SYS_CODE: 'HYBRID_COUNT',
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
+    //}}}
 
-    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70)
+    // Capture Result{{{
+    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [attrGPSampleCode.id, attrGPSampleName.id, attrCPCode.id, attrCPCount.id],
+        })
+    captureResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let captureResultClassGenre = await createGenre(captureResultClassEntity)
-    createAttribute({
+    let attrCRConc = await createAttribute({
         label: '捕获后文库浓度',
         SYS_CODE: 'CAPTURE_CONC',
         SYS_ORDER: 10,
         SYS_TYPE: 'number',
         SYS_GENRE: captureResultClassGenre.id})
-    createAttribute({
+    let attrCRSize = await createAttribute({
         label: '片段大小',
         SYS_CODE: 'CAPTURE_FRAGMENT_SIZE',
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
         SYS_GENRE: captureResultClassGenre.id})
+    //}}}
 
-    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80)
+    // Lane Prepare{{{
+    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+                attrGPPanelCode.id,
+                attrCRConc.id,
+                attrCRSize.id,
+            ],
+        })
+    lanePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let lanePrepareClassGenre = await createGenre(lanePrepareClassEntity)
-    createAttribute({
+    let attrLPCode = await createAttribute({
         label: '混合文库编号',
         SYS_CODE: 'SYS_LANE_CODE',
         SYS_ORDER: 10,
@@ -500,13 +661,13 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'date',
         SYS_GENRE: lanePrepareClassGenre.id})
-    createAttribute({
+    let attrLPConc = await createAttribute({
         label: '混合实际浓度',
         SYS_CODE: 'HYBRID_CONC_PRACTICAL',
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: lanePrepareClassGenre.id})
-    createAttribute({
+    let attrLPConcRef = await createAttribute({
         label: '混合理论浓度',
         SYS_CODE: 'HYBRID_CONC_THEORETICAL',
         SYS_ORDER: 40,
@@ -518,7 +679,7 @@ module.exports = async function(){
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: lanePrepareClassGenre.id})
-    createAttribute({
+    let attrLPVolume = await createAttribute({
         label: '混合后体积',
         SYS_CODE: 'HYBRID_VOLUME',
         SYS_ORDER: 60,
@@ -560,9 +721,27 @@ module.exports = async function(){
         SYS_ORDER: 110,
         SYS_TYPE: 'date',
         SYS_GENRE: lanePrepareClassGenre.id})
-    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90)
+    //}}}
+
+    // Run Prepare{{{
+    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+                attrGPPanelCode.id,
+                attrLPCode.id,
+                attrLPConc.id,
+                attrLPVolume.id,
+            ],
+        })
+    runPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let runPrepareClassGenre = await createGenre(runPrepareClassEntity)
-    createAttribute({
+    let attrRPCode = await createAttribute({
         label: '方案名称',
         SYS_CODE: 'SYS_RUN_CODE',
         SYS_ORDER: 10,
@@ -582,14 +761,14 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'device:仪器故障,operation:操作步骤不当,reagent:试剂原因,server:服务器原因,other:其他原因',
         SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
+    let attrRPInstrumentCode = await createAttribute({
         label: '机器编号',
         SYS_CODE: 'INSTURMENT_CODE',
         SYS_ORDER: 40,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'alane:A,blane:B',
         SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
+    let attrRPType = await createAttribute({
         label: '测序类型',
         SYS_CODE: 'SEQUENCE_TYPE',
         SYS_ORDER: 50,
@@ -602,8 +781,21 @@ module.exports = async function(){
         SYS_ORDER: 60,
         SYS_TYPE: 'text',
         SYS_GENRE: runPrepareClassGenre.id})
+    //}}}
 
-    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100)
+    // Run Result{{{
+    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleCode.id,
+                attrGPSampleName.id,
+                attrRPCode.id,
+                attrRPInstrumentCode.id,
+                attrRPType.id,
+            ],
+        })
+    runResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let runResultClassGenre = await createGenre(runResultClassEntity)
     createAttribute({
         label: '下机数据路径',
@@ -630,64 +822,11 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'text',
         SYS_GENRE: runResultClassGenre.id})
+    //}}}
 
-    let projectWCDomainEntity = await createEntity(domainGenre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
-    let projectWCDomainGenre = await createGenre(projectWCDomainEntity)
-    let generalProjectClassEntity = await createEntity(projectWCDomainGenre, "GENERAL_PROJECT", 1, "General Project")
-    let generalProjectClassGenre = await createGenre(generalProjectClassEntity)
-    createAttribute({
-        label: '样品编号',
-        // SYS prefix to indicate importance
-        // to get the all the workcenters in
-        // plan for the specific sample
-        SYS_CODE: 'SYS_SAMPLE_CODE',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_IS_ENTITY_LABEL: true,
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: '样品名称',
-        SYS_CODE: 'SAMPLE_NAME',
-        SYS_ORDER: 20,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: '计划进度',
-        SYS_CODE: 'SYS_DATE_SCHEDULED',
-        SYS_ORDER: 30,
-        SYS_TYPE: 'date',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: 'Panel编号',
-        SYS_CODE: 'SYS_PANEL_CODE',
-        SYS_ORDER: 40,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: '数据量',
-        SYS_CODE: 'SYS_DATA_SIZE',
-        SYS_ORDER: 50,
-        SYS_TYPE: 'number',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: '测序深度',
-        SYS_CODE: 'SEQUENCING_DEPTH',
-        SYS_ORDER: 60,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: 'Index编号',
-        SYS_CODE: 'SYS_INDEX_CODE',
-        SYS_ORDER: 70,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    createAttribute({
-        label: 'Index序列',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE',
-        SYS_ORDER: 80,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
+    //}}}
 
+    // Routing Domain{{{
     let routingDomainEntity = await createEntity(domainGenre, "ROUTING",0, "Routings")
     let routingDomainGenre = await createGenre(routingDomainEntity)
     let productRoutingClassEntity = await createEntity(routingDomainGenre, "PRODUCT_ROUTING", 1, "Product " + routingDomainGenre.label)
@@ -708,6 +847,19 @@ module.exports = async function(){
         SYS_GENRE: productRoutingClassGenre.id,
         label: 'Routing V1' // compatable with the createEntity
     }).save()
+
+    // add routing v1 to the general project
+    createAttribute({
+        label: 'Routing',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 100,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: v1CollEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_GENRE:generalProjectClassGenre.id
+    })
+
     let v1CollGenre = await createGenre(v1CollEntity)
     await createAttribute({
         // leave label blank as a leading checkbox
@@ -829,7 +981,9 @@ module.exports = async function(){
         SYS_SOURCE: runResultClassEntity.id,
         SYS_DURATION: 10,
     }).save()
+    //}}}
 
+    // Sale Domain{{{
     let saleDomainEntity = await createEntity(domainGenre, "SALE", 0, "Sales")
     let saleDomainGenre = await createGenre(saleDomainEntity)
     let clientClassEntity = await createEntity(saleDomainGenre, "CLIENT", 1, "Client " + saleDomainGenre.label)
@@ -841,16 +995,17 @@ module.exports = async function(){
     let contractClassGenre = await createGenre(contractClassEntity)
     let batchClassEntity = await createEntity(saleDomainGenre, "BATCH", 1, "Batch " + saleDomainGenre.label)
     let batchClassGenre = await createGenre(batchClassEntity)
+    //}}}
 
+    // Sample Domain{{{
     let sampleDomainEntity = await createEntity(domainGenre, "SAMPLE",0, "Samples")
     let sampleDomainGenre = await createGenre(sampleDomainEntity)
     let defaultSampleClassEntity = await createEntity(sampleDomainGenre, "DEFAULT", 1, "Default " + sampleDomainGenre.label)
     let defaultSampleClassGenre = await createGenre(defaultSampleClassEntity)
     let defaultSampleCollEntity = await createEntity(defaultSampleClassGenre, "DEFAULT", 2, "Default Collection " + defaultSampleClassGenre.label)
     let defaultSampleCollGenre = await createGenre(defaultSampleCollEntity)
+    //}}}
 
     console.log(">>> done!")
-
-
 
 }
