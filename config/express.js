@@ -20,11 +20,15 @@ module.exports = function() {
     app.use(bodyParser.json())
     app.use(methodOverride())
     app.all('*', function(req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.header('Access-Control-Allow-Headers', 'Content-Type');
+        if (config.corsOrigin.includes(req.headers.origin)) {
+            res.header('Access-Control-Allow-Origin', req.headers.origin);
+            res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+            res.header('Access-Control-Allow-Headers', 'Content-Type');
+            res.header('Access-Control-Allow-Credentials', 'true')
+        }
         next();
     });
+
     require('../app/routes/entity')(app)
     require('../app/routes/genre')(app)
     require('../app/routes/attribute')(app)

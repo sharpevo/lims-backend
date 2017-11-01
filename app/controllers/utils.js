@@ -5,6 +5,50 @@ const Entity = require('mongoose').model('Entity')
 const formidable = require('formidable')
 const XLSX = require('xlsx')
 
+exports.setCookie = function(req, res, next){
+    let token = req.query.token
+    let remember = req.query.remember
+    console.log("param", token, remember)
+    if (token) {
+        let expires = new Date()
+        let minutes = 30
+        if (remember == "true"){
+            minutes = 43200 // 30 * 24 * 60
+        }
+        expires.setTime(expires.getTime() + minutes * 60 * 1000)
+        res.cookie("token", token, {expires: expires, httpOnly: true})
+        res.status(200).json({
+            "message": "success"
+        })
+    } else {
+        res.status(200).json({
+            "errmsg": "invalid request"
+        })
+    }
+    return
+}
+
+exports.getUserInfo = function(req, res, next){
+    console.log("headers", req.headers)
+    let id = req.headers["igenetech-user-id"]
+    let name = req.headers["igenetech-user-name"]
+    let email = req.headers["igenetech-user-email"]
+    let role = req.headers["igenetech-user-roles"]
+
+    if (id) {
+        res.status(200).json({
+            "id": id,
+            "name": name,
+            "email": email,
+            "role": role,
+        })
+    } else {
+        res.status(400).json({
+            "errmsg": "invalid request"
+        })
+    }
+}
+
 exports.excelToJSON = function(req, res, next){
     let form = new formidable.IncomingForm()
 
