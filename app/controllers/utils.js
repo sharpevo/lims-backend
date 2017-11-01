@@ -10,7 +10,13 @@ exports.setCookie = function(req, res, next){
     let remember = req.query.remember
     console.log("param", token, remember)
     if (token) {
-        res.cookie("token", token)
+        let expires = new Date()
+        let minutes = 30
+        if (remember == "true"){
+            minutes = 43200 // 30 * 24 * 60
+        }
+        expires.setTime(expires.getTime() + minutes * 60 * 1000)
+        res.cookie("token", token, {expires: expires, httpOnly: true})
         res.status(200).json({
             "message": "success"
         })
