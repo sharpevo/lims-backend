@@ -29,17 +29,18 @@ exports.setCookie = function(req, res, next){
 }
 
 exports.getUserInfo = function(req, res, next){
-    console.log("headers", req.headers)
     let id = req.headers["igenetech-user-id"]
     let name = req.headers["igenetech-user-name"]
     let email = req.headers["igenetech-user-email"]
-    let role = req.headers["igenetech-user-roles"]
+    let roles = req.headers["igenetech-user-roles"]
+    let role = req.headers["igenetech-user-role"]
 
     if (id) {
         res.status(200).json({
             "id": id,
             "name": name,
             "email": email,
+            "roles": roles,
             "role": role,
         })
     } else {
