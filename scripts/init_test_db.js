@@ -41,6 +41,23 @@ function createGenre(entity){
         })
 }
 
+function createGenreWithAttributes(entity, attributes){
+    let genre = Genre({
+        SYS_IDENTIFIER: entity.SYS_IDENTIFIER + "/",
+        SYS_ENTITY: entity.id,
+        label: entity.label + " Genre",
+    })
+    Object.keys(attributes).forEach(attr => {
+        genre.set(attr, attributes[attr])
+    })
+    return genre
+        .save()
+        .catch(err => {
+            console.log("createGenre", err)
+        })
+}
+
+
 function createEntity(genre, identifier, typeIndex, label){
     return Entity({
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
@@ -48,6 +65,25 @@ function createEntity(genre, identifier, typeIndex, label){
         SYS_GENRE: genre,
         label: label.replace(" Genre","")
     })
+        .save()
+        .catch(err => {
+            console.log("createEntity", err)
+        })
+}
+
+function createEntityWithAttributes(genre, identifier, typeIndex, attributes){
+    let entity = Entity({
+        SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
+        SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
+        SYS_GENRE: genre,
+    })
+    Object.keys(attributes).forEach(attr => {
+        entity.set(attr, attributes[attr])
+    })
+    //let entity = Entity.hydrate(entityObj)
+    //console.log("---", entityDoc)
+
+    return entity
         .save()
         .catch(err => {
             console.log("createEntity", err)
@@ -115,11 +151,25 @@ module.exports = async function(){
     let hrDomainEntity = await createEntity(domainGenre, "HUMAN_RESOURCE", 0, "Human Resource")
     let hrDomainGenre = await createGenre(hrDomainEntity)
     let hrClassEntity = await createEntity(hrDomainGenre, "IGENETECH", 1, "Staff")
-    let hrClassGenre = await createGenre(hrClassEntity)
-    createEntity(hrClassGenre, "001", 2, "Neville")
-    createEntity(hrClassGenre, "002", 2, "Luna")
-    createEntity(hrClassGenre, "003", 2, "Gandalf")
-    createEntity(hrClassGenre, "004", 2, "Lummen")
+    //let hrClassGenre = await createGenre(hrClassEntity)
+    let hrClassGenre = await createGenreWithAttributes(hrClassEntity, {'SYS_LABEL': 'SYS_USER_NAME'})
+    createAttribute({
+        label: 'Email',
+        SYS_CODE: 'SYS_USER_EMAIL',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: hrClassGenre.id})
+    createAttribute({
+        label: 'Name',
+        SYS_CODE: 'SYS_USER_NAME',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: hrClassGenre.id})
+    createEntityWithAttributes(hrClassGenre, "001", 2, {"SYS_LABEL": "SYS_USER_NAME", "SYS_USER_NAME": "Neville"})
+    createEntityWithAttributes(hrClassGenre, "002", 2, {"SYS_LABEL": "SYS_USER_NAME", "SYS_USER_NAME": "Luna"})
+    createEntityWithAttributes(hrClassGenre, "003", 2, {"SYS_LABEL": "SYS_USER_NAME", "SYS_USER_NAME": "Gandalf"})
+    createEntityWithAttributes(hrClassGenre, "004", 2, {"SYS_LABEL": "SYS_USER_NAME", "SYS_USER_NAME": "Lummen"})
+    createEntityWithAttributes(hrClassGenre, "005", 2, {"SYS_LABEL": "SYS_USER_NAME", "SYS_USER_NAME": "测试", "SYS_USER_EMAIL":"quwubin@gmail.com"})
     //}}}
 
     // Instrument Domain{{{
