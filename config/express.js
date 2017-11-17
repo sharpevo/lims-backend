@@ -28,6 +28,20 @@ module.exports = function() {
         }
         next();
     });
+    app.use((req, res, next) => {
+        idKey = 'igenetech-user-id'
+        nameKey = 'igenetech-user-name'
+        emailKey = 'igenetech-user-email'
+        rolesKey = 'igenetech-user-roles'
+        roleKey = 'igenetech-user-role'
+
+        res.header(idKey, req.headers[idKey])
+        res.header(nameKey, req.headers[nameKey])
+        res.header(emailKey, req.headers[emailKey])
+        res.header(rolesKey, req.headers[rolesKey])
+        res.header(roleKey, req.headers[roleKey])
+        next()
+    })
 
     require('../app/routes/entity')(app)
     require('../app/routes/genre')(app)
