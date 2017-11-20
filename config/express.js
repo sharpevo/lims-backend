@@ -7,7 +7,10 @@ const methodOverride = require('method-override')
 //const session = require('express-session')
 
 module.exports = function() {
+
+    const Entity = require('mongoose').model('Entity')
     const app = express()
+    var limsId = ""
     if (process.env.NODE_ENV === 'development'){
         app.use(morgan('dev'))
     } else if (process.env.NODE_ENV === 'production') {
@@ -31,14 +34,26 @@ module.exports = function() {
         }
         next();
     });
+
     app.use((req, res, next) => {
         idKey = 'igenetech-user-id'
+        limsIdKey = 'igenetech-user-limsid'
         nameKey = 'igenetech-user-name'
         emailKey = 'igenetech-user-email'
         rolesKey = 'igenetech-user-roles'
         roleKey = 'igenetech-user-role'
 
+        if (limsId == "" && req.headers[emailKey]) {
+            Entity.find({
+                "SYS_USER_EMAIL": req.headers[emailKey],
+            }, (err, entities) =>  {
+                console.log(">", entities.length)
+                limsId = entities[0].id
+            })
+        }
+
         res.header(idKey, req.headers[idKey])
+        res.header(limsIdKey, limsId)
         res.header(nameKey, req.headers[nameKey])
         res.header(emailKey, req.headers[emailKey])
         res.header(rolesKey, req.headers[rolesKey])
@@ -50,6 +65,8 @@ module.exports = function() {
     require('../app/routes/genre')(app)
     require('../app/routes/attribute')(app)
     require('../app/routes/utils')(app)
+
+
     //app.use(session({
     //saveUninitialized: true,
     //resave: true,
