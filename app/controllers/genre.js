@@ -1,6 +1,8 @@
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
 const Attribute = require('mongoose').model('Attribute')
+const Utils = require('../utils/controller')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     const genre = new Genre(req.body)
@@ -16,21 +18,10 @@ exports.create = function(req, res, next){
 }
 
 exports.list = function(req, res, next){
-    let options = {}
-    if (req.query.limit){
-        options["limit"] = parseInt(req.query.limit)
-        delete req.query["limit"]
-    }
-    if (req.query.skip){
-        options["skip"] = parseInt(req.query.skip)
-        delete req.query["skip"]
-    }
-
-    Genre.find(
-        req.query,
-        '',
-        options,
-        (err, genres) => {
+    let query = Utils.list(req, Genre)
+    query
+        .populate('SYS_ENTITY')
+        .exec((err, genres) => {
             if (err){
                 return res.status(400).send({
                     message: parseError(err)
@@ -39,12 +30,17 @@ exports.list = function(req, res, next){
                 res.status(200).json(genres)
             }
         })
-        .populate('SYS_ENTITY')
 }
 
 // Actions with ID specified
 
 exports.getGenreById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Genre.findOne(
         {_id: id},
         (err, genre) => {

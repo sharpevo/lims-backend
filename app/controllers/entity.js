@@ -1,10 +1,17 @@
 const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
+const Utils = require('../utils/controller')
+const async = require('async')
+const ObjectId = require('mongoose').Types.ObjectId
 
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
     // rather than setter modifier
+    if (!entity.SYS_IDENTIFIER){
+        console.log(entity.SYS_IDENTIFIER)
+        return res.status(400).json("Invalid SYS_IDENTIFIER")
+    }
     entity.SYS_GENRE_IDENTIFIER = entity.SYS_IDENTIFIER.substr(0, entity.SYS_IDENTIFIER.lastIndexOf("/")+1)
     entity.save((err) => {
         if (err) {
@@ -18,115 +25,79 @@ exports.create = function(req, res, next){
 }
 
 exports.list = function(req, res, next){
-    let limit_params = ""
-    let skip_params = ""
-    let sort_params = ""
-    let where_params = ""
-    let select_params = ""
-    //console.log(req.query)
-    if (req.query.limit){
-        limit_params = parseInt(req.query.limit)
-        delete req.query["limit"]
-    }
-
-    if (req.query.skip){
-        skip_params = parseInt(req.query.skip)
-        delete req.query["skip"]
-    }
-
-    if (req.query.where){
-        //where_params = req.query.where
-        //delete req.query["where"]
-        try {
-            where_params = JSON.parse(req.query.where)
-            delete req.query["where"]
-        } catch (e) {
-            console.error('invalid json object')
-        }
-    }
-
-    if (req.query.sort){
-        sort_params = req.query.sort
-        delete req.query["sort"]
-    }
-
-    if (req.query.select){
-        select_params = req.query.select
-        delete req.query["select"]
-    }
-
-    let query = Entity.find(req.query)
-
-    if (where_params){
-        // the `where` parameter is formed like:
-        // {
-        //    "SYS_ENTITY_TYPE": {
-        //        "=": "class"
-        //    },
-        //    "SYS_IDENTIFIER": {
-        //        "regex": "/BOM/"
-        //    }
-        //}
-        // Note that the regex is strings in the slashes
-        Object.keys(where_params).forEach((key) => { // key = field
-            Object.keys(where_params[key]).forEach((operation) => {
-                switch (operation) {
-                    case "regex":
-                        //console.log(key)
-                        //console.log(where_params[key]["regex"])
-                        query.where(key).regex(where_params[key]["regex"])
-                        //query.where("SYS_IDENTIFIER").regex("/MATERIAL$")
-                        break
-                    case "=":
-                        //console.log(key)
-                        //console.log(where_params[key]["="])
-                        query.where(key).equals(where_params[key]["="])
-                        break
-                    default:
-                        console.log("invalid operation")
-                }
-
-            })
-        })
-    }
-
-    if (limit_params){
-        query.limit(limit_params)
-    }
-
-    if (skip_params){
-        query.skip(skip_params)
-    }
-
-    // sort by "field" ascending and "test" descending
-    // query.sort('field -test');
-    if (sort_params){
-        query.sort(sort_params)
-    }
-
-    // not support for the select array currently
-    if (select_params){
-        //console.log(select_params)
-        query.select(select_params)
-        //query.select('-SYS_IDENTIFIER')
-    }
-
+    let query = Utils.list(req, Entity)
     query
-    //.populate('SYS_GENRE_LIST')
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
+    query
         .exec((err, entities) => {
             if (err){
                 return res.status(400).send({
                     message: parseError(err)
                 })
             } else {
-                res.status(200).json(entities)
+                let calls = []
+                entities.forEach(entity => {
+                    calls.push(callback =>{
+                        addEntitySchema(entity, entityObj => {
+                            callback(null, entityObj)
+                        })
+                    })
+                })
+                async.parallel(calls, (err, results) => {
+                    if (err) {
+                        return res.status(400).send({
+                            message:err
+                        })
+                    }
+                    res.status(200).json(results)
+                })
             }
         })
+}
+
+addEntitySchema = function(entity, callback){
+    Attribute.find(
+        {"SYS_GENRE": entity.SYS_GENRE},
+        '',
+        {
+            sort:{
+                SYS_ORDER: 1
+            }
+        },
+        (err, attributes) => {
+            var entityObj = entity.toObject()
+            entityObj['SYS_SCHEMA'] = []
+
+            // assign id before the attribtues loop
+            // for entities without any attributes
+            entityObj['id'] = entityObj['_id']
+
+            attributes.forEach(attr => {
+                var attrObj = attr.toObject()
+                entityObj['SYS_SCHEMA'].push({
+                    "SYS_CODE": attrObj['SYS_CODE'],
+                    "SYS_TYPE": attrObj['SYS_TYPE'],
+                    "SYS_GENRE": attrObj['SYS_GENRE'],
+                    "SYS_LABEL": attrObj[attrObj['SYS_LABEL']]
+                })
+            })
+            callback(entityObj)
+        })
+
 }
 
 // Actions with ID specified
 
 exports.getEntityById = function(req, res, next, id) {
+    if (id == 'undefined' || !ObjectId.isValid(id)){
+        return res.status(400).send({
+            message:"invalid id"
+        })
+    }
+
     Entity.findOne(
         {_id: id},
         (err, entity) => {
@@ -136,11 +107,21 @@ exports.getEntityById = function(req, res, next, id) {
                 })
                 // without next method, IMO
             } else {
-                req.entity = entity
-                next() // important
+                if (!entity){
+                    res.status(400).json("Invalid id")
+                    return
+                }
+
+                addEntitySchema(entity, entityObj => {
+                    req.entity = Entity.hydrate(entityObj)
+                    next() // important
+                })
             }
-        }
-    )
+        })
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
     //.populate('SYS_GENRE_LIST')
 }
 
@@ -194,10 +175,14 @@ exports.genre = function (req, res, next){
 }
 
 exports.attribute = function (req, res, next){
-    console.log(req.entity.SYS_GENRE)
     Attribute.find(
         {"SYS_GENRE": req.entity.SYS_GENRE},
         '',
+        {
+            sort:{
+                SYS_ORDER: 1
+            }
+        },
         (err, attributes) => {
             if (err) {
                 return res.status(400).send({
@@ -227,10 +212,29 @@ exports.entity = function (req, res, next){
                     message: parseError(err)
                 })
             } else {
-                res.status(200).json(entities)
+                let calls = []
+                entities.forEach(entity => {
+                    calls.push(callback =>{
+                        addEntitySchema(entity, entityObj => {
+                            callback(null, entityObj)
+                        })
+                    })
+                })
+                async.parallel(calls, (err, results) => {
+                    if (err) {
+                        return res.status(400).send({
+                            message:err
+                        })
+                    }
+                    res.status(200).json(results)
+                })
             }
         }
     )
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
 }
 
 const parseError = function(err) {
@@ -239,6 +243,7 @@ const parseError = function(err) {
             if (err.errors[errName].message) return err.errors[errName].message
         }
     } else {
+        console.error(err)
         return 'Unknown server errer'
     }
 }
