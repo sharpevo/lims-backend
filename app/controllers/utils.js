@@ -1,3 +1,5 @@
+const path = require('path')
+const config = require(path.join(__dirname, '../../config/config.js'))
 const Attribute = require('mongoose').model('Attribute')
 const Genre = require('mongoose').model('Genre')
 const Entity = require('mongoose').model('Entity')
@@ -21,9 +23,7 @@ exports.setCookie = function(req, res, next){
             "message": "success"
         })
     } else {
-        res.status(200).json({
-            "errmsg": "invalid request"
-        })
+        return res.redirect(config.frontendUrl)
     }
     return
 }

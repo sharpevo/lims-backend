@@ -47,8 +47,11 @@ module.exports = function() {
             Entity.find({
                 "SYS_USER_EMAIL": req.headers[emailKey],
             }, (err, entities) =>  {
-                console.log(">", entities.length)
-                limsId = entities[0].id
+                if (entities.length == 0 || err){
+                    limsId = ""
+                } else {
+                    limsId = entities[0].id
+                }
             })
         }
 
