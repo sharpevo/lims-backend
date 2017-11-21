@@ -1,5 +1,8 @@
 FROM node:8.7
 
+ARG GIT_COMMIT=unspecified
+LABEL git_commit=$GIT_COMMIT
+
 # Create app directory
 WORKDIR /usr/src/app
 
