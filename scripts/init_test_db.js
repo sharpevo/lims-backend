@@ -384,28 +384,28 @@ module.exports = async function(){
     })
 
     // Sample Extraction{{{
-    let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_ASSIGN", 1, "样品提取", 10,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id
-            ],
-        })
-    let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
-    await createAttribute({
-        label: '提取人',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 100,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: sampleExtractClassGenre.id})
+    //let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_ASSIGN", 1, "样品提取", 10,
+    //{
+    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+    //attrGPSampleCode.id,
+    //attrGPSampleName.id
+    //],
+    //})
+    //let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
+    //await createAttribute({
+    //label: '提取人',
+    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+    //SYS_ORDER: 100,
+    //SYS_TYPE: 'entity',
+    //SYS_TYPE_ENTITY: hrClassEntity.id,
+    //SYS_TYPE_ENTITY_REF: true,
+    //SYS_FLOOR_ENTITY_TYPE: 'collection',
+    //SYS_GENRE: sampleExtractClassGenre.id})
     //}}}
 
     // Sample Extract Result{{{
-    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_RESULT", 1, "样品提取结果", 20,
+    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_RESULT", 1, "样品提取", 20,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
@@ -490,27 +490,27 @@ module.exports = async function(){
     //}}}
 
     // Sample QC Review{{{
-    let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrSERResult.id,
-                attrSERStatus.id
-            ],
-        })
-    sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
-    await createAttribute({
-        label: '审核员',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: sampleQCReviewClassGenre.id})
+    //let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
+    //{
+    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+    //attrGPSampleCode.id,
+    //attrGPSampleName.id,
+    //attrSERResult.id,
+    //attrSERStatus.id
+    //],
+    //})
+    //sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
+    //let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
+    //await createAttribute({
+    //label: '审核员',
+    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+    //SYS_ORDER: 10,
+    //SYS_TYPE: 'entity',
+    //SYS_TYPE_ENTITY_REF: true,
+    //SYS_TYPE_ENTITY: hrClassEntity.id,
+    //SYS_FLOOR_ENTITY_TYPE: 'collection',
+    //SYS_GENRE: sampleQCReviewClassGenre.id})
     //}}}
 
     // Library Prepare{{{
@@ -941,39 +941,39 @@ module.exports = async function(){
         SYS_TYPE: 'number',
         SYS_GENRE: v1CollGenre.id})
 
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'EXTRACTION_PREPARE',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: true,
-        SYS_ORDER: 10,
-        SYS_SOURCE: sampleExtractClassEntity.id,
-        SYS_DURATION: 3,
-    }).save()
+    //Entity({
+    //SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'EXTRACTION_PREPARE',
+    //SYS_ENTITY_TYPE: 'object',
+    //SYS_GENRE: v1CollGenre.id,
+    //SYS_CHECKED: true,
+    //SYS_ORDER: 10,
+    //SYS_SOURCE: sampleExtractClassEntity.id,
+    //SYS_DURATION: 3,
+    //}).save()
     Entity({
         SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'EXTRACTION_RESULT',
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 20,
+        SYS_ORDER: 10,
         SYS_SOURCE: sampleExtractResultClassEntity.id,
         SYS_DURATION: 2,
     }).save()
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: true,
-        SYS_ORDER: 30,
-        SYS_SOURCE: sampleQCReviewClassEntity.id,
-        SYS_DURATION: 2,
-    }).save()
+    //Entity({
+    //SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
+    //SYS_ENTITY_TYPE: 'object',
+    //SYS_GENRE: v1CollGenre.id,
+    //SYS_CHECKED: true,
+    //SYS_ORDER: 30,
+    //SYS_SOURCE: sampleQCReviewClassEntity.id,
+    //SYS_DURATION: 2,
+    //}).save()
     Entity({
         SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARE',
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 40,
+        SYS_ORDER: 20,
         SYS_SOURCE: libraryPrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
@@ -982,7 +982,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 50,
+        SYS_ORDER: 30,
         SYS_SOURCE: libraryReviewClassEntity.id,
         SYS_DURATION: 2,
     }).save()
@@ -991,7 +991,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 60,
+        SYS_ORDER: 40,
         SYS_SOURCE: capturePrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
@@ -1000,7 +1000,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 70,
+        SYS_ORDER: 50,
         SYS_SOURCE: captureResultClassEntity.id,
         SYS_DURATION: 2,
     }).save()
@@ -1009,7 +1009,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 80,
+        SYS_ORDER: 60,
         SYS_SOURCE: lanePrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
@@ -1018,7 +1018,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: false,
-        SYS_ORDER: 90,
+        SYS_ORDER: 70,
         SYS_SOURCE: runPrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
@@ -1027,7 +1027,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: false,
-        SYS_ORDER: 100,
+        SYS_ORDER: 80,
         SYS_SOURCE: runResultClassEntity.id,
         SYS_DURATION: 10,
     }).save()
