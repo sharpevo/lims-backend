@@ -544,9 +544,21 @@ module.exports = async function(){
         SYS_TYPE_LIST: '1:通过,-1:不通过',
         SYS_GENRE: projectApprovalClassGenre.id})
     createAttribute({
+        label: '项目启动时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
+        SYS_ORDER: 20,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    createAttribute({
+        label: '项目预警时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'WARN_DATE'),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 20,
+        SYS_ORDER: 40,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -555,7 +567,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 30,
+        SYS_ORDER: 50,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
     //}}}
