@@ -424,7 +424,7 @@ module.exports = async function(){
         SYS_GENRE: prodWCDomainGenre.id
     })
 
-    // Sample Extraction {{{
+    // DNA Extraction {{{
     let DNAExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_EXTRACT, 1, "样品提取", 10,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
@@ -542,7 +542,7 @@ module.exports = async function(){
         SYS_ORDER: 10,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:通过,-1:不通过',
-        SYS_GENRE: projectApprovalClassGenre.id})//}}}
+        SYS_GENRE: projectApprovalClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
@@ -558,6 +558,7 @@ module.exports = async function(){
         SYS_ORDER: 30,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
+    //}}}
 
     // DNA Shear{{{
     let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SHEAR, 1, "打断", 30,
@@ -580,7 +581,7 @@ module.exports = async function(){
         SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, 'CODE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
-        SYS_GENRE: dnaShearClassGenre.id})//}}}
+        SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
@@ -596,6 +597,7 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'date',
         SYS_GENRE: dnaShearClassGenre.id})
+    //}}}
 
     // Library Prepare{{{
     let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_LIBRARY_PREPARE, 1, "文库制备", 40,
@@ -820,8 +822,8 @@ module.exports = async function(){
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     //}}}
 
-    // Lane Prepare{{{
-    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_POOLING, 1, "Pooling", 70,
+    // Pooling{{{
+    let poolingClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_POOLING, 1, "Pooling", 70,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
@@ -834,37 +836,37 @@ module.exports = async function(){
                 attrGPSampleType.id,
             ],
         })
-    let lanePrepareClassGenre = await createGenre(lanePrepareClassEntity)
+    let poolingClassGenre = await createGenre(poolingClassEntity)
     let attrLPCode = await createAttribute({
         label: '混合文库名称',
         SYS_CODE: 'SYS_LANE_CODE',
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '文库类型',
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_TYPE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '文库长度',
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_LENGTH'),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '合成ID',
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'SYNTHETIC_ID'),
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '分析要求',
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
@@ -873,13 +875,13 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
         SYS_ORDER: 30,
         SYS_TYPE: 'date',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     //}}}
 
     //}}}
@@ -1009,7 +1011,7 @@ module.exports = async function(){
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 60,
-        SYS_SOURCE: lanePrepareClassEntity.id,
+        SYS_SOURCE: poolingClassEntity.id,
         SYS_DURATION: 5,
     }).save()
     //}}}
