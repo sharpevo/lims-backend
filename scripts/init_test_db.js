@@ -554,6 +554,7 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrGPProjectCode.id,
                 attrGPPanelCode.id,
+                attrGPProjectCode,
             ],
         })
     let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
