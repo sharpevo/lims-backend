@@ -412,28 +412,7 @@ module.exports = async function(){
         SYS_GENRE: prodWCDomainGenre.id
     })
 
-    // Sample Extraction{{{
-    //let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_ASSIGN", 1, "样品提取", 10,
-    //{
-    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-    //attrGPSampleCode.id,
-    //attrGPSampleName.id
-    //],
-    //})
-    //let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
-    //await createAttribute({
-    //label: '提取人',
-    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-    //SYS_ORDER: 100,
-    //SYS_TYPE: 'entity',
-    //SYS_TYPE_ENTITY: hrClassEntity.id,
-    //SYS_TYPE_ENTITY_REF: true,
-    //SYS_FLOOR_ENTITY_TYPE: 'collection',
-    //SYS_GENRE: sampleExtractClassGenre.id})
-    //}}}
-
-    // Sample Extract Result{{{
+    // Sample Extraction {{{
     let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_RESULT", 1, "样品提取", 10,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
@@ -524,8 +503,26 @@ module.exports = async function(){
         SYS_GENRE: sampleExtractResultClassGenre.id})
     //}}}
 
-    // DNA Shear
-    let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, "DNA_SHEAR", 1, "打断", 20,
+    // Project Approve{{{
+    let projectApprovalClassEntity = await createEntityWithOrder(prodWCDomainGenre, "PROJECT_APPROVAL", 1, "项目审核", 20,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectCode.id,
+                attrGPPanelCode.id,
+            ],
+        })
+    let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
+    createAttribute({
+        label: '审核结果',
+        SYS_CODE: 'CONF_PROJECT_APPROVAL_RESULT',
+        SYS_ORDER: 80,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:通过,-1:不通过',
+        SYS_GENRE: projectApprovalClassGenre.id})//}}}
+
+    // DNA Shear{{{
+    let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, "DNA_SHEAR", 1, "打断", 30,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
@@ -546,31 +543,7 @@ module.exports = async function(){
         SYS_CODE: 'CONF_SHEARC_CODE',
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
-        SYS_GENRE: dnaShearClassGenre.id})
-
-    // Sample QC Review{{{
-    //let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
-    //{
-    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-    //attrGPSampleCode.id,
-    //attrGPSampleName.id,
-    //attrSERResult.id,
-    //attrSERStatus.id
-    //],
-    //})
-    //sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    //let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
-    //await createAttribute({
-    //label: '审核员',
-    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-    //SYS_ORDER: 10,
-    //SYS_TYPE: 'entity',
-    //SYS_TYPE_ENTITY_REF: true,
-    //SYS_TYPE_ENTITY: hrClassEntity.id,
-    //SYS_FLOOR_ENTITY_TYPE: 'collection',
-    //SYS_GENRE: sampleQCReviewClassGenre.id})
-    //}}}
+        SYS_GENRE: dnaShearClassGenre.id})//}}}
 
     // Library Prepare{{{
     let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40,
@@ -657,33 +630,8 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
 
-    // Library Review{{{
-    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrLRName.id,
-                attrLRConc.id,
-                attrLRVolume.id
-            ],
-        })
-    libraryReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let libraryReviewClassGenre = await createGenre(libraryReviewClassEntity)
-    await createAttribute({
-        label: '审核员',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: libraryReviewClassGenre.id})
-    //}}}
-
     // Capture Prepare{{{
-    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60,
+    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 50,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
@@ -715,32 +663,94 @@ module.exports = async function(){
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
+    let attrCPVolume = await createAttribute({
+        label: '混样提及',
+        SYS_CODE: 'CONF_CAPTURE_VOLUME',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: capturePrepareClassGenre.id})
     //}}}
 
-    // Capture Result{{{
-    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70,
+    // Multiplex Library Prepare{{{
+    let multiplexLibraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "MULTIPLEX_LIBRARY_RESULT", 1, "多重文库制备", 60,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [attrGPSampleCode.id, attrGPSampleName.id, attrCPCode.id, attrCPCount.id],
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrDSCode.id,
+                attrGPPanelCode.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+                attrGPDepth.id,
+                attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrGPSampleType.id,
+                attrGPProjectStarted.id,
+                attrGPProjectCompleted.id,
+            ],
         })
-    captureResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let captureResultClassGenre = await createGenre(captureResultClassEntity)
-    let attrCRConc = await createAttribute({
-        label: '捕获后文库浓度',
-        SYS_CODE: 'CAPTURE_CONC',
+
+    let multiplexLibraryPrepareClassGenre = await createGenre(multiplexLibraryPrepareClassEntity)
+    createAttribute({
+        label: '样本位置',
+        SYS_CODE: 'CONF_SAMPLE_LOCATION',
         SYS_ORDER: 10,
-        SYS_TYPE: 'number',
-        SYS_GENRE: captureResultClassGenre.id})
-    let attrCRSize = await createAttribute({
-        label: '片段大小',
-        SYS_CODE: 'CAPTURE_FRAGMENT_SIZE',
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: 'gDNA浓度',
+        SYS_CODE: 'CONF_GDNA_CONC',
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
-        SYS_GENRE: captureResultClassGenre.id})
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: 'gDNA浓度均一化',
+        SYS_CODE: 'CONF_GDNA_CONC_HOMOGENIZED',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库名称',
+        SYS_CODE: 'CONF_MULTIPLEX_LIBRARY_NAME',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库Index编号',
+        SYS_CODE: 'CONF_MULTIPLEX_LIBRARY_INDEX_CODE',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库浓度',
+        SYS_CODE: 'CONF_MULTIPLEX_LIBRARY_CONC',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库体积',
+        SYS_CODE: 'CONF_MULTIPLEX_LIBRARY_VOLUME',
+        SYS_ORDER: 70,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 80,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '备注',
+        SYS_CODE: 'CONF_MULTIPLEX_LIBRARY_REMARK',
+        SYS_ORDER: 90,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     //}}}
 
     // Lane Prepare{{{
-    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80,
+    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 70,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
@@ -794,105 +804,6 @@ module.exports = async function(){
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: lanePrepareClassGenre.id})
-    //}}}
-
-    // Run Prepare{{{
-    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
-                attrGPPanelCode.id,
-                attrLPCode.id,
-            ],
-        })
-    runPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let runPrepareClassGenre = await createGenre(runPrepareClassEntity)
-    let attrRPCode = await createAttribute({
-        label: '方案名称',
-        SYS_CODE: 'SYS_RUN_CODE',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
-        label: '机器类型',
-        SYS_CODE: 'RUN_INSTRUMENT',
-        SYS_ORDER: 20,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'hiseq:HiSeq,miseq:MiSeq,novaseq:NovaSeq',
-        SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
-        label: '重做原因',
-        SYS_CODE: 'REPEAT_REASON',
-        SYS_ORDER: 30,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'device:仪器故障,operation:操作步骤不当,reagent:试剂原因,server:服务器原因,other:其他原因',
-        SYS_GENRE: runPrepareClassGenre.id})
-    let attrRPInstrumentCode = await createAttribute({
-        label: '机器编号',
-        SYS_CODE: 'INSTURMENT_CODE',
-        SYS_ORDER: 40,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'alane:A,blane:B',
-        SYS_GENRE: runPrepareClassGenre.id})
-    let attrRPType = await createAttribute({
-        label: '测序类型',
-        SYS_CODE: 'SEQUENCE_TYPE',
-        SYS_ORDER: 50,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'pe:PE测序,se:SE测序',
-        SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: 'SEQUENCE_REMARK',
-        SYS_ORDER: 60,
-        SYS_TYPE: 'text',
-        SYS_GENRE: runPrepareClassGenre.id})
-    //}}}
-
-    // Run Result{{{
-    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrRPCode.id,
-                attrRPInstrumentCode.id,
-                attrRPType.id,
-            ],
-        })
-    runResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let runResultClassGenre = await createGenre(runResultClassEntity)
-    createAttribute({
-        label: '下机数据路径',
-        SYS_CODE: 'RUN_DATA_PATH',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '仪器状态',
-        SYS_CODE: 'RUN_INSTRUMENT_STATUS',
-        SYS_ORDER: 20,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:正常,-1:异常',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '确认下机时间',
-        SYS_CODE: 'RUN_COMPLETED_DATE',
-        SYS_ORDER: 30,
-        SYS_TYPE: 'date',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '仪器备注',
-        SYS_CODE: 'RUN_INSTRUMENT_REMARK',
-        SYS_ORDER: 40,
-        SYS_TYPE: 'text',
-        SYS_GENRE: runResultClassGenre.id})
     //}}}
 
     //}}}
@@ -980,32 +891,32 @@ module.exports = async function(){
         SYS_SOURCE: sampleExtractResultClassEntity.id,
         SYS_DURATION: 2,
     }).save()
-    //Entity({
-    //SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
-    //SYS_ENTITY_TYPE: 'object',
-    //SYS_GENRE: v1CollGenre.id,
-    //SYS_CHECKED: true,
-    //SYS_ORDER: 30,
-    //SYS_SOURCE: sampleQCReviewClassEntity.id,
-    //SYS_DURATION: 2,
-    //}).save()
+    Entity({
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_PROJECT_APPROVAL',
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: v1CollGenre.id,
+        SYS_CHECKED: true,
+        SYS_ORDER: 20,
+        SYS_SOURCE: projectApprovalClassEntity.id,
+        SYS_DURATION: 2,
+    }).save()
+    Entity({
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_DNA_SHEAR',
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: v1CollGenre.id,
+        SYS_CHECKED: true,
+        SYS_ORDER: 30,
+        SYS_SOURCE: dnaShearClassEntity.id,
+        SYS_DURATION: 2,
+    }).save()
     Entity({
         SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARE',
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 20,
+        SYS_ORDER: 40,
         SYS_SOURCE: libraryPrepareClassEntity.id,
         SYS_DURATION: 5,
-    }).save()
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'LIBRARY_REVIEW',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: true,
-        SYS_ORDER: 30,
-        SYS_SOURCE: libraryReviewClassEntity.id,
-        SYS_DURATION: 2,
     }).save()
     Entity({
         SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'CAPTURE_PREPARE',
@@ -1017,12 +928,12 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'CAPTURE_RESULT',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'MULTIPLEX_LIBRARY_PREPARE',
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: true,
+        SYS_CHECKED: false,
         SYS_ORDER: 50,
-        SYS_SOURCE: captureResultClassEntity.id,
+        SYS_SOURCE: multiplexLibraryPrepareClassEntity.id,
         SYS_DURATION: 2,
     }).save()
     Entity({
@@ -1033,24 +944,6 @@ module.exports = async function(){
         SYS_ORDER: 60,
         SYS_SOURCE: lanePrepareClassEntity.id,
         SYS_DURATION: 5,
-    }).save()
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SEQUENCE_PREPARE',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: false,
-        SYS_ORDER: 70,
-        SYS_SOURCE: runPrepareClassEntity.id,
-        SYS_DURATION: 5,
-    }).save()
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SEQUENCE_RESULT',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: false,
-        SYS_ORDER: 80,
-        SYS_SOURCE: runResultClassEntity.id,
-        SYS_DURATION: 10,
     }).save()
     //}}}
 
