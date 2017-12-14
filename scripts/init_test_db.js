@@ -10,6 +10,19 @@ const ENTITY_TYPE = {
     3: "object",
 }
 
+const WC_ID_EXTRACT = 'DNA_EXTRACTION'
+const WC_ID_APPROVE = 'PROJECT_APPROVE'
+const WC_ID_SHEAR = 'SHEAR'
+const WC_ID_LIBRARY_PREPARE = 'LIBRARY_PREPARE'
+const WC_ID_CAPTURE = 'CAPTURE_PREPARE'
+const WC_ID_MULTIPLEX_LIBRARY_PREPARE = 'MULTIPLEX_LIBRARY_PREPRAE'
+const WC_ID_POOLING = 'POOLING'
+const WC_ID_SEQUENCE_DATA = 'SEQUENCE_DATA'
+
+function getAttributeIdentifier(workcenterIdentifier, attributeString){
+    return 'CONF_' + workcenterIdentifier + '_' + attributeString
+}
+
 function createWorkcenterAttribute(genre, label, code, type, order){
     let idElem = genre.SYS_IDENTIFIER.split("/")
     createAttribute({
@@ -297,64 +310,91 @@ module.exports = async function(){
         SYS_ORDER: 30,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPSampleSpecies = await createAttribute({
+        label: '样品物种',
+        SYS_CODE: 'CONF_SAMPLE_SPECIES',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPSampleMedium = await createAttribute({
+        label: '样品保存介质',
+        SYS_CODE: 'CONF_SAMPLE_MEDIUM',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDateScheduled = await createAttribute({
         label: '计划进度',
         SYS_CODE: 'SYS_DATE_SCHEDULED',
-        SYS_ORDER: 40,
+        SYS_ORDER: 60,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPPanelCode = await createAttribute({
         label: 'Panel编号',
         SYS_CODE: 'SYS_PANEL_CODE',
-        SYS_ORDER: 50,
+        SYS_ORDER: 70,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDataSize = await createAttribute({
         label: '数据量',
         SYS_CODE: 'SYS_DATA_SIZE',
-        SYS_ORDER: 60,
+        SYS_ORDER: 80,
         SYS_TYPE: 'number',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDepth = await createAttribute({
         label: '测序深度',
         SYS_CODE: 'SEQUENCING_DEPTH',
-        SYS_ORDER: 70,
+        SYS_ORDER: 90,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPIndexCode = await createAttribute({
         label: 'Index编号',
         SYS_CODE: 'SYS_INDEX_CODE',
-        SYS_ORDER: 80,
+        SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPIndexSequence = await createAttribute({
         label: 'Index序列',
         SYS_CODE: 'SYS_INDEX_SEQUENCE',
-        SYS_ORDER: 90,
+        SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectCode = await createAttribute({
         label: '项目编号',
         SYS_CODE: 'CONF_PROJECT_CODE',
-        SYS_ORDER: 100,
+        SYS_ORDER: 120,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectManager = await createAttribute({
         label: '项目负责人',
         SYS_CODE: 'CONF_PROJECT_MANAGER',
-        SYS_ORDER: 110,
+        SYS_ORDER: 130,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectStarted = await createAttribute({
         label: '项目启动时间',
         SYS_CODE: 'CONF_PROJECT_STARTED_DATE',
-        SYS_ORDER: 120,
+        SYS_ORDER: 140,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectCompleted = await createAttribute({
         label: '项目结束时间',
         SYS_CODE: 'CONF_PROJECT_COMPLETED_DATE',
-        SYS_ORDER: 130,
+        SYS_ORDER: 150,
+        SYS_TYPE: 'date',
+        SYS_GENRE: generalProjectClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 160,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: generalProjectClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 170,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
     //}}}
@@ -412,168 +452,246 @@ module.exports = async function(){
         SYS_GENRE: prodWCDomainGenre.id
     })
 
-    // Sample Extraction{{{
-    //let sampleExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_ASSIGN", 1, "样品提取", 10,
-    //{
-    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-    //attrGPSampleCode.id,
-    //attrGPSampleName.id
-    //],
-    //})
-    //let sampleExtractClassGenre = await createGenre(sampleExtractClassEntity)
-    //await createAttribute({
-    //label: '提取人',
-    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-    //SYS_ORDER: 100,
-    //SYS_TYPE: 'entity',
-    //SYS_TYPE_ENTITY: hrClassEntity.id,
-    //SYS_TYPE_ENTITY_REF: true,
-    //SYS_FLOOR_ENTITY_TYPE: 'collection',
-    //SYS_GENRE: sampleExtractClassGenre.id})
-    //}}}
-
-    // Sample Extract Result{{{
-    let sampleExtractResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_EXTRACT_RESULT", 1, "样品提取", 10,
+    // DNA Extraction {{{
+    let DNAExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_EXTRACT, 1, "样品提取", 10,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectManager.id,
+                attrGPProjectCode.id,
+                attrGPProjectStarted.id,
+                //attrGPProjectCompleted.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPSampleName.id,
                 attrGPSampleCode.id,
-                attrGPSampleName.id
+                attrGPSampleMedium.id,
+                attrGPSampleSpecies.id,
             ],
         })
-    sampleExtractResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let sampleExtractResultClassGenre = await createGenre(sampleExtractResultClassEntity)
-    createAttribute({
+    let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
+    let attrDENanodrop = await createAttribute({
         label: 'Nanodrop ng/ul',
-        SYS_CODE: 'CONF_NANO_CONC',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
         SYS_ORDER: 10,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEQubit = await createAttribute({
         label: 'Qubit ng/ul',
-        SYS_CODE: 'CONF_QUBIT_CONC',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QUBIT"),
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDE230 = await createAttribute({
         label: 'OD 260/230',
-        SYS_CODE: 'CONF_OD230',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD230"),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDE280 = await createAttribute({
         label: 'OD 260/280',
-        SYS_CODE: 'CONF_OD280',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD280"),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEVolume = await createAttribute({
         label: '样品体积(ul)',
-        SYS_CODE: 'CONF_VOLUME',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "VOLUME"),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEAmount = await createAttribute({
         label: '样品总量(ng)',
-        SYS_CODE: 'CONF_QUANTITY',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "AMOUNT"),
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    let attrSERResult = await createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEQCGrade = await createAttribute({
         label: '质检结论',
-        SYS_CODE: 'CONF_QC_RESULT',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_RESULT"),
         SYS_ORDER: 70,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEQCRemark = await createAttribute({
         label: '质检备注',
-        SYS_CODE: 'CONF_QC_REMARK',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_REMARK"),
         SYS_ORDER: 80,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
+        SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '质检启动时间',
-        SYS_CODE: 'SYS_DATE_STARTED',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_START_DATE"),
         SYS_ORDER: 90,
         SYS_TYPE: 'date',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
+        SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
-        label: '报告交付时间',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
+        label: '质检完成时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_COMPLETE_DATE"),
         SYS_ORDER: 100,
         SYS_TYPE: 'date',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: 'CONF_EXTRACT_REMARK',
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEReport = await createAttribute({
+        label: '报告交付时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REPORT_DELIVER_DATE"),
         SYS_ORDER: 110,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
+        SYS_TYPE: 'date',
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDERemark = await createAttribute({
+        label: '备注(DNA提取来源)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMARK"),
+        SYS_ORDER: 120,
+        SYS_TYPE: 'string',
+        SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 120,
+        SYS_ORDER: 130,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: sampleExtractResultClassGenre.id})
+        SYS_GENRE: DNAExtractClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 140,
+        SYS_TYPE: 'date',
+        SYS_GENRE: DNAExtractClassGenre.id})
     //}}}
 
-    // DNA Shear
-    let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, "DNA_SHEAR", 1, "打断", 20,
+    // Project Approve{{{
+    let projectApprovalClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_APPROVE, 1, "项目审核", 20,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrGPProjectCode.id,
                 attrGPPanelCode.id,
+                attrGPProjectCode.id,
+                attrDEReport.id,
+                attrDEQCGrade.id,
+                attrDEAmount.id,
+                attrGPSampleType.id,
             ],
         })
-    dnaShearClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
+    let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
+    createAttribute({
+        label: '审核结果',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'RESULT'),
+        SYS_ORDER: 10,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:通过,-1:不通过',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    let attrPAStart = await createAttribute({
+        label: '项目启动时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
+        SYS_ORDER: 20,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    let attrPAWarn = await createAttribute({
+        label: '项目预警时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'WARN_DATE'),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    let attrPADeliver = await createAttribute({
+        label: '项目交付时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'DELIVER_DATE'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    //}}}
+
+    // DNA Shear{{{
+    let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SHEAR, 1, "打断", 30,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrDENanodrop.id,
+                attrDEQubit.id,
+                attrDE280.id,
+                attrDE230.id,
+                attrDEVolume.id,
+                attrDEAmount.id,
+            ],
+        })
     let dnaShearClassGenre = await createGenre(dnaShearClassEntity)
     createAttribute({
         label: '打断日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "DATE"),
         SYS_ORDER: 10,
         SYS_TYPE: 'date',
         SYS_GENRE: dnaShearClassGenre.id})
     let attrDSCode = await createAttribute({
         label: '打断编号',
-        SYS_CODE: 'CONF_SHEARC_CODE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, 'CODE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: dnaShearClassGenre.id})
-
-    // Sample QC Review{{{
-    //let sampleQCReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "SAMPLE_QC_REVIEW", 1, "样品质检", 30,
-    //{
-    //'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-    //'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-    //attrGPSampleCode.id,
-    //attrGPSampleName.id,
-    //attrSERResult.id,
-    //attrSERStatus.id
-    //],
-    //})
-    //sampleQCReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    //let sampleQCReviewClassGenre = await createGenre(sampleQCReviewClassEntity)
-    //await createAttribute({
-    //label: '审核员',
-    //SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-    //SYS_ORDER: 10,
-    //SYS_TYPE: 'entity',
-    //SYS_TYPE_ENTITY_REF: true,
-    //SYS_TYPE_ENTITY: hrClassEntity.id,
-    //SYS_FLOOR_ENTITY_TYPE: 'collection',
-    //SYS_GENRE: sampleQCReviewClassGenre.id})
+    let attrDSUsageAmount = await createAttribute({
+        label: '样品投入量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_AMOUNT"),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSRemainAmount = await createAttribute({
+        label: '样品剩余量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMAIN_AMOUNT"),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSUsageVolume = await createAttribute({
+        label: '取样体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_VOLUME"),
+        SYS_ORDER: 50,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSWaterVolume = await createAttribute({
+        label: '补水体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "WATER_VOLUME"),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 70,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: dnaShearClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 80,
+        SYS_TYPE: 'date',
+        SYS_GENRE: dnaShearClassGenre.id})
     //}}}
 
     // Library Prepare{{{
-    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_RESULT", 1, "文库制备", 40,
+    let libraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_LIBRARY_PREPARE, 1, "文库制备", 40,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
@@ -590,112 +708,116 @@ module.exports = async function(){
             ],
         })
 
-    libraryPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let libraryPrepareClassGenre = await createGenre(libraryPrepareClassEntity)
-    createAttribute({
+    let attrLPDate = await createAttribute({
         label: '建库日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "DATE"),
         SYS_ORDER: 10,
         SYS_TYPE: 'date',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRName = await createAttribute({
+    let attrLPCode = await createAttribute({
         label: '建库编号',
-        SYS_CODE: 'LIBRARY_CODE',
+        SYS_CODE: 'SYS_LIBRARY_CODE',
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRConc = await createAttribute({
+    let attrLPQubit = await createAttribute({
         label: 'Qubit(ng/ul)',
-        SYS_CODE: 'QUBIT_CONC',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'QUBIT'),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRVolume = await createAttribute({
+    let attrLPVolume = await createAttribute({
         label: '体积',
-        SYS_CODE: 'LIBRARY_VOLUME',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'VOLUME'),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
+    let attrLPTotal = await createAttribute({
         label: 'Total(ng)',
-        SYS_CODE: 'CONF_SAMPLE_QUANTITY_TOTAL',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TOTAL'),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPCycle = await createAttribute({
+        label: '循环数',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CYCLE'),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPResult = await createAttribute({
+        label: '建库结论',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "RESULT"),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:合格,0:风险,-1:不合格',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPGrade = await createAttribute({
+        label: '质检评级',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "GRADE"),
+        SYS_ORDER: 80,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:合格,0:污染,-1:不合格',
+        SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '样品投入量',
-        SYS_CODE: 'CONF_SAMPLE_QUANTITY_USED',
-        SYS_ORDER: 60,
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_USAGE'),
+        SYS_ORDER: 90,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '样品剩余量',
-        SYS_CODE: 'CONF_SAMPLE_QUATNITY_LEFT',
-        SYS_ORDER: 70,
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_LEFT'),
+        SYS_ORDER: 100,
         SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '备注',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, '_REMARK'),
+        SYS_ORDER: 110,
+        SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 80,
+        SYS_ORDER: 120,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
-        label: '备注',
-        SYS_CODE: 'CONF_EXTRACT_REMARK',
-        SYS_ORDER: 90,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '捕获日期',
-        SYS_CODE: 'CONF_CAPTURE_DATE',
-        SYS_ORDER: 100,
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 130,
         SYS_TYPE: 'date',
         SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
 
-    // Library Review{{{
-    let libraryReviewClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LIBRARY_REVIEW", 1, "文库制备结果审核", 50,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrLRName.id,
-                attrLRConc.id,
-                attrLRVolume.id
-            ],
-        })
-    libraryReviewClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let libraryReviewClassGenre = await createGenre(libraryReviewClassEntity)
-    await createAttribute({
-        label: '审核员',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: libraryReviewClassGenre.id})
-    //}}}
-
     // Capture Prepare{{{
-    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_PREPARE", 1, "文库捕获", 60,
+    let capturePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_CAPTURE, 1, "文库捕获", 50,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
+                attrLPDate.id,
+                attrLPCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
                 attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrGPSampleType.id,
+                attrGPDataSize.id,
                 attrGPIndexCode.id,
                 attrGPIndexSequence.id,
-                attrGPPanelCode.id,
+                attrLPQubit.id,
+                attrLPVolume.id,
+                attrLPTotal.id,
+                attrLPCycle.id,
+                attrLPResult.id,
+                attrLPGrade.id,
             ],
         })
-    capturePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
     let attrCPCode = await createAttribute({
         label: '捕获编号',
@@ -705,42 +827,125 @@ module.exports = async function(){
         SYS_GENRE: capturePrepareClassGenre.id})
     createAttribute({
         label: '捕获日期',
-        SYS_CODE: 'CAPTURE_DATE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "DATE"),
         SYS_ORDER: 20,
         SYS_TYPE: 'date',
         SYS_GENRE: capturePrepareClassGenre.id})
     let attrCPCount = await createAttribute({
         label: '杂交数',
-        SYS_CODE: 'HYBRID_COUNT',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'HYBRID_COUNT'),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
+    let attrCPVolume = await createAttribute({
+        label: '混样提及',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'VOLUME'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'date',
+        SYS_GENRE: capturePrepareClassGenre.id})
     //}}}
 
-    // Capture Result{{{
-    let captureResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "CAPTURE_RESULT", 1, "文库捕获结果", 70,
+    // Multiplex Library Prepare{{{
+    let multiplexLibraryPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_MULTIPLEX_LIBRARY_PREPARE, 1, "多重文库制备", 60,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [attrGPSampleCode.id, attrGPSampleName.id, attrCPCode.id, attrCPCount.id],
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrDSCode.id,
+                attrGPPanelCode.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+                attrGPDepth.id,
+                attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrGPSampleType.id,
+                attrGPProjectStarted.id,
+                attrGPProjectCompleted.id,
+            ],
         })
-    captureResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let captureResultClassGenre = await createGenre(captureResultClassEntity)
-    let attrCRConc = await createAttribute({
-        label: '捕获后文库浓度',
-        SYS_CODE: 'CAPTURE_CONC',
+
+    let multiplexLibraryPrepareClassGenre = await createGenre(multiplexLibraryPrepareClassEntity)
+    createAttribute({
+        label: '样本位置',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'SAMPLE_LOCATION'),
         SYS_ORDER: 10,
-        SYS_TYPE: 'number',
-        SYS_GENRE: captureResultClassGenre.id})
-    let attrCRSize = await createAttribute({
-        label: '片段大小',
-        SYS_CODE: 'CAPTURE_FRAGMENT_SIZE',
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: 'gDNA浓度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'GDNA_CONC'),
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
-        SYS_GENRE: captureResultClassGenre.id})
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: 'gDNA浓度均一化',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'GDNA_CONC_HOMOGENIZED'),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库名称',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'NAME'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库Index编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'INDEX_CODE'),
+        SYS_ORDER: 50,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库浓度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'CONC'),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '多重文库体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'VOLUME'),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '备注',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'REMARK'),
+        SYS_ORDER: 80,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 90,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'date',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     //}}}
 
-    // Lane Prepare{{{
-    let lanePrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "LANE_PREPARE", 1, "Pooling", 80,
+    // Pooling{{{
+    let poolingClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_POOLING, 1, "Pooling", 70,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
@@ -748,43 +953,42 @@ module.exports = async function(){
                 attrGPSampleName.id,
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
+                attrGPSampleSpecies.id,
                 attrGPIndexCode.id,
                 attrGPIndexSequence.id,
-                attrGPSampleType.id,
             ],
         })
-    lanePrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let lanePrepareClassGenre = await createGenre(lanePrepareClassEntity)
-    let attrLPCode = await createAttribute({
+    let poolingClassGenre = await createGenre(poolingClassEntity)
+    createAttribute({
         label: '混合文库名称',
         SYS_CODE: 'SYS_LANE_CODE',
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '文库类型',
-        SYS_CODE: 'CONF_LANE_TYPE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_TYPE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '文库长度',
-        SYS_CODE: 'CONF_LANE_LENGTH',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_LENGTH'),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '合成ID',
-        SYS_CODE: 'CONF_LANE_TYPE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'SYNTHETIC_ID'),
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '分析要求',
-        SYS_CODE: 'CONF_ANALYSIS_REQUIREMENT',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
@@ -793,106 +997,51 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: lanePrepareClassGenre.id})
+        SYS_GENRE: poolingClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 70,
+        SYS_TYPE: 'date',
+        SYS_GENRE: poolingClassGenre.id})
     //}}}
 
-    // Run Prepare{{{
-    let runPrepareClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_PREPARE", 1, "上机测序", 90,
+    // Sequence Data{{{
+    let dataSequenceClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SEQUENCE_DATA, 1, "数据下机", 80,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
                 attrGPSampleName.id,
+                attrGPPanelCode.id,
+                attrGPDataSize.id,
+                attrGPSampleSpecies.id,
                 attrGPIndexCode.id,
                 attrGPIndexSequence.id,
-                attrGPPanelCode.id,
-                attrLPCode.id,
             ],
         })
-    runPrepareClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let runPrepareClassGenre = await createGenre(runPrepareClassEntity)
-    let attrRPCode = await createAttribute({
-        label: '方案名称',
-        SYS_CODE: 'SYS_RUN_CODE',
+    let dataSequenceClassGenre = await createGenre(dataSequenceClassEntity)
+    createAttribute({
+        label: '数据文件路径',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SEQUENCE_DATA, "FILE_PATH"),
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
-        SYS_GENRE: runPrepareClassGenre.id})
+        SYS_GENRE: dataSequenceClassGenre.id})
     createAttribute({
-        label: '机器类型',
-        SYS_CODE: 'RUN_INSTRUMENT',
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
         SYS_ORDER: 20,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'hiseq:HiSeq,miseq:MiSeq,novaseq:NovaSeq',
-        SYS_GENRE: runPrepareClassGenre.id})
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: dataSequenceClassGenre.id})
     createAttribute({
-        label: '重做原因',
-        SYS_CODE: 'REPEAT_REASON',
-        SYS_ORDER: 30,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'device:仪器故障,operation:操作步骤不当,reagent:试剂原因,server:服务器原因,other:其他原因',
-        SYS_GENRE: runPrepareClassGenre.id})
-    let attrRPInstrumentCode = await createAttribute({
-        label: '机器编号',
-        SYS_CODE: 'INSTURMENT_CODE',
-        SYS_ORDER: 40,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'alane:A,blane:B',
-        SYS_GENRE: runPrepareClassGenre.id})
-    let attrRPType = await createAttribute({
-        label: '测序类型',
-        SYS_CODE: 'SEQUENCE_TYPE',
-        SYS_ORDER: 50,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'pe:PE测序,se:SE测序',
-        SYS_GENRE: runPrepareClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: 'SEQUENCE_REMARK',
-        SYS_ORDER: 60,
-        SYS_TYPE: 'text',
-        SYS_GENRE: runPrepareClassGenre.id})
-    //}}}
-
-    // Run Result{{{
-    let runResultClassEntity = await createEntityWithOrder(prodWCDomainGenre, "RUN_RESULT", 1, "测序结果", 100,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
-                attrGPSampleName.id,
-                attrRPCode.id,
-                attrRPInstrumentCode.id,
-                attrRPType.id,
-            ],
-        })
-    runResultClassEntity['SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR'] = true
-    let runResultClassGenre = await createGenre(runResultClassEntity)
-    createAttribute({
-        label: '下机数据路径',
-        SYS_CODE: 'RUN_DATA_PATH',
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '仪器状态',
-        SYS_CODE: 'RUN_INSTRUMENT_STATUS',
-        SYS_ORDER: 20,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:正常,-1:异常',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '确认下机时间',
-        SYS_CODE: 'RUN_COMPLETED_DATE',
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
         SYS_ORDER: 30,
         SYS_TYPE: 'date',
-        SYS_GENRE: runResultClassGenre.id})
-    createAttribute({
-        label: '仪器备注',
-        SYS_CODE: 'RUN_INSTRUMENT_REMARK',
-        SYS_ORDER: 40,
-        SYS_TYPE: 'text',
-        SYS_GENRE: runResultClassGenre.id})
+        SYS_GENRE: dataSequenceClassGenre.id})
     //}}}
 
     //}}}
@@ -962,95 +1111,77 @@ module.exports = async function(){
         SYS_TYPE: 'number',
         SYS_GENRE: v1CollGenre.id})
 
-    //Entity({
-    //SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'EXTRACTION_PREPARE',
-    //SYS_ENTITY_TYPE: 'object',
-    //SYS_GENRE: v1CollGenre.id,
-    //SYS_CHECKED: true,
-    //SYS_ORDER: 10,
-    //SYS_SOURCE: sampleExtractClassEntity.id,
-    //SYS_DURATION: 3,
-    //}).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'EXTRACTION_RESULT',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_EXTRACT,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 10,
-        SYS_SOURCE: sampleExtractResultClassEntity.id,
+        SYS_SOURCE: DNAExtractClassEntity.id,
         SYS_DURATION: 2,
     }).save()
-    //Entity({
-    //SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SAMPLE_QC',
-    //SYS_ENTITY_TYPE: 'object',
-    //SYS_GENRE: v1CollGenre.id,
-    //SYS_CHECKED: true,
-    //SYS_ORDER: 30,
-    //SYS_SOURCE: sampleQCReviewClassEntity.id,
-    //SYS_DURATION: 2,
-    //}).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'LIBRARY_PREPARE',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_APPROVE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 20,
-        SYS_SOURCE: libraryPrepareClassEntity.id,
-        SYS_DURATION: 5,
+        SYS_SOURCE: projectApprovalClassEntity.id,
+        SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'LIBRARY_REVIEW',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SHEAR,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 30,
-        SYS_SOURCE: libraryReviewClassEntity.id,
+        SYS_SOURCE: dnaShearClassEntity.id,
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'CAPTURE_PREPARE',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_LIBRARY_PREPARE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 40,
-        SYS_SOURCE: capturePrepareClassEntity.id,
+        SYS_SOURCE: libraryPrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'CAPTURE_RESULT',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_CAPTURE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
         SYS_ORDER: 50,
-        SYS_SOURCE: captureResultClassEntity.id,
+        SYS_SOURCE: capturePrepareClassEntity.id,
+        SYS_DURATION: 5,
+    }).save()
+    Entity({
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_MULTIPLEX_LIBRARY_PREPARE,
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: v1CollGenre.id,
+        SYS_CHECKED: false,
+        SYS_ORDER: 60,
+        SYS_SOURCE: multiplexLibraryPrepareClassEntity.id,
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'POOLING',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_POOLING,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 60,
-        SYS_SOURCE: lanePrepareClassEntity.id,
-        SYS_DURATION: 5,
-    }).save()
-    Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SEQUENCE_PREPARE',
-        SYS_ENTITY_TYPE: 'object',
-        SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: false,
         SYS_ORDER: 70,
-        SYS_SOURCE: runPrepareClassEntity.id,
+        SYS_SOURCE: poolingClassEntity.id,
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + 'SEQUENCE_RESULT',
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SEQUENCE_DATA,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
-        SYS_CHECKED: false,
+        SYS_CHECKED: true,
         SYS_ORDER: 80,
-        SYS_SOURCE: runResultClassEntity.id,
-        SYS_DURATION: 10,
+        SYS_SOURCE: dataSequenceClassEntity.id,
+        SYS_DURATION: 7,
     }).save()
     //}}}
 
