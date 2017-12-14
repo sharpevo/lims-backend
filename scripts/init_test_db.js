@@ -652,58 +652,78 @@ module.exports = async function(){
         })
 
     let libraryPrepareClassGenre = await createGenre(libraryPrepareClassEntity)
-    createAttribute({
+    let attrLPDate = await createAttribute({
         label: '建库日期',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "DATE"),
         SYS_ORDER: 10,
         SYS_TYPE: 'date',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRName = await createAttribute({
+    let attrLPCode = await createAttribute({
         label: '建库编号',
         SYS_CODE: 'SYS_LIBRARY_CODE',
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRConc = await createAttribute({
+    let attrLPQubit = await createAttribute({
         label: 'Qubit(ng/ul)',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'QUBIT'),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLRVolume = await createAttribute({
+    let attrLPVolume = await createAttribute({
         label: '体积',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'VOLUME'),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
+    let attrLPTotal = await createAttribute({
         label: 'Total(ng)',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TOTAL'),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPCycle = await createAttribute({
+        label: '循环数',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CYCLE'),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPResult = await createAttribute({
+        label: '建库结论',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "RESULT"),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:合格,0:风险,-1:不合格',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPGrade = await createAttribute({
+        label: '质检评级',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "GRADE"),
+        SYS_ORDER: 80,
+        SYS_TYPE: 'list',
+        SYS_TYPE_LIST: '1:合格,0:污染,-1:不合格',
+        SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '样品投入量',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_USAGE'),
-        SYS_ORDER: 60,
+        SYS_ORDER: 90,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '样品剩余量',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_LEFT'),
-        SYS_ORDER: 70,
+        SYS_ORDER: 100,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, '_REMARK'),
-        SYS_ORDER: 80,
+        SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 90,
+        SYS_ORDER: 120,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
@@ -712,7 +732,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 100,
+        SYS_ORDER: 130,
         SYS_TYPE: 'date',
         SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
@@ -723,11 +743,22 @@ module.exports = async function(){
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrGPSampleCode.id,
+                attrLPDate.id,
+                attrLPCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
                 attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrGPSampleType.id,
+                attrGPDataSize.id,
                 attrGPIndexCode.id,
                 attrGPIndexSequence.id,
-                attrGPPanelCode.id,
+                attrLPQubit.id,
+                attrLPVolume.id,
+                attrLPTotal.id,
+                attrLPCycle.id,
+                attrLPResult.id,
+                attrLPGrade.id,
             ],
         })
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
@@ -865,13 +896,13 @@ module.exports = async function(){
                 attrGPSampleName.id,
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
+                attrGPSampleSpecies.id,
                 attrGPIndexCode.id,
                 attrGPIndexSequence.id,
-                attrGPSampleType.id,
             ],
         })
     let poolingClassGenre = await createGenre(poolingClassEntity)
-    let attrLPCode = await createAttribute({
+    let attrPCode = await createAttribute({
         label: '混合文库名称',
         SYS_CODE: 'SYS_LANE_CODE',
         SYS_ORDER: 10,
