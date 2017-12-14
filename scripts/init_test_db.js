@@ -458,6 +458,8 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrGPProjectManager.id,
                 attrGPProjectCode.id,
+                attrGPProjectStarted.id,
+                //attrGPProjectCompleted.id,
                 attrGPPanelCode.id,
                 attrGPDepth.id,
                 attrGPSampleName.id,
@@ -467,50 +469,50 @@ module.exports = async function(){
             ],
         })
     let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
-    createAttribute({
+    let attrDENanodrop = await createAttribute({
         label: 'Nanodrop ng/ul',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
         SYS_ORDER: 10,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
+    let attrDEQubit = await createAttribute({
         label: 'Qubit ng/ul',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QUBIT"),
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
+    let attrDE230 = await createAttribute({
         label: 'OD 260/230',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD230"),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
+    let attrDE280 = await createAttribute({
         label: 'OD 260/280',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD280"),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
+    let attrDEVolume = await createAttribute({
         label: '样品体积(ul)',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "VOLUME"),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDETotal = await createAttribute({
+    let attrDEAmount = await createAttribute({
         label: '样品总量(ng)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "TOTAL"),
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "AMOUNT"),
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEResult = await createAttribute({
+    let attrDEQCGrade = await createAttribute({
         label: '质检结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_RESULT"),
         SYS_ORDER: 70,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
         SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
+    let attrDEQCRemark = await createAttribute({
         label: '质检备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_REMARK"),
         SYS_ORDER: 80,
@@ -536,11 +538,10 @@ module.exports = async function(){
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDERemark = await createAttribute({
-        label: '备注',
+        label: '备注(DNA提取来源)',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMARK"),
         SYS_ORDER: 120,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
+        SYS_TYPE: 'string',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '操作人',
@@ -568,9 +569,10 @@ module.exports = async function(){
                 attrGPPanelCode.id,
                 attrGPProjectCode.id,
                 attrDEReport.id,
-                attrDEResult.id,
+                attrDEQCGrade.id,
                 attrDETotal.id,
-                attrDERemark.id,
+                attrGPSampleType.id,
+                attrGPSample
             ],
         })
     let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
@@ -581,22 +583,28 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:通过,-1:不通过',
         SYS_GENRE: projectApprovalClassGenre.id})
-    createAttribute({
+    let attrPAStart = await createAttribute({
         label: '项目启动时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
-    createAttribute({
+    let attrPAWarn = await createAttribute({
         label: '项目预警时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'WARN_DATE'),
         SYS_ORDER: 30,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
+    let attrPADeliver = await createAttribute({
+        label: '项目交付时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'DELIVER_DATE'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 40,
+        SYS_ORDER: 50,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -605,7 +613,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 50,
+        SYS_ORDER: 60,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
     //}}}
@@ -617,6 +625,15 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrGPProjectCode.id,
                 attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPSampleName.id,
+                attrGPSampleCode.id,
+                attrDENanodrop.id,
+                attrDEQubit.id,
+                attrDE280.id,
+                attrDE230.id,
+                attrDEVolume.id,
+                attrDETotal.id,
             ],
         })
     let dnaShearClassGenre = await createGenre(dnaShearClassEntity)
@@ -632,10 +649,34 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSUsageAmount = await createAttribute({
+        label: '样品投入量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_AMOUNT"),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSRemainAmount = await createAttribute({
+        label: '样品剩余量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMAIN_AMOUNT"),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSUsageVolume = await createAttribute({
+        label: '取样体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_VOLUME"),
+        SYS_ORDER: 50,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSWaterVolume = await createAttribute({
+        label: '补水体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "WATER_VOLUME"),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 30,
+        SYS_ORDER: 70,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -644,7 +685,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 40,
+        SYS_ORDER: 80,
         SYS_TYPE: 'date',
         SYS_GENRE: dnaShearClassGenre.id})
     //}}}
