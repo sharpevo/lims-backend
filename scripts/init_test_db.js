@@ -17,6 +17,7 @@ const WC_ID_LIBRARY_PREPARE = 'LIBRARY_PREPARE'
 const WC_ID_CAPTURE = 'CAPTURE_PREPARE'
 const WC_ID_MULTIPLEX_LIBRARY_PREPARE = 'MULTIPLEX_LIBRARY_PREPRAE'
 const WC_ID_POOLING = 'POOLING'
+const WC_ID_SEQUENCE_DATA = 'SEQUENCE_DATA'
 
 function getAttributeIdentifier(workcenterIdentifier, attributeString){
     return 'CONF_' + workcenterIdentifier + '_' + attributeString
@@ -570,9 +571,8 @@ module.exports = async function(){
                 attrGPProjectCode.id,
                 attrDEReport.id,
                 attrDEQCGrade.id,
-                attrDETotal.id,
+                attrDEAmount.id,
                 attrGPSampleType.id,
-                attrGPSample
             ],
         })
     let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
@@ -633,7 +633,7 @@ module.exports = async function(){
                 attrDE280.id,
                 attrDE230.id,
                 attrDEVolume.id,
-                attrDETotal.id,
+                attrDEAmount.id,
             ],
         })
     let dnaShearClassGenre = await createGenre(dnaShearClassEntity)
@@ -1001,9 +1001,47 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 30,
+        SYS_ORDER: 70,
         SYS_TYPE: 'date',
         SYS_GENRE: poolingClassGenre.id})
+    //}}}
+
+    // Sequence Data{{{
+    let dataSequenceClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SEQUENCE_DATA, 1, "数据下机", 80,
+        {
+            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
+            'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPSampleName.id,
+                attrGPPanelCode.id,
+                attrGPDataSize.id,
+                attrGPSampleSpecies.id,
+                attrGPIndexCode.id,
+                attrGPIndexSequence.id,
+            ],
+        })
+    let dataSequenceClassGenre = await createGenre(dataSequenceClassEntity)
+    createAttribute({
+        label: '数据文件路径',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SEQUENCE_DATA, "FILE_PATH"),
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: dataSequenceClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: dataSequenceClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'date',
+        SYS_GENRE: dataSequenceClassGenre.id})
     //}}}
 
     //}}}
@@ -1114,7 +1152,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 40,
+        SYS_ORDER: 50,
         SYS_SOURCE: capturePrepareClassEntity.id,
         SYS_DURATION: 5,
     }).save()
@@ -1123,7 +1161,7 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: false,
-        SYS_ORDER: 50,
+        SYS_ORDER: 60,
         SYS_SOURCE: multiplexLibraryPrepareClassEntity.id,
         SYS_DURATION: 2,
     }).save()
@@ -1132,9 +1170,18 @@ module.exports = async function(){
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
-        SYS_ORDER: 60,
+        SYS_ORDER: 70,
         SYS_SOURCE: poolingClassEntity.id,
         SYS_DURATION: 5,
+    }).save()
+    Entity({
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SEQUENCE_DATA,
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: v1CollGenre.id,
+        SYS_CHECKED: true,
+        SYS_ORDER: 80,
+        SYS_SOURCE: dataSequenceClassEntity.id,
+        SYS_DURATION: 7,
     }).save()
     //}}}
 
