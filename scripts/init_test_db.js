@@ -835,15 +835,27 @@ module.exports = async function(){
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
     let attrCPVolume = await createAttribute({
-        label: '混样提及',
+        label: '混样体积',
         SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'VOLUME'),
         SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: capturePrepareClassGenre.id})
+    let attrCPQubit = await createAttribute({
+        label: '捕获文库浓度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'QUBIT'),
+        SYS_ORDER: 50,
+        SYS_TYPE: 'number',
+        SYS_GENRE: capturePrepareClassGenre.id})
+    let attrCPFragementSize = await createAttribute({
+        label: '片段大小',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'FRAGMENT_SIZE'),
+        SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 50,
+        SYS_ORDER: 70,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -852,7 +864,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 60,
+        SYS_ORDER: 80,
         SYS_TYPE: 'date',
         SYS_GENRE: capturePrepareClassGenre.id})
     //}}}
@@ -870,6 +882,7 @@ module.exports = async function(){
                 attrGPSampleType.id,
                 attrGPProjectStarted.id,
                 attrGPProjectCompleted.id,
+                attrCPQubit.id,
             ],
         })
 
