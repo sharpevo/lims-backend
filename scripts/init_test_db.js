@@ -10,6 +10,7 @@ const ENTITY_TYPE = {
     3: "object",
 }
 
+const WC_ID_GENERAL_PROJECT = 'GENERAL_PROJECT'
 const WC_ID_EXTRACT = 'DNA_EXTRACTION'
 const WC_ID_APPROVE = 'PROJECT_APPROVE'
 const WC_ID_SHEAR = 'SHEAR'
@@ -286,7 +287,7 @@ module.exports = async function(){
     // Project Workcenter Domain{{{
     let projectWCDomainEntity = await createEntity(domainGenre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
     let projectWCDomainGenre = await createGenre(projectWCDomainEntity)
-    let generalProjectClassEntity = await createEntity(projectWCDomainGenre, "GENERAL_PROJECT", 1, "General Project")
+    let generalProjectClassEntity = await createEntity(projectWCDomainGenre, WC_ID_GENERAL_PROJECT, 1, "General Project")
     let generalProjectClassGenre = await createGenre(generalProjectClassEntity)
     let attrGPSampleCode = await createAttribute({
         label: '样品编号',
@@ -300,85 +301,85 @@ module.exports = async function(){
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleName = await createAttribute({
         label: '样品名称',
-        SYS_CODE: 'SAMPLE_NAME',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SAMPLE_NAME"),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleType = await createAttribute({
         label: '样品类型',
-        SYS_CODE: 'SAMPLE_TYPE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SAMPLE_TYPE"),
         SYS_ORDER: 30,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleSpecies = await createAttribute({
         label: '样品物种',
-        SYS_CODE: 'CONF_SAMPLE_SPECIES',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SAMPLE_SPECIES"),
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleMedium = await createAttribute({
-        label: '样品保存介质',
-        SYS_CODE: 'CONF_SAMPLE_MEDIUM',
+        label: '保存介质(客户提供)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "MEDIUM"),
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPVolume = await createAttribute({
+        label: '体积(客户提供)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "VOLUME"),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: generalProjectClassGenre.id})
+    let attrGPConc = await createAttribute({
+        label: '浓度(客户提供)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "CONC"),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'number',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDateScheduled = await createAttribute({
         label: '计划进度',
         SYS_CODE: 'SYS_DATE_SCHEDULED',
-        SYS_ORDER: 60,
+        SYS_ORDER: 80,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPPanelCode = await createAttribute({
         label: 'Panel编号',
         SYS_CODE: 'SYS_PANEL_CODE',
-        SYS_ORDER: 70,
+        SYS_ORDER: 90,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDataSize = await createAttribute({
         label: '数据量',
         SYS_CODE: 'SYS_DATA_SIZE',
-        SYS_ORDER: 80,
+        SYS_ORDER: 100,
         SYS_TYPE: 'number',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDepth = await createAttribute({
         label: '测序深度',
-        SYS_CODE: 'SEQUENCING_DEPTH',
-        SYS_ORDER: 90,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPIndexCode = await createAttribute({
-        label: 'Index编号',
-        SYS_CODE: 'SYS_INDEX_CODE',
-        SYS_ORDER: 100,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPIndexSequence = await createAttribute({
-        label: 'Index序列',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "DEPTH"),
         SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectCode = await createAttribute({
         label: '项目编号',
-        SYS_CODE: 'CONF_PROJECT_CODE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_CODE"),
         SYS_ORDER: 120,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectManager = await createAttribute({
         label: '项目负责人',
-        SYS_CODE: 'CONF_PROJECT_MANAGER',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_MANAGER"),
         SYS_ORDER: 130,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectStarted = await createAttribute({
         label: '项目启动时间',
-        SYS_CODE: 'CONF_PROJECT_STARTED_DATE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_START_DATE"),
         SYS_ORDER: 140,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPProjectCompleted = await createAttribute({
         label: '项目结束时间',
-        SYS_CODE: 'CONF_PROJECT_COMPLETED_DATE',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_COMPLETE_DATE"),
         SYS_ORDER: 150,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
