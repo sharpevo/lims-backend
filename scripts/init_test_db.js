@@ -1135,7 +1135,7 @@ module.exports = async function(){
     createAttribute({
         label: 'Routing',
         SYS_CODE: 'ROUTING',
-        SYS_ORDER: 100,
+        SYS_ORDER: 500,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY: v1CollEntity.id,
         SYS_TYPE_ENTITY_REF: false,
