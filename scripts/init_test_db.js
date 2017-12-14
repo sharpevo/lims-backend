@@ -531,33 +531,39 @@ module.exports = async function(){
         SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
+        label: '样品提取时间',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "EXTRACT_DATE"),
+        SYS_ORDER: 90,
+        SYS_TYPE: 'date',
+        SYS_GENRE: DNAExtractClassGenre.id})
+    createAttribute({
         label: '质检启动时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_START_DATE"),
-        SYS_ORDER: 90,
+        SYS_ORDER: 100,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '质检完成时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_COMPLETE_DATE"),
-        SYS_ORDER: 100,
+        SYS_ORDER: 110,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDEReport = await createAttribute({
         label: '报告交付时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REPORT_DELIVER_DATE"),
-        SYS_ORDER: 110,
+        SYS_ORDER: 120,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDERemark = await createAttribute({
         label: '备注(DNA提取来源)',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMARK"),
-        SYS_ORDER: 120,
+        SYS_ORDER: 130,
         SYS_TYPE: 'string',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 130,
+        SYS_ORDER: 140,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -566,7 +572,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 140,
+        SYS_ORDER: 150,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     //}}}
