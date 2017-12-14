@@ -698,8 +698,6 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrDSCode.id,
                 attrGPPanelCode.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
                 attrGPDepth.id,
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
@@ -809,8 +807,6 @@ module.exports = async function(){
                 attrGPSampleCode.id,
                 attrGPSampleType.id,
                 attrGPDataSize.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
                 attrLPQubit.id,
                 attrLPVolume.id,
                 attrLPTotal.id,
@@ -868,8 +864,6 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
                 attrDSCode.id,
                 attrGPPanelCode.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
                 attrGPDepth.id,
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
@@ -955,8 +949,6 @@ module.exports = async function(){
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
                 attrGPSampleSpecies.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
             ],
         })
     let poolingClassGenre = await createGenre(poolingClassEntity)
@@ -1017,8 +1009,6 @@ module.exports = async function(){
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
                 attrGPSampleSpecies.id,
-                attrGPIndexCode.id,
-                attrGPIndexSequence.id,
             ],
         })
     let dataSequenceClassGenre = await createGenre(dataSequenceClassEntity)
