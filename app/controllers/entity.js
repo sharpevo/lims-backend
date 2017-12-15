@@ -196,17 +196,23 @@ exports.attribute = function (req, res, next){
 }
 
 exports.entity = function (req, res, next){
+
     let entityType = req.query["SYS_ENTITY_TYPE"]
     if (!entityType){
         entityType = "object"
     }
-    Entity.find(
-        {
-            "SYS_ENTITY_TYPE": entityType,
-            "SYS_IDENTIFIER": new RegExp("^" + req.entity.SYS_IDENTIFIER),
-        },
-        '',
-        (err, entities) => {
+    req.query['SYS_ENTITY_TYPE'] = entityType
+    req.query['SYS_IDENTIFIER'] = new RegExp("^" + req.entity.SYS_IDENTIFIER)
+
+    let query = Utils.list(req, Entity)
+    query
+        .populate({
+            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
+            model: 'Attribute',
+        })
+
+    query
+        .exec((err, entities) => {
             if (err) {
                 return res.status(400).send({
                     message: parseError(err)
@@ -229,11 +235,6 @@ exports.entity = function (req, res, next){
                     res.status(200).json(results)
                 })
             }
-        }
-    )
-        .populate({
-            path: 'SYS_AUXILIARY_ATTRIBUTE_LIST',
-            model: 'Attribute',
         })
 }
 
