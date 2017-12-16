@@ -53,7 +53,9 @@ exports.getUserInfo = function(req, res, next){
 exports.excelToJSON = function(req, res, next){
     let form = new formidable.IncomingForm()
 
-    form.parse(req)
+    form.parse(req, function(err, fields, files) {
+        if (err) next(err);
+    })
 
     form.on('file', function(name, file){
         console.log(name)

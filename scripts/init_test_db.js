@@ -324,19 +324,19 @@ module.exports = async function(){
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleMedium = await createAttribute({
-        label: '保存介质(客户提供)',
+        label: '保存介质',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "MEDIUM"),
         SYS_ORDER: 60,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPVolume = await createAttribute({
-        label: '体积(客户提供)',
+        label: '体积',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "VOLUME"),
         SYS_ORDER: 70,
         SYS_TYPE: 'number',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPConc = await createAttribute({
-        label: '浓度(客户提供)',
+        label: '浓度',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "CONC"),
         SYS_ORDER: 80,
         SYS_TYPE: 'number',
@@ -412,7 +412,6 @@ module.exports = async function(){
         attrGPPanelCode.id,
     ]
     //}}}
-
 
     // Product Workcenter Domain{{{
     let prodWCDomainEntity = await createEntity(domainGenre, "PRODUCT_WORKCENTER", 0, "Product WorkCenters")
