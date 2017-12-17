@@ -1049,7 +1049,7 @@ module.exports = async function(){
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '总数据量(G)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'TOTAL_DATA_SIZE'),
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: poolingClassGenre.id})
