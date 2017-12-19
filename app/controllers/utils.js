@@ -248,8 +248,10 @@ exports.JSONToExcel = function(req, res, next){
                                                     }
                                                 } else {
                                                     //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
-                                                    console.log("-------", entityObject._id)
-                                                    if (hybridObjectMap[entityObject._id]['attributeObject']) {
+                                                    console.log(">>> entityObject._id", entityObject._id)
+                                                    console.log(">>> key", key)
+                                                    if (hybridObjectMap[entityObject._id]['attributeObject'] &&
+                                                        hybridObjectMap[entityObject._id]['attributeObject'][key]){
                                                         result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
                                                     }
 
