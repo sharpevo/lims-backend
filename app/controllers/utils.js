@@ -146,7 +146,10 @@ exports.JSONToExcel = function(req, res, next){
     let hybridObjectMap = req.body['hybridObjectMap']
     let exportSampleIdListObject = {} // only one sample for each hybrid sample
     let hybridObjectMapKeyList = Object.keys(hybridObjectMap)
-    let auxiliaryAttributeObject = hybridObjectMap[hybridObjectMapKeyList[0]]['attributeObject']
+    let auxiliaryAttributeObject = {}
+    if (hybridObjectMap[hybridObjectMapKeyList[0]]) {
+        auxiliaryAttributeObject = hybridObjectMap[hybridObjectMapKeyList[0]]['attributeObject']
+    }
     hybridObjectMapKeyList.forEach(key => { // key = sample id
         let sampleIdList = hybridObjectMap[key]['sampleIdList']
         exportSampleIdListObject[sampleIdList[0]] = sampleIdList
@@ -265,10 +268,13 @@ exports.JSONToExcel = function(req, res, next){
                                         let _headers = headers
                                             .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
                                             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                        let _data = data
-                                            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                            .reduce((prev, next) => prev.concat(next))
-                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                        let _data = {}
+                                        if (data.length > 0) {
+                                            _data = data
+                                                .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+                                                .reduce((prev, next) => prev.concat(next))
+                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                        }
                                         let output = Object.assign({}, _headers, _data)
                                         let outputPos = Object.keys(output)
                                         let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
