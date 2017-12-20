@@ -211,16 +211,19 @@ exports.JSONToExcel = async function(req, res, next){
                                             {"SYS_GENRE": bomGenreDoc._id}).exec()
                                         console.log("< 1.5")
 
-                                        await bomDocList.forEach(async (bomDoc, index) => {
-                                            console.log("< 1.5", index)
+                                        for (let bomDoc of bomDocList) {
                                             let bomObject = JSON.parse(JSON.stringify(bomDoc))
+                                            let sourceDoc = await Entity.findOne({"_id": bomObject['SYS_SOURCE']}).exec()
+                                            let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
+
+                                            console.log("> source", sourceObject[sourceObject.SYS_LABEL])
                                             await bomData.push({
                                                 'SYS_ORDER': bomObject['SYS_ORDER'],
                                                 'SYS_DURATION': bomObject['SYS_DURATION'],
-                                                'SYS_SOURCE': bomObject['SYS_SOURCE'],
+                                                'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
                                                 'id': bomObject['_id'],
                                             })
-                                        })
+                                        }
                                         console.log("< 2")
                                     }
                                 }
