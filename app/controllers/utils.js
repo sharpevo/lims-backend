@@ -157,341 +157,185 @@ exports.JSONToExcel = async function(req, res, next){
     })
     console.log("Export Excel:", hybridObjectMap)
 
-    // Get workcenter
-    Entity.findOne(
-        {_id: workcenterId},
-        (err, workcenterDoc) => {
-            if(workcenterDoc){
-
-                // Get genre
-                Genre.findOne(
-                    {"SYS_ENTITY": workcenterDoc},
-                    async (err, genreDoc) => {
-
-                        // Get attribute
-                        await Attribute.find(
-                            {"SYS_GENRE": genreDoc._id},
-                            '',
-                            {
-                                sort: {
-                                    SYS_ORDER: 1
-                                }
-                            },
-                            async (err, attributeDocList) => {
-                                let headers = []
-                                let fields = []
-                                let types = []
-                                let bomHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
-                                let bomFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
-                                let bomTypes = ["number", "number", "string", "number", "string"]
-                                let bomData = []
-
-                                // await seems to work fine in the for loop instead of forEach
-                                for (let attributeDoc of attributeDocList) {
-
-                                    console.log("< 1.0")
-                                    let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
-                                    //console.log(">>", attributeObject.SYS_TYPE, attributeObject[attributeObject.SYS_LABEL])
-
-                                    // Export non-entity attributes or refered entities
-                                    // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
-                                    if (attributeObject.SYS_TYPE != 'entity' ||
-                                        attributeObject.SYS_TYPE_ENTITY_REF){ // Not export BoM or Routing
-                                        headers.push(attributeObject[attributeObject['SYS_LABEL']])
-                                        fields.push(attributeObject['SYS_CODE'])
-                                        types.push(attributeObject['SYS_TYPE'])
-                                    } else {
-                                        console.log("< 1")
-                                        // Process BoM or Routing
-                                        let bomObject = attributeObject.SYS_TYPE_ENTITY
-                                        let bomGenreDoc = await Genre.findOne(
-                                            {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
-                                        console.log("< 1.3")
-                                        let bomDocList = await Entity.find(
-                                            {"SYS_GENRE": bomGenreDoc._id}).exec()
-                                        console.log("< 1.5")
-
-                                        for (let bomDoc of bomDocList) {
-                                            let bomObject = JSON.parse(JSON.stringify(bomDoc))
-                                            let sourceDoc = await Entity.findOne({"_id": bomObject['SYS_SOURCE']}).exec()
-                                            let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
-
-                                            console.log("> source", sourceObject[sourceObject.SYS_LABEL])
-                                            await bomData.push({
-                                                'SYS_ORDER': bomObject['SYS_ORDER'],
-                                                'SYS_DURATION': bomObject['SYS_DURATION'],
-                                                'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
-                                                'id': bomObject['_id'],
-                                            })
-                                        }
-                                        console.log("< 2")
-                                    }
-                                }
-                                console.log("< 3", bomData.length)
-
-                                headers.push('IDENTIFIER')
-                                fields.push('id')
-                                types.push('string')
-
-                                // Processing auxiliary attributes
-                                // null or undefined can not be converted to object
-                                if (auxiliaryAttributeObject){
-                                    Object.keys(auxiliaryAttributeObject).forEach(key => {
-                                        let attributeObject = auxiliaryAttributeObject[key]
-                                        headers.push(attributeObject['SYS_LABEL'])
-                                        fields.push(attributeObject['SYS_CODE'])
-                                        types.push(attributeObject['SYS_TYPE'])
-                                    })
-                                }
-
-                                let data = []
-
-                                await Entity.find(
-                                    {_id: {$in: Object.keys(exportSampleIdListObject)}},
-                                    (err, entityDocList) => {
-
-                                        let hybridCode = {}
-
-                                        entityDocList.filter(entityDoc => {
-                                            //console.log("!", entityDoc)
-                                            return true
-                                        }).forEach(entityDoc => {
-                                            let entityObject = JSON.parse(JSON.stringify(entityDoc))
-                                            let result = {}
-                                            let isAuxiliaryAttribute = false
-                                            fields.forEach((key, index) => {
-
-                                                if (!isAuxiliaryAttribute){
-                                                    // Export SYS_LABEL rather id
-                                                    if (types[index] == 'entity'){
-
-                                                        // TODO: async
-                                                        Entity.findOne(
-                                                            {_id: entityObject[key]},
-                                                            (err, innerEntityDoc) => {
-                                                                if (innerEntityDoc){
-                                                                    let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
-                                                                    result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
-                                                                }
-                                                            })
-
-                                                    } else if (key == 'id'){
-                                                        isAuxiliaryAttribute = true
-                                                        //let position = exportSampleIdList.indexOf(result[key])
-                                                        result[key] = exportSampleIdListObject[entityObject[key]]
-                                                    } else {
-                                                        result[key] = entityObject[key]?entityObject[key]:''
-                                                    }
-                                                } else {
-                                                    //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
-                                                    //console.log(">>> entityObject._id", entityObject._id)
-                                                    //console.log(">>> key", key)
-                                                    if (hybridObjectMap[entityObject._id]['attributeObject'] &&
-                                                        hybridObjectMap[entityObject._id]['attributeObject'][key]){
-                                                        result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
-                                                    }
-
-                                                }
-                                                //console.log("..", result)
-                                            })
-                                            data.push(result)
-                                        })
-
-
-                                        let _headers = headers
-                                            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                        let _data = {}
-                                        if (data.length > 0) {
-                                            _data = data
-                                                .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                                .reduce((prev, next) => prev.concat(next))
-                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                        }
-                                        let output = Object.assign({}, _headers, _data)
-                                        let outputPos = Object.keys(output)
-                                        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
-
-                                        let bomOutput = {}
-                                        let bomRef = ''
-                                        let _bomData = {}
-                                        if (bomData.length > 0){
-                                            let _bomHeaders = bomHeaders
-                                                .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                            _bomData = bomData
-                                                .map((v, i) => bomFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                                .reduce((prev, next) => prev.concat(next))
-                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                            bomOutput = Object.assign({}, _bomHeaders, _bomData)
-                                            let bomOutputPos = Object.keys(bomOutput)
-                                            bomRef = bomOutputPos[0] + ':' + bomOutputPos[bomOutputPos.length - 1]
-                                        }
-
-                                        console.log("< 5", _bomData)
-                                        console.log("< 6", bomData)
-                                        //console.log("< 6", bomOutput)
-                                        let wb = {
-                                            SheetNames: ['samples', 'bom'],
-                                            Sheets: {
-                                                'samples': Object.assign({}, output, { '!ref': ref }),
-                                                'bom': Object.assign({}, bomOutput, {'!ref': bomRef}),
-                                            }
-                                        }
-
-                                        let timestamp = getTimestamp()
-                                        let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
-                                        XLSX.writeFile(wb, tempfile)
-                                        res.download(tempfile)
-
-                                    })
-                            })
-
-                    })
-            } else {
-                res.status(400).json('invalid workcenter id: ' + workcenterId)
-                return
+    let workcenterDoc = await Entity.findOne({_id: workcenterId}).exec()
+    if (!workcenterDoc) {
+        res.status(400).json('invalid workcenter id: ' + workcenterId)
+        return
+    }
+    let genreDoc = await Genre.findOne({"SYS_ENTITY": workcenterDoc}).exec()
+    let attributeDocList = await Attribute.find(
+        {"SYS_GENRE": genreDoc._id},
+        '',
+        {
+            sort: {
+                SYS_ORDER: 1
             }
         })
+    let headers = []
+    let fields = []
+    let types = []
+    let bomHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
+    let bomFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
+    let bomTypes = ["number", "number", "string", "number", "string"]
+    let bomData = []
 
+    // await seems to work fine in the for loop instead of forEach
+    for (let attributeDoc of attributeDocList) {
+
+        console.log("< 1.0")
+        let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
+        //console.log(">>", attributeObject.SYS_TYPE, attributeObject[attributeObject.SYS_LABEL])
+
+        // Export non-entity attributes or refered entities
+        // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
+        if (attributeObject.SYS_TYPE != 'entity' ||
+            attributeObject.SYS_TYPE_ENTITY_REF){ // Not export BoM or Routing
+            headers.push(attributeObject[attributeObject['SYS_LABEL']])
+            fields.push(attributeObject['SYS_CODE'])
+            types.push(attributeObject['SYS_TYPE'])
+        } else {
+            console.log("< 1")
+            // Process BoM or Routing
+            let bomObject = attributeObject.SYS_TYPE_ENTITY
+            let bomGenreDoc = await Genre.findOne(
+                {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
+            console.log("< 1.3")
+            let bomDocList = await Entity.find(
+                {"SYS_GENRE": bomGenreDoc._id}).exec()
+            console.log("< 1.5")
+
+            for (let bomDoc of bomDocList) {
+                let bomObject = JSON.parse(JSON.stringify(bomDoc))
+                let sourceDoc = await Entity.findOne({"_id": bomObject['SYS_SOURCE']}).exec()
+                let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
+
+                console.log("> source", sourceObject[sourceObject.SYS_LABEL])
+                await bomData.push({
+                    'SYS_ORDER': bomObject['SYS_ORDER'],
+                    'SYS_DURATION': bomObject['SYS_DURATION'],
+                    'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
+                    'id': bomObject['_id'],
+                })
+            }
+            console.log("< 2")
+        }
+    }
+    console.log("< 3", bomData.length)
+
+    headers.push('IDENTIFIER')
+    fields.push('id')
+    types.push('string')
+
+    // Processing auxiliary attributes
+    // null or undefined can not be converted to object
+    if (auxiliaryAttributeObject){
+        Object.keys(auxiliaryAttributeObject).forEach(key => {
+            let attributeObject = auxiliaryAttributeObject[key]
+            headers.push(attributeObject['SYS_LABEL'])
+            fields.push(attributeObject['SYS_CODE'])
+            types.push(attributeObject['SYS_TYPE'])
+        })
+    }
+
+    let data = []
+
+    let entityDocList = await Entity.find({_id: {$in: Object.keys(exportSampleIdListObject)}}).exec()
+
+    let hybridCode = {}
+
+    entityDocList.filter(entityDoc => {
+        //console.log("!", entityDoc)
+        return true
+    }).forEach(entityDoc => {
+        let entityObject = JSON.parse(JSON.stringify(entityDoc))
+        let result = {}
+        let isAuxiliaryAttribute = false
+        fields.forEach((key, index) => {
+
+            if (!isAuxiliaryAttribute){
+                // Export SYS_LABEL rather id
+                if (types[index] == 'entity'){
+
+                    // TODO: async
+                    Entity.findOne(
+                        {_id: entityObject[key]},
+                        (err, innerEntityDoc) => {
+                            if (innerEntityDoc){
+                                let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
+                                result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                            }
+                        })
+
+                } else if (key == 'id'){
+                    isAuxiliaryAttribute = true
+                    //let position = exportSampleIdList.indexOf(result[key])
+                    result[key] = exportSampleIdListObject[entityObject[key]]
+                } else {
+                    result[key] = entityObject[key]?entityObject[key]:''
+                }
+            } else {
+                //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
+                //console.log(">>> entityObject._id", entityObject._id)
+                //console.log(">>> key", key)
+                if (hybridObjectMap[entityObject._id]['attributeObject'] &&
+                    hybridObjectMap[entityObject._id]['attributeObject'][key]){
+                    result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
+                }
+
+            }
+            //console.log("..", result)
+        })
+        data.push(result)
+    })
+
+
+    let _headers = headers
+        .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+        .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    let _data = {}
+    if (data.length > 0) {
+        _data = data
+            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .reduce((prev, next) => prev.concat(next))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    }
+    let output = Object.assign({}, _headers, _data)
+    let outputPos = Object.keys(output)
+    let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+
+    let bomOutput = {}
+    let bomRef = ''
+    let _bomData = {}
+    if (bomData.length > 0){
+        let _bomHeaders = bomHeaders
+            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+        _bomData = bomData
+            .map((v, i) => bomFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .reduce((prev, next) => prev.concat(next))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+        bomOutput = Object.assign({}, _bomHeaders, _bomData)
+        let bomOutputPos = Object.keys(bomOutput)
+        bomRef = bomOutputPos[0] + ':' + bomOutputPos[bomOutputPos.length - 1]
+    }
+
+    console.log("< 5", _bomData)
+    console.log("< 6", bomData)
+    //console.log("< 6", bomOutput)
+    let wb = {
+        SheetNames: ['samples', 'bom'],
+        Sheets: {
+            'samples': Object.assign({}, output, { '!ref': ref }),
+            'bom': Object.assign({}, bomOutput, {'!ref': bomRef}),
+        }
+    }
+
+    let timestamp = getTimestamp()
+    let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
+    XLSX.writeFile(wb, tempfile)
+    res.download(tempfile)
 
     return
-
-    let entity = Entity.findOne(
-        {_id: ids[0]},
-        (err, entity) => {
-            if (!entity){
-                console.log("entity:", entity)
-                res.status(400).json('invalid id')
-                return
-            }
-
-            Entity.findOne(
-                {_id: req.body.workcenterId},
-                (err, entity) => {
-                    if (entity){
-                        Genre.findOne(
-                            {"SYS_ENTITY": entity._id},
-                            (err, genre) => {
-
-                                Attribute.find(
-                                    {'SYS_GENRE': genre._id},
-                                    '',
-                                    {
-                                        sort:{
-                                            SYS_ORDER: 1
-                                        }
-                                    },
-                                    (err, attributes) => {
-                                        let headers = []
-                                        let fields = []
-                                        let types = []
-                                        attributes.forEach(attribute => {
-                                            let attr = JSON.parse(JSON.stringify(attribute))
-
-                                            // Export non-entity attributes or refered entities
-                                            // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
-                                            if (attr.SYS_TYPE != 'entity' || attr.SYS_TYPE_ENTITY_REF){ // Never export BoM or Routing
-                                                headers.push(attr[attr['SYS_LABEL']])
-                                                fields.push(attr['SYS_CODE'])
-                                                types.push(attr['SYS_TYPE'])
-                                            }
-                                        })
-                                        headers.push('IDENTIFIER')
-                                        fields.push('id')
-                                        types.push('string')
-
-                                        // Prepare data
-                                        let data = []
-                                        Entity.find(
-                                            {_id: {$in: ids}},
-                                            (err, entities) => {
-                                                let hybridCode = {}
-
-
-                                                entities.filter(entity => {
-                                                    console.log("!", entity)
-                                                    //console.log("!", entity.SYS_HYBRID_INFO)
-                                                    return true
-                                                }).forEach(entity => {
-                                                    let e = JSON.parse(JSON.stringify(entity))
-                                                    let object = {}
-                                                    fields.forEach((key, index) => {
-
-                                                        // Export SYS_LABEL rather id
-                                                        if (types[index] == 'entity'){
-
-                                                            // TODO: async
-                                                            Entity.findOne(
-                                                                {_id: e[key]},
-                                                                (err, _entityAttr) => {
-                                                                    let entityAttr = JSON.parse(JSON.stringify(_entityAttr))
-                                                                    object[key] = entityAttr[entityAttr['SYS_LABEL']]
-                                                                })
-
-                                                            //} else {
-                                                        }
-                                                        object[key] = e[key]?e[key]:''
-                                                    })
-                                                    data.push(object)
-                                                })
-
-                                                let _headers = headers
-                                                    .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                                let _data = data
-                                                    .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                                    .reduce((prev, next) => prev.concat(next))
-                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                                let output = Object.assign({}, _headers, _data)
-                                                let outputPos = Object.keys(output)
-                                                let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
-                                                let wb = {
-                                                    SheetNames: ['samples'],
-                                                    Sheets: {
-                                                        'samples': Object.assign({}, output, { '!ref': ref })
-                                                    }
-                                                }
-
-                                                let timestamp = getTimestamp()
-                                                let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
-                                                XLSX.writeFile(wb, tempfile)
-                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                                                res.download(tempfile)
-
-                                                //let stream = XLSX.stream.to_csv(wb)//.pipe(res)
-                                                //fs.createWriteStream('tttt.xlsx')
-                                                //res.end()
-                                                //var output_file_name = "out.csv";
-                                                //var stream = XLSX.stream.to_csv(wb);
-                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                                                //console.log(stream)
-                                                //let file = fs.createWriteStream(output_file_name)
-                                                //res.pipe(wb)
-                                                //stream.pipe(fs.createWriteStream(output_file_name))
-                                                //res.download(output_file_name)
-                                                //stream.pipe(res)
-                                                //res.send(stream)
-                                            })
-
-
-                                    }
-                                )
-                            })
-                    } else {
-
-                        res.status(400).json('invalid workcenter id: '+req.body.workcenterId)
-                        return
-                    }
-                })
-
-
-
-        }
-    )
-
 }
 
 exports.updateInBatch = function(req, res, next){
