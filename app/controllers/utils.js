@@ -134,7 +134,7 @@ exports.excelToJSON = function(req, res, next){
     //res.status(200).json("uploaded")
 }
 
-exports.JSONToExcel = function(req, res, next){
+exports.JSONToExcel = async function(req, res, next){
     //if (!req.query.ids){
     //res.status(400).json('invalid arguments')
     //return
@@ -166,10 +166,10 @@ exports.JSONToExcel = function(req, res, next){
                 // Get genre
                 Genre.findOne(
                     {"SYS_ENTITY": workcenterDoc},
-                    (err, genreDoc) => {
+                    async (err, genreDoc) => {
 
                         // Get attribute
-                        Attribute.find(
+                        await Attribute.find(
                             {"SYS_GENRE": genreDoc._id},
                             '',
                             {
@@ -177,14 +177,21 @@ exports.JSONToExcel = function(req, res, next){
                                     SYS_ORDER: 1
                                 }
                             },
-                            (err, attributeDocList) => {
+                            async (err, attributeDocList) => {
                                 let headers = []
                                 let fields = []
                                 let types = []
+                                let bomHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
+                                let bomFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
+                                let bomTypes = ["number", "number", "string", "number", "string"]
+                                let bomData = []
 
-                                attributeDocList.forEach(attributeDoc => {
+                                // await seems to work fine in the for loop instead of forEach
+                                for (let attributeDoc of attributeDocList) {
 
+                                    console.log("< 1.0")
                                     let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
+                                    //console.log(">>", attributeObject.SYS_TYPE, attributeObject[attributeObject.SYS_LABEL])
 
                                     // Export non-entity attributes or refered entities
                                     // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
@@ -193,8 +200,31 @@ exports.JSONToExcel = function(req, res, next){
                                         headers.push(attributeObject[attributeObject['SYS_LABEL']])
                                         fields.push(attributeObject['SYS_CODE'])
                                         types.push(attributeObject['SYS_TYPE'])
+                                    } else {
+                                        console.log("< 1")
+                                        // Process BoM or Routing
+                                        let bomObject = attributeObject.SYS_TYPE_ENTITY
+                                        let bomGenreDoc = await Genre.findOne(
+                                            {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
+                                        console.log("< 1.3")
+                                        let bomDocList = await Entity.find(
+                                            {"SYS_GENRE": bomGenreDoc._id}).exec()
+                                        console.log("< 1.5")
+
+                                        await bomDocList.forEach(async (bomDoc, index) => {
+                                            console.log("< 1.5", index)
+                                            let bomObject = JSON.parse(JSON.stringify(bomDoc))
+                                            await bomData.push({
+                                                'SYS_ORDER': bomObject['SYS_ORDER'],
+                                                'SYS_DURATION': bomObject['SYS_DURATION'],
+                                                'SYS_SOURCE': bomObject['SYS_SOURCE'],
+                                                'id': bomObject['_id'],
+                                            })
+                                        })
+                                        console.log("< 2")
                                     }
-                                })
+                                }
+                                console.log("< 3", bomData.length)
 
                                 headers.push('IDENTIFIER')
                                 fields.push('id')
@@ -213,7 +243,7 @@ exports.JSONToExcel = function(req, res, next){
 
                                 let data = []
 
-                                Entity.find(
+                                await Entity.find(
                                     {_id: {$in: Object.keys(exportSampleIdListObject)}},
                                     (err, entityDocList) => {
 
@@ -251,8 +281,8 @@ exports.JSONToExcel = function(req, res, next){
                                                     }
                                                 } else {
                                                     //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
-                                                    console.log(">>> entityObject._id", entityObject._id)
-                                                    console.log(">>> key", key)
+                                                    //console.log(">>> entityObject._id", entityObject._id)
+                                                    //console.log(">>> key", key)
                                                     if (hybridObjectMap[entityObject._id]['attributeObject'] &&
                                                         hybridObjectMap[entityObject._id]['attributeObject'][key]){
                                                         result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
@@ -278,10 +308,31 @@ exports.JSONToExcel = function(req, res, next){
                                         let output = Object.assign({}, _headers, _data)
                                         let outputPos = Object.keys(output)
                                         let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+
+                                        let bomOutput = {}
+                                        let bomRef = ''
+                                        let _bomData = {}
+                                        if (bomData.length > 0){
+                                            let _bomHeaders = bomHeaders
+                                                .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                            _bomData = bomData
+                                                .map((v, i) => bomFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+                                                .reduce((prev, next) => prev.concat(next))
+                                                .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+                                            bomOutput = Object.assign({}, _bomHeaders, _bomData)
+                                            let bomOutputPos = Object.keys(bomOutput)
+                                            bomRef = bomOutputPos[0] + ':' + bomOutputPos[bomOutputPos.length - 1]
+                                        }
+
+                                        console.log("< 5", _bomData)
+                                        console.log("< 6", bomData)
+                                        //console.log("< 6", bomOutput)
                                         let wb = {
-                                            SheetNames: ['samples'],
+                                            SheetNames: ['samples', 'bom'],
                                             Sheets: {
-                                                'samples': Object.assign({}, output, { '!ref': ref })
+                                                'samples': Object.assign({}, output, { '!ref': ref }),
+                                                'bom': Object.assign({}, bomOutput, {'!ref': bomRef}),
                                             }
                                         }
 
