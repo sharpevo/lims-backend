@@ -174,10 +174,10 @@ exports.JSONToExcel = async function(req, res, next){
     let headers = []
     let fields = []
     let types = []
-    let bomHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
-    let bomFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
-    let bomTypes = ["number", "number", "string", "number", "string"]
-    let bomData = []
+    let routingHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
+    let routingFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
+    let routingTypes = ["number", "number", "string", "number", "string"]
+    let routingData = []
 
     // await seems to work fine in the for loop instead of forEach
     for (let attributeDoc of attributeDocList) {
@@ -210,7 +210,7 @@ exports.JSONToExcel = async function(req, res, next){
                 let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
 
                 console.log("> source", sourceObject[sourceObject.SYS_LABEL])
-                await bomData.push({
+                await routingData.push({
                     'SYS_ORDER': bomObject['SYS_ORDER'],
                     'SYS_DURATION': bomObject['SYS_DURATION'],
                     'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
@@ -220,7 +220,7 @@ exports.JSONToExcel = async function(req, res, next){
             console.log("< 2")
         }
     }
-    console.log("< 3", bomData.length)
+    console.log("< 3", routingData.length)
 
     headers.push('IDENTIFIER')
     fields.push('id')
@@ -305,22 +305,22 @@ exports.JSONToExcel = async function(req, res, next){
 
     let bomOutput = {}
     let bomRef = ''
-    let _bomData = {}
-    if (bomData.length > 0){
-        let _bomHeaders = bomHeaders
+    let _routingData = {}
+    if (routingData.length > 0){
+        let _routingHeaders = routingHeaders
             .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-        _bomData = bomData
-            .map((v, i) => bomFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+        _routingData = routingData
+            .map((v, i) => routingFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
             .reduce((prev, next) => prev.concat(next))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-        bomOutput = Object.assign({}, _bomHeaders, _bomData)
+        bomOutput = Object.assign({}, _routingHeaders, _routingData)
         let bomOutputPos = Object.keys(bomOutput)
         bomRef = bomOutputPos[0] + ':' + bomOutputPos[bomOutputPos.length - 1]
     }
 
-    console.log("< 5", _bomData)
-    console.log("< 6", bomData)
+    console.log("< 5", _routingData)
+    console.log("< 6", routingData)
     //console.log("< 6", bomOutput)
     let wb = {
         SheetNames: ['samples', 'bom'],
