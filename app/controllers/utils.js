@@ -155,7 +155,7 @@ exports.JSONToExcel = async function(req, res, next){
         exportSampleIdListObject[sampleIdList[0]] = sampleIdList
         //exportSampleIdList.push(sampleIdList[0])
     })
-    console.log("Export Excel:", hybridObjectMap)
+    //console.log("Export Excel:", hybridObjectMap)
 
     let workcenterDoc = await Entity.findOne({_id: workcenterId}).exec()
     if (!workcenterDoc) {
@@ -202,7 +202,6 @@ exports.JSONToExcel = async function(req, res, next){
     // await seems to work fine in the for loop instead of forEach
     for (let attributeDoc of attributeDocList) {
 
-        console.log("< 1.0")
         let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
         //console.log(">>", attributeObject.SYS_TYPE, attributeObject[attributeObject.SYS_LABEL])
 
@@ -214,25 +213,21 @@ exports.JSONToExcel = async function(req, res, next){
             fields.push(attributeObject['SYS_CODE'])
             types.push(attributeObject['SYS_TYPE'])
         } else {
-            console.log("< 1")
             // Process BoM or Routing
             let groupGenreDoc = await Genre.findOne(
                 {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
-            console.log("< 1.3")
             let groupDocList = await Entity.find(
                 {"SYS_GENRE": groupGenreDoc._id}).exec()
-            console.log("< 1.5")
 
             let aGroup = JSON.parse(JSON.stringify(groupDocList[0]))
-            console.log("<<< compare", aGroup)
             if (aGroup.hasOwnProperty('SYS_ORDER') || aGroup.hasOwnProperty('SYS_DURATION')) {
                 groupKey = "routing"
                 sheet2Name = "工艺流程"
-                console.log("<<< routing")
+                console.log(">>> routing")
             } else if (aGroup.hasOwnProperty('SYS_QUANTITY') || aGroup.hasOwnProperty('REMARK')) {
                 groupKey = "bom"
                 sheet2Name = "物料清单"
-                console.log("<<< bom")
+                console.log(">>> bom")
             }
 
             for (let groupDoc of groupDocList) {
@@ -240,7 +235,7 @@ exports.JSONToExcel = async function(req, res, next){
                 let sourceDoc = await Entity.findOne({"_id": groupObject['SYS_SOURCE']}).exec()
                 let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
 
-                console.log("> source", sourceObject[sourceObject.SYS_LABEL])
+                //console.log("> source", sourceObject[sourceObject.SYS_LABEL])
 
                 if (groupKey == "routing"){
                     await sheets['sheet2'][groupKey]['data'].push({
@@ -258,10 +253,9 @@ exports.JSONToExcel = async function(req, res, next){
                     })
                 }
             }
-            console.log("< 2")
         }
     }
-    console.log("< 3", sheets['sheet2'][groupKey]['data'].length)
+    //console.log("data length", sheets['sheet2'][groupKey]['data'].length)
 
     headers.push('IDENTIFIER')
     fields.push('id')
@@ -359,10 +353,6 @@ exports.JSONToExcel = async function(req, res, next){
         let groupOutputPos = Object.keys(groupOutput)
         groupRef = groupOutputPos[0] + ':' + groupOutputPos[groupOutputPos.length - 1]
     }
-
-    console.log("< 5", _groupData)
-    //console.log("< 6", groupData)
-    //console.log("< 6", groupOutput)
 
     let wb = {
         SheetNames: ['样品列表', sheet2Name],
