@@ -236,6 +236,7 @@ module.exports = async function(){
 
     let tipClassEntity = await createEntity(materialDomainGenre, "TIP", 1, "Tips " + materialDomainGenre.label)
     let tipClassGenre = await createGenre(tipClassEntity)
+    createEntity(tipClassGenre, "Tip_1", 2, "Tip#1")
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
 
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
@@ -282,6 +283,25 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: extractCollGenre.id})
+    Entity({
+        SYS_IDENTIFIER: extractCollGenre.SYS_IDENTIFIER + "KAPA",
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: extractCollGenre.id,
+        SYS_CHECKED: true,
+        REMARK: '初始化生成',
+        SYS_SOURCE: kapaClassEntity.id,
+        SYS_QUANTITY: 20,
+    }).save()
+    Entity({
+        SYS_IDENTIFIER: extractCollGenre.SYS_IDENTIFIER + "TIP",
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: extractCollGenre.id,
+        SYS_CHECKED: true,
+        REMARK: '初始化生成',
+        SYS_SOURCE: tipClassEntity.id,
+        SYS_QUANTITY: 2,
+    }).save()
+
     //}}}
 
     // Project Workcenter Domain{{{
@@ -479,6 +499,16 @@ module.exports = async function(){
             ]),
         })
     let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
+    createAttribute({
+        label: 'BoM',
+        SYS_CODE: 'BOM',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: extractCollEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: DNAExtractClassGenre.id,
+    })
     let attrDENanodrop = await createAttribute({
         label: 'Nanodrop ng/ul',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
