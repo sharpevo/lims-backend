@@ -174,11 +174,31 @@ exports.JSONToExcel = async function(req, res, next){
     let headers = []
     let fields = []
     let types = []
-    let routingHeaders = ["顺序", "实际值", "IDENTIFIER", "建议值", "名称"] // hardcoding
+    let routingHeaders = ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"] // hardcoding
     let routingFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
     let routingTypes = ["number", "number", "string", "number", "string"]
     let routingData = []
 
+    let sheets = {
+        "sheet1": {
+        },
+        "sheet2": {
+            "bom": {
+                "headers":["实际用量", "备注", "IDENTIFIER", "建议用量", "物料名称"],
+                "fields": ["SYS_QUANTITY", "REMARK", "id", "SYS_QUANTITY", "SYS_SOURCE"],
+                "types": ["number", "string", "string", "number", "string"],
+                "data": [],
+            },
+            "routing": {
+                "headers": ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"],
+                "fields": ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"],
+                "types": ["number", "number", "string", "number", "string"],
+                "data": [],
+            },
+        }
+    }
+    let groupKey = ""
+    let sheet2Name = ""
     // await seems to work fine in the for loop instead of forEach
     for (let attributeDoc of attributeDocList) {
 
@@ -196,31 +216,52 @@ exports.JSONToExcel = async function(req, res, next){
         } else {
             console.log("< 1")
             // Process BoM or Routing
-            let bomObject = attributeObject.SYS_TYPE_ENTITY
-            let bomGenreDoc = await Genre.findOne(
+            let groupGenreDoc = await Genre.findOne(
                 {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
             console.log("< 1.3")
-            let bomDocList = await Entity.find(
-                {"SYS_GENRE": bomGenreDoc._id}).exec()
+            let groupDocList = await Entity.find(
+                {"SYS_GENRE": groupGenreDoc._id}).exec()
             console.log("< 1.5")
 
-            for (let bomDoc of bomDocList) {
-                let bomObject = JSON.parse(JSON.stringify(bomDoc))
-                let sourceDoc = await Entity.findOne({"_id": bomObject['SYS_SOURCE']}).exec()
+            let aGroup = JSON.parse(JSON.stringify(groupDocList[0]))
+            console.log("<<< compare", aGroup)
+            if (aGroup.hasOwnProperty('SYS_ORDER') || aGroup.hasOwnProperty('SYS_DURATION')) {
+                groupKey = "routing"
+                sheet2Name = "工艺流程"
+                console.log("<<< routing")
+            } else if (aGroup.hasOwnProperty('SYS_QUANTITY') || aGroup.hasOwnProperty('REMARK')) {
+                groupKey = "bom"
+                sheet2Name = "物料清单"
+                console.log("<<< bom")
+            }
+
+            for (let groupDoc of groupDocList) {
+                let groupObject = JSON.parse(JSON.stringify(groupDoc))
+                let sourceDoc = await Entity.findOne({"_id": groupObject['SYS_SOURCE']}).exec()
                 let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
 
                 console.log("> source", sourceObject[sourceObject.SYS_LABEL])
-                await routingData.push({
-                    'SYS_ORDER': bomObject['SYS_ORDER'],
-                    'SYS_DURATION': bomObject['SYS_DURATION'],
-                    'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
-                    'id': bomObject['_id'],
-                })
+
+                if (groupKey == "routing"){
+                    await sheets['sheet2'][groupKey]['data'].push({
+                        'SYS_ORDER': groupObject['SYS_ORDER'],
+                        'SYS_DURATION': groupObject['SYS_DURATION'],
+                        'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
+                        'id': groupObject['_id'],
+                    })
+                } else if (groupKey = "bom") {
+                    await sheets['sheet2'][groupKey]['data'].push({
+                        'SYS_QUANTITY': groupObject['SYS_QUANTITY'],
+                        'REMARK': groupObject['REMARK'],
+                        'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
+                        'id': groupObject['_id'],
+                    })
+                }
             }
             console.log("< 2")
         }
     }
-    console.log("< 3", routingData.length)
+    console.log("< 3", sheets['sheet2'][groupKey]['data'].length)
 
     headers.push('IDENTIFIER')
     fields.push('id')
@@ -303,32 +344,33 @@ exports.JSONToExcel = async function(req, res, next){
     let outputPos = Object.keys(output)
     let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
 
-    let bomOutput = {}
-    let bomRef = ''
-    let _routingData = {}
-    if (routingData.length > 0){
-        let _routingHeaders = routingHeaders
+    let groupOutput = {}
+    let groupRef = ''
+    let _groupData = {}
+    if (sheets['sheet2'][groupKey]['data'].length > 0){
+        let _groupHeaders = sheets['sheet2'][groupKey]['headers']
             .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-        _routingData = routingData
-            .map((v, i) => routingFields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+        _groupData = sheets['sheet2'][groupKey]['data']
+            .map((v, i) => sheets['sheet2'][groupKey]['fields'].map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
             .reduce((prev, next) => prev.concat(next))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-        bomOutput = Object.assign({}, _routingHeaders, _routingData)
-        let bomOutputPos = Object.keys(bomOutput)
-        bomRef = bomOutputPos[0] + ':' + bomOutputPos[bomOutputPos.length - 1]
+        groupOutput = Object.assign({}, _groupHeaders, _groupData)
+        let groupOutputPos = Object.keys(groupOutput)
+        groupRef = groupOutputPos[0] + ':' + groupOutputPos[groupOutputPos.length - 1]
     }
 
-    console.log("< 5", _routingData)
-    console.log("< 6", routingData)
-    //console.log("< 6", bomOutput)
+    console.log("< 5", _groupData)
+    //console.log("< 6", groupData)
+    //console.log("< 6", groupOutput)
+
     let wb = {
-        SheetNames: ['samples', 'bom'],
+        SheetNames: ['样品列表', sheet2Name],
         Sheets: {
-            'samples': Object.assign({}, output, { '!ref': ref }),
-            'bom': Object.assign({}, bomOutput, {'!ref': bomRef}),
+            '样品列表': Object.assign({}, output, { '!ref': ref }),
         }
     }
+    wb['Sheets'][sheet2Name] = Object.assign({}, groupOutput, {'!ref': groupRef})
 
     let timestamp = getTimestamp()
     let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
