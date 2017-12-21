@@ -96,8 +96,9 @@ exports.excelToJSON = function(req, res, next){
                 //store header names
                 // Note that string comparision of js is lexicographically.
                 // i.e., "A" < "B"
+                // the IDENTIFIER must be included.
                 if(row == 1 && value &&
-                    (!auxiliaryCol || col < auxiliaryCol)) {
+                    (!auxiliaryCol || col <= auxiliaryCol)) {
                     headers[col] = value
                     if (value.startsWith("IDENTIFIER")){
                         auxiliaryCol = col
@@ -106,7 +107,7 @@ exports.excelToJSON = function(req, res, next){
                 }
 
                 if(!data[row]) data[row]={}
-                if (!auxiliaryCol || col < auxiliaryCol){
+                if (!auxiliaryCol || col <= auxiliaryCol){
                     //console.log("V", value, col, auxiliaryCol)
                     data[row][headers[col]] = value
                 }
