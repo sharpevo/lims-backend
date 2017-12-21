@@ -236,6 +236,7 @@ module.exports = async function(){
 
     let tipClassEntity = await createEntity(materialDomainGenre, "TIP", 1, "Tips " + materialDomainGenre.label)
     let tipClassGenre = await createGenre(tipClassEntity)
+    createEntity(tipClassGenre, "Tip_1", 2, "Tip#1")
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
 
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
@@ -282,6 +283,25 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: extractCollGenre.id})
+    Entity({
+        SYS_IDENTIFIER: extractCollGenre.SYS_IDENTIFIER + "KAPA",
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: extractCollGenre.id,
+        SYS_CHECKED: true,
+        REMARK: '初始化生成',
+        SYS_SOURCE: kapaClassEntity.id,
+        SYS_QUANTITY: 20,
+    }).save()
+    Entity({
+        SYS_IDENTIFIER: extractCollGenre.SYS_IDENTIFIER + "TIP",
+        SYS_ENTITY_TYPE: 'object',
+        SYS_GENRE: extractCollGenre.id,
+        SYS_CHECKED: true,
+        REMARK: '初始化生成',
+        SYS_SOURCE: tipClassEntity.id,
+        SYS_QUANTITY: 2,
+    }).save()
+
     //}}}
 
     // Project Workcenter Domain{{{
@@ -479,6 +499,16 @@ module.exports = async function(){
             ]),
         })
     let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
+    createAttribute({
+        label: 'BoM',
+        SYS_CODE: 'BOM',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: extractCollEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: DNAExtractClassGenre.id,
+    })
     let attrDENanodrop = await createAttribute({
         label: 'Nanodrop ng/ul',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
@@ -781,13 +811,13 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_S_INDEX_CODE_I7',
         SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
         SYS_ORDER: 120,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
@@ -953,25 +983,25 @@ module.exports = async function(){
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_M_INDEX_CODE_I7',
         SYS_ORDER: 80,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I7',
         SYS_ORDER: 90,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI5 = await createAttribute({
         label: 'Index编号 #2 (I5)',
-        SYS_CODE: 'SYS_INDEX_CODE_I5',
+        SYS_CODE: 'SYS_M_INDEX_CODE_I5',
         SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI5 = await createAttribute({
         label: 'Index序列 #2 (I5)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_I5',
+        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I5',
         SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
@@ -1049,7 +1079,7 @@ module.exports = async function(){
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '总数据量(G)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'TOTAL_DATA_SIZE'),
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: poolingClassGenre.id})
@@ -1174,7 +1204,7 @@ module.exports = async function(){
         SYS_GENRE: v1CollGenre.id})
 
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_EXTRACT,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_EXTRACT,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1183,7 +1213,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_APPROVE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_APPROVE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1192,7 +1222,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SHEAR,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_SHEAR,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1201,7 +1231,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_LIBRARY_PREPARE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_LIBRARY_PREPARE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1210,7 +1240,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_CAPTURE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_CAPTURE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1219,7 +1249,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_MULTIPLEX_LIBRARY_PREPARE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_MULTIPLEX_LIBRARY_PREPARE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: false,
@@ -1228,7 +1258,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_POOLING,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_POOLING,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1237,7 +1267,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SEQUENCE_DATA,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_SEQUENCE_DATA,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
