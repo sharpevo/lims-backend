@@ -1174,7 +1174,7 @@ module.exports = async function(){
         SYS_GENRE: v1CollGenre.id})
 
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_EXTRACT,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_EXTRACT,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1183,7 +1183,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_APPROVE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_APPROVE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1192,7 +1192,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SHEAR,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_SHEAR,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1201,7 +1201,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_LIBRARY_PREPARE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_LIBRARY_PREPARE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1210,7 +1210,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_CAPTURE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_CAPTURE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1219,7 +1219,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_MULTIPLEX_LIBRARY_PREPARE,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_MULTIPLEX_LIBRARY_PREPARE,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: false,
@@ -1228,7 +1228,7 @@ module.exports = async function(){
         SYS_DURATION: 2,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_POOLING,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_POOLING,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
@@ -1237,7 +1237,7 @@ module.exports = async function(){
         SYS_DURATION: 5,
     }).save()
     Entity({
-        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + '_' + WC_ID_SEQUENCE_DATA,
+        SYS_IDENTIFIER: v1CollGenre.SYS_IDENTIFIER + WC_ID_SEQUENCE_DATA,
         SYS_ENTITY_TYPE: 'object',
         SYS_GENRE: v1CollGenre.id,
         SYS_CHECKED: true,
