@@ -343,7 +343,8 @@ exports.JSONToExcel = async function(req, res, next){
     let groupOutput = {}
     let groupRef = ''
     let _groupData = {}
-    if (sheets['sheet2'][groupKey]['data'].length > 0){
+    if (groupKey != '' && // groupKey is empty for the workcenter without BoM
+        sheets['sheet2'][groupKey]['data'].length > 0){
         let _groupHeaders = sheets['sheet2'][groupKey]['headers']
             .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
