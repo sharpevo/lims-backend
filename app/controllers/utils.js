@@ -218,8 +218,10 @@ exports.JSONToExcel = async function(req, res, next){
             // Process BoM or Routing
             let groupGenreDoc = await Genre.findOne(
                 {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
-            let groupDocList = await Entity.find(
-                {"SYS_GENRE": groupGenreDoc._id}).exec()
+            let groupDocList = await Entity
+                .find({"SYS_GENRE": groupGenreDoc._id})
+                .sort('SYS_ORDER')
+                .exec()
 
             let aGroup = JSON.parse(JSON.stringify(groupDocList[0]))
             if (aGroup.hasOwnProperty('SYS_ORDER') || aGroup.hasOwnProperty('SYS_DURATION')) {
