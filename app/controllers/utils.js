@@ -176,23 +176,21 @@ exports.JSONToExcel = async function(req, res, next){
     let headers = []
     let fields = []
     let types = []
-    let routingHeaders = ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"] // hardcoding
-    let routingFields = ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"] // hardcoding
-    let routingTypes = ["number", "number", "string", "number", "string"]
-    let routingData = []
 
     let sheets = {
         "sheet1": {
         },
         "sheet2": {
             "bom": {
-                "headers":["实际用量", "备注", "IDENTIFIER", "建议用量", "物料名称"],
+                //"headers":["实际用量", "备注", "IDENTIFIER", "建议用量", "物料名称"],
+                "headers": [],
                 "fields": ["SYS_QUANTITY", "REMARK", "id", "SYS_QUANTITY", "SYS_SOURCE"],
                 "types": ["number", "string", "string", "number", "string"],
                 "data": [],
             },
             "routing": {
-                "headers": ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"],
+                //"headers": ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"],
+                "headers": [],
                 "fields": ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"],
                 "types": ["number", "number", "string", "number", "string"],
                 "data": [],
@@ -218,6 +216,8 @@ exports.JSONToExcel = async function(req, res, next){
             // Process BoM or Routing
             let groupGenreDoc = await Genre.findOne(
                 {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
+            let groupAttrList = await Attribute.find(
+                {"SYS_GENRE": groupGenreDoc._id})
             let groupDocList = await Entity
                 .find({"SYS_GENRE": groupGenreDoc._id})
                 .sort('SYS_ORDER')
@@ -227,10 +227,55 @@ exports.JSONToExcel = async function(req, res, next){
             if (aGroup.hasOwnProperty('SYS_ORDER') || aGroup.hasOwnProperty('SYS_DURATION')) {
                 groupKey = "routing"
                 sheet2Name = "工艺流程"
+
+                let orderAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_ORDER')[0]
+                let orderAttrObj = JSON.parse(JSON.stringify(orderAttrDoc))
+                let orderHeader = orderAttrObj[orderAttrObj['SYS_LABEL']]
+
+                let durationAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_DURATION')[0]
+                let durationAttrObj = JSON.parse(JSON.stringify(durationAttrDoc))
+                let durationHeader = durationAttrObj[durationAttrObj['SYS_LABEL']]
+
+                let sourceAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_SOURCE')[0]
+                let sourceAttrObj = JSON.parse(JSON.stringify(sourceAttrDoc))
+                let sourceHeader = sourceAttrObj[sourceAttrObj['SYS_LABEL']]
+
+                console.log(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(durationHeader)
+                sheets['sheet2'][groupKey]['headers'].push('IDENTIFIER')
+                sheets['sheet2'][groupKey]['headers'].push(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(sourceHeader)
+
                 console.log(">>> routing")
             } else if (aGroup.hasOwnProperty('SYS_QUANTITY') || aGroup.hasOwnProperty('REMARK')) {
                 groupKey = "bom"
                 sheet2Name = "物料清单"
+
+                let quantityAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_QUANTITY')[0]
+                let quantityAttrObj = JSON.parse(JSON.stringify(quantityAttrDoc))
+                let quantityHeader = quantityAttrObj[quantityAttrObj['SYS_LABEL']]
+
+                let remarkAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'REMARK')[0]
+                let remarkAttrObj = JSON.parse(JSON.stringify(remarkAttrDoc))
+                let remarkHeader = remarkAttrObj[remarkAttrObj['SYS_LABEL']]
+
+                let sourceAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_SOURCE')[0]
+                let sourceAttrObj = JSON.parse(JSON.stringify(sourceAttrDoc))
+                let sourceHeader = sourceAttrObj[sourceAttrObj['SYS_LABEL']]
+
+                sheets['sheet2'][groupKey]['headers'].push(quantityHeader)
+                sheets['sheet2'][groupKey]['headers'].push(remarkHeader)
+                sheets['sheet2'][groupKey]['headers'].push('IDENTIFIER')
+                sheets['sheet2'][groupKey]['headers'].push(quantityHeader)
+                sheets['sheet2'][groupKey]['headers'].push(sourceHeader)
+
                 console.log(">>> bom")
             }
 
@@ -246,7 +291,7 @@ exports.JSONToExcel = async function(req, res, next){
                         'SYS_ORDER': groupObject['SYS_ORDER'],
                         'SYS_DURATION': groupObject['SYS_DURATION'],
                         'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
-                        'id': groupObject['_id'],
+                        'id': sourceObject._id,
                     })
                 } else if (groupKey = "bom") {
                     await sheets['sheet2'][groupKey]['data'].push({
