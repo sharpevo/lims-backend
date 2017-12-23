@@ -273,7 +273,7 @@ exports.JSONToExcel = async function(req, res, next){
                         'SYS_ORDER': groupObject['SYS_ORDER'],
                         'SYS_DURATION': groupObject['SYS_DURATION'],
                         'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
-                        'id': groupObject['_id'],
+                        'id': sourceObject._id,
                     })
                 } else if (groupKey = "bom") {
                     await sheets['sheet2'][groupKey]['data'].push({
