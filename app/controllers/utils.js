@@ -379,6 +379,13 @@ exports.JSONToExcel = async function(req, res, next){
     let _data = {}
     if (data.length > 0) {
         _data = data
+            .sort((a,b) => {
+                if (a.SYS_SAMPLE_CODE > b.SYS_SAMPLE_CODE) {
+                    return 1
+                } else {
+                    return -1
+                }
+            })
             .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
             .reduce((prev, next) => prev.concat(next))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
