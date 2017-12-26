@@ -286,12 +286,15 @@ exports.JSONToExcel = async function(req, res, next){
 
                 //console.log("> source", sourceObject[sourceObject.SYS_LABEL])
 
+                // groupId is used to identify the group item itself
+                // SYS_SOURCE is used to identify the source object to create.
                 if (groupKey == "routing"){
                     await sheets['sheet2'][groupKey]['data'].push({
                         'SYS_ORDER': groupObject['SYS_ORDER'],
                         'SYS_DURATION': groupObject['SYS_DURATION'],
                         'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
-                        'id': sourceObject._id,
+                        //'id': sourceObject._id,
+                        'id': groupObject['_id'],
                     })
                 } else if (groupKey = "bom") {
                     await sheets['sheet2'][groupKey]['data'].push({
