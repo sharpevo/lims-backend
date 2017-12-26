@@ -53,7 +53,9 @@ exports.getUserInfo = function(req, res, next){
 exports.excelToJSON = function(req, res, next){
     let form = new formidable.IncomingForm()
 
-    form.parse(req)
+    form.parse(req, function(err, fields, files) {
+        if (err) next(err);
+    })
 
     form.on('file', function(name, file){
         console.log(name)
@@ -94,6 +96,7 @@ exports.excelToJSON = function(req, res, next){
                 //store header names
                 // Note that string comparision of js is lexicographically.
                 // i.e., "A" < "B"
+                // the IDENTIFIER must be included.
                 if(row == 1 && value &&
                     (!auxiliaryCol || col <= auxiliaryCol)) {
                     headers[col] = value
@@ -105,6 +108,7 @@ exports.excelToJSON = function(req, res, next){
 
                 if(!data[row]) data[row]={}
                 if (!auxiliaryCol || col <= auxiliaryCol){
+                    //console.log("V", value, col, auxiliaryCol)
                     data[row][headers[col]] = value
                 }
             }
@@ -132,7 +136,7 @@ exports.excelToJSON = function(req, res, next){
     //res.status(200).json("uploaded")
 }
 
-exports.JSONToExcel = function(req, res, next){
+exports.JSONToExcel = async function(req, res, next){
     //if (!req.query.ids){
     //res.status(400).json('invalid arguments')
     //return
@@ -144,290 +148,286 @@ exports.JSONToExcel = function(req, res, next){
     let hybridObjectMap = req.body['hybridObjectMap']
     let exportSampleIdListObject = {} // only one sample for each hybrid sample
     let hybridObjectMapKeyList = Object.keys(hybridObjectMap)
-    let auxiliaryAttributeObject = hybridObjectMap[hybridObjectMapKeyList[0]]['attributeObject']
+    let auxiliaryAttributeObject = {}
+    if (hybridObjectMap[hybridObjectMapKeyList[0]]) {
+        auxiliaryAttributeObject = hybridObjectMap[hybridObjectMapKeyList[0]]['attributeObject']
+    }
     hybridObjectMapKeyList.forEach(key => { // key = sample id
         let sampleIdList = hybridObjectMap[key]['sampleIdList']
         exportSampleIdListObject[sampleIdList[0]] = sampleIdList
         //exportSampleIdList.push(sampleIdList[0])
     })
-    console.log("Export Excel:", hybridObjectMap)
+    //console.log("Export Excel:", hybridObjectMap)
 
-    // Get workcenter
-    Entity.findOne(
-        {_id: workcenterId},
-        (err, workcenterDoc) => {
-            if(workcenterDoc){
-
-                // Get genre
-                Genre.findOne(
-                    {"SYS_ENTITY": workcenterDoc},
-                    (err, genreDoc) => {
-
-                        // Get attribute
-                        Attribute.find(
-                            {"SYS_GENRE": genreDoc._id},
-                            '',
-                            {
-                                sort: {
-                                    SYS_ORDER: 1
-                                }
-                            },
-                            (err, attributeDocList) => {
-                                let headers = []
-                                let fields = []
-                                let types = []
-
-                                attributeDocList.forEach(attributeDoc => {
-
-                                    let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
-
-                                    // Export non-entity attributes or refered entities
-                                    // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
-                                    if (attributeObject.SYS_TYPE != 'entity' ||
-                                        attributeObject.SYS_TYPE_ENTITY_REF){ // Not export BoM or Routing
-                                        headers.push(attributeObject[attributeObject['SYS_LABEL']])
-                                        fields.push(attributeObject['SYS_CODE'])
-                                        types.push(attributeObject['SYS_TYPE'])
-                                    }
-                                })
-
-                                headers.push('IDENTIFIER')
-                                fields.push('id')
-                                types.push('string')
-
-                                // Processing auxiliary attributes
-                                // null or undefined can not be converted to object
-                                if (auxiliaryAttributeObject){
-                                    Object.keys(auxiliaryAttributeObject).forEach(key => {
-                                        let attributeObject = auxiliaryAttributeObject[key]
-                                        headers.push(attributeObject['SYS_LABEL'])
-                                        fields.push(attributeObject['SYS_CODE'])
-                                        types.push(attributeObject['SYS_TYPE'])
-                                    })
-                                }
-
-                                let data = []
-
-                                Entity.find(
-                                    {_id: {$in: Object.keys(exportSampleIdListObject)}},
-                                    (err, entityDocList) => {
-
-                                        let hybridCode = {}
-
-                                        entityDocList.filter(entityDoc => {
-                                            //console.log("!", entityDoc)
-                                            return true
-                                        }).forEach(entityDoc => {
-                                            let entityObject = JSON.parse(JSON.stringify(entityDoc))
-                                            let result = {}
-                                            let isAuxiliaryAttribute = false
-                                            fields.forEach((key, index) => {
-
-                                                if (!isAuxiliaryAttribute){
-                                                    // Export SYS_LABEL rather id
-                                                    if (types[index] == 'entity'){
-
-                                                        // TODO: async
-                                                        Entity.findOne(
-                                                            {_id: entityObject[key]},
-                                                            (err, innerEntityDoc) => {
-                                                                if (innerEntityDoc){
-                                                                    let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
-                                                                    result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
-                                                                }
-                                                            })
-
-                                                    } else if (key == 'id'){
-                                                        isAuxiliaryAttribute = true
-                                                        //let position = exportSampleIdList.indexOf(result[key])
-                                                        result[key] = exportSampleIdListObject[entityObject[key]]
-                                                    } else {
-                                                        result[key] = entityObject[key]?entityObject[key]:''
-                                                    }
-                                                } else {
-                                                    //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
-                                                    console.log("-------", entityObject._id)
-                                                    if (hybridObjectMap[entityObject._id]['attributeObject']) {
-                                                        result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
-                                                    }
-
-                                                }
-                                                //console.log("..", result)
-                                            })
-                                            data.push(result)
-                                        })
-
-
-                                        let _headers = headers
-                                            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                        let _data = data
-                                            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                            .reduce((prev, next) => prev.concat(next))
-                                            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                        let output = Object.assign({}, _headers, _data)
-                                        let outputPos = Object.keys(output)
-                                        let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
-                                        let wb = {
-                                            SheetNames: ['samples'],
-                                            Sheets: {
-                                                'samples': Object.assign({}, output, { '!ref': ref })
-                                            }
-                                        }
-
-                                        let timestamp = getTimestamp()
-                                        let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
-                                        XLSX.writeFile(wb, tempfile)
-                                        res.download(tempfile)
-
-                                    })
-                            })
-
-                    })
-            } else {
-                res.status(400).json('invalid workcenter id: ' + workcenterId)
-                return
+    let workcenterDoc = await Entity.findOne({_id: workcenterId}).exec()
+    if (!workcenterDoc) {
+        res.status(400).json('invalid workcenter id: ' + workcenterId)
+        return
+    }
+    let genreDoc = await Genre.findOne({"SYS_ENTITY": workcenterDoc}).exec()
+    let attributeDocList = await Attribute.find(
+        {"SYS_GENRE": genreDoc._id},
+        '',
+        {
+            sort: {
+                SYS_ORDER: 1
             }
         })
+    let headers = []
+    let fields = []
+    let types = []
 
+    let sheets = {
+        "sheet1": {
+        },
+        "sheet2": {
+            "bom": {
+                //"headers":["实际用量", "备注", "IDENTIFIER", "建议用量", "物料名称"],
+                "headers": [],
+                "fields": ["SYS_QUANTITY", "REMARK", "id", "SYS_QUANTITY", "SYS_SOURCE"],
+                "types": ["number", "string", "string", "number", "string"],
+                "data": [],
+            },
+            "routing": {
+                //"headers": ["工序", "实际工时", "IDENTIFIER", "标准工时", "Workcenter名称"],
+                "headers": [],
+                "fields": ["SYS_ORDER", "SYS_DURATION", "id", "SYS_DURATION", "SYS_SOURCE"],
+                "types": ["number", "number", "string", "number", "string"],
+                "data": [],
+            },
+        }
+    }
+    let groupKey = ""
+    let sheet2Name = ""
+    // await seems to work fine in the for loop instead of forEach
+    for (let attributeDoc of attributeDocList) {
 
-    return
+        let attributeObject = JSON.parse(JSON.stringify(attributeDoc))
+        //console.log(">>", attributeObject.SYS_TYPE, attributeObject[attributeObject.SYS_LABEL])
 
-    let entity = Entity.findOne(
-        {_id: ids[0]},
-        (err, entity) => {
-            if (!entity){
-                console.log("entity:", entity)
-                res.status(400).json('invalid id')
-                return
+        // Export non-entity attributes or refered entities
+        // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
+        if (attributeObject.SYS_TYPE != 'entity' ||
+            attributeObject.SYS_TYPE_ENTITY_REF){ // Not export BoM or Routing
+            headers.push(attributeObject[attributeObject['SYS_LABEL']])
+            fields.push(attributeObject['SYS_CODE'])
+            types.push(attributeObject['SYS_TYPE'])
+        } else {
+            // Process BoM or Routing
+            let groupGenreDoc = await Genre.findOne(
+                {"SYS_ENTITY": attributeObject.SYS_TYPE_ENTITY}).exec()
+            let groupAttrList = await Attribute.find(
+                {"SYS_GENRE": groupGenreDoc._id})
+            let groupDocList = await Entity
+                .find({"SYS_GENRE": groupGenreDoc._id})
+                .sort('SYS_ORDER')
+                .exec()
+
+            let aGroup = JSON.parse(JSON.stringify(groupDocList[0]))
+            if (aGroup.hasOwnProperty('SYS_ORDER') || aGroup.hasOwnProperty('SYS_DURATION')) {
+                groupKey = "routing"
+                sheet2Name = "工艺流程"
+
+                let orderAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_ORDER')[0]
+                let orderAttrObj = JSON.parse(JSON.stringify(orderAttrDoc))
+                let orderHeader = orderAttrObj[orderAttrObj['SYS_LABEL']]
+
+                let durationAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_DURATION')[0]
+                let durationAttrObj = JSON.parse(JSON.stringify(durationAttrDoc))
+                let durationHeader = durationAttrObj[durationAttrObj['SYS_LABEL']]
+
+                let sourceAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_SOURCE')[0]
+                let sourceAttrObj = JSON.parse(JSON.stringify(sourceAttrDoc))
+                let sourceHeader = sourceAttrObj[sourceAttrObj['SYS_LABEL']]
+
+                console.log(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(durationHeader)
+                sheets['sheet2'][groupKey]['headers'].push('IDENTIFIER')
+                sheets['sheet2'][groupKey]['headers'].push(orderHeader)
+                sheets['sheet2'][groupKey]['headers'].push(sourceHeader)
+
+                console.log(">>> routing")
+            } else if (aGroup.hasOwnProperty('SYS_QUANTITY') || aGroup.hasOwnProperty('REMARK')) {
+                groupKey = "bom"
+                sheet2Name = "物料清单"
+
+                let quantityAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_QUANTITY')[0]
+                let quantityAttrObj = JSON.parse(JSON.stringify(quantityAttrDoc))
+                let quantityHeader = quantityAttrObj[quantityAttrObj['SYS_LABEL']]
+
+                let remarkAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'REMARK')[0]
+                let remarkAttrObj = JSON.parse(JSON.stringify(remarkAttrDoc))
+                let remarkHeader = remarkAttrObj[remarkAttrObj['SYS_LABEL']]
+
+                let sourceAttrDoc = groupAttrList
+                    .filter(attr => attr.SYS_CODE == 'SYS_SOURCE')[0]
+                let sourceAttrObj = JSON.parse(JSON.stringify(sourceAttrDoc))
+                let sourceHeader = sourceAttrObj[sourceAttrObj['SYS_LABEL']]
+
+                sheets['sheet2'][groupKey]['headers'].push(quantityHeader)
+                sheets['sheet2'][groupKey]['headers'].push(remarkHeader)
+                sheets['sheet2'][groupKey]['headers'].push('IDENTIFIER')
+                sheets['sheet2'][groupKey]['headers'].push(quantityHeader)
+                sheets['sheet2'][groupKey]['headers'].push(sourceHeader)
+
+                console.log(">>> bom")
             }
 
-            Entity.findOne(
-                {_id: req.body.workcenterId},
-                (err, entity) => {
-                    if (entity){
-                        Genre.findOne(
-                            {"SYS_ENTITY": entity._id},
-                            (err, genre) => {
+            for (let groupDoc of groupDocList) {
+                let groupObject = JSON.parse(JSON.stringify(groupDoc))
+                let sourceDoc = await Entity.findOne({"_id": groupObject['SYS_SOURCE']}).exec()
+                let sourceObject = JSON.parse(JSON.stringify(sourceDoc))
 
-                                Attribute.find(
-                                    {'SYS_GENRE': genre._id},
-                                    '',
-                                    {
-                                        sort:{
-                                            SYS_ORDER: 1
-                                        }
-                                    },
-                                    (err, attributes) => {
-                                        let headers = []
-                                        let fields = []
-                                        let types = []
-                                        attributes.forEach(attribute => {
-                                            let attr = JSON.parse(JSON.stringify(attribute))
+                //console.log("> source", sourceObject[sourceObject.SYS_LABEL])
 
-                                            // Export non-entity attributes or refered entities
-                                            // Never export BoM or Routing of which SYS_TYPE_ENTITY_REF is false
-                                            if (attr.SYS_TYPE != 'entity' || attr.SYS_TYPE_ENTITY_REF){ // Never export BoM or Routing
-                                                headers.push(attr[attr['SYS_LABEL']])
-                                                fields.push(attr['SYS_CODE'])
-                                                types.push(attr['SYS_TYPE'])
-                                            }
-                                        })
-                                        headers.push('IDENTIFIER')
-                                        fields.push('id')
-                                        types.push('string')
-
-                                        // Prepare data
-                                        let data = []
-                                        Entity.find(
-                                            {_id: {$in: ids}},
-                                            (err, entities) => {
-                                                let hybridCode = {}
-
-
-                                                entities.filter(entity => {
-                                                    console.log("!", entity)
-                                                    //console.log("!", entity.SYS_HYBRID_INFO)
-                                                    return true
-                                                }).forEach(entity => {
-                                                    let e = JSON.parse(JSON.stringify(entity))
-                                                    let object = {}
-                                                    fields.forEach((key, index) => {
-
-                                                        // Export SYS_LABEL rather id
-                                                        if (types[index] == 'entity'){
-
-                                                            // TODO: async
-                                                            Entity.findOne(
-                                                                {_id: e[key]},
-                                                                (err, _entityAttr) => {
-                                                                    let entityAttr = JSON.parse(JSON.stringify(_entityAttr))
-                                                                    object[key] = entityAttr[entityAttr['SYS_LABEL']]
-                                                                })
-
-                                                            //} else {
-                                                        }
-                                                        object[key] = e[key]?e[key]:''
-                                                    })
-                                                    data.push(object)
-                                                })
-
-                                                let _headers = headers
-                                                    .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
-                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                                let _data = data
-                                                    .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
-                                                    .reduce((prev, next) => prev.concat(next))
-                                                    .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-                                                let output = Object.assign({}, _headers, _data)
-                                                let outputPos = Object.keys(output)
-                                                let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
-                                                let wb = {
-                                                    SheetNames: ['samples'],
-                                                    Sheets: {
-                                                        'samples': Object.assign({}, output, { '!ref': ref })
-                                                    }
-                                                }
-
-                                                let timestamp = getTimestamp()
-                                                let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
-                                                XLSX.writeFile(wb, tempfile)
-                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                                                res.download(tempfile)
-
-                                                //let stream = XLSX.stream.to_csv(wb)//.pipe(res)
-                                                //fs.createWriteStream('tttt.xlsx')
-                                                //res.end()
-                                                //var output_file_name = "out.csv";
-                                                //var stream = XLSX.stream.to_csv(wb);
-                                                //res.setHeader('Content-Type', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                                                //res.setHeader("Content-Disposition", "attachment; filename=deployment-definitions.xlsx");
-                                                //console.log(stream)
-                                                //let file = fs.createWriteStream(output_file_name)
-                                                //res.pipe(wb)
-                                                //stream.pipe(fs.createWriteStream(output_file_name))
-                                                //res.download(output_file_name)
-                                                //stream.pipe(res)
-                                                //res.send(stream)
-                                            })
-
-
-                                    }
-                                )
-                            })
-                    } else {
-
-                        res.status(400).json('invalid workcenter id: '+req.body.workcenterId)
-                        return
-                    }
-                })
-
-
-
+                // groupId is used to identify the group item itself
+                // SYS_SOURCE is used to identify the source object to create.
+                if (groupKey == "routing"){
+                    await sheets['sheet2'][groupKey]['data'].push({
+                        'SYS_ORDER': groupObject['SYS_ORDER'],
+                        'SYS_DURATION': groupObject['SYS_DURATION'],
+                        'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
+                        //'id': sourceObject._id,
+                        'id': groupObject['_id'],
+                    })
+                } else if (groupKey = "bom") {
+                    await sheets['sheet2'][groupKey]['data'].push({
+                        'SYS_QUANTITY': groupObject['SYS_QUANTITY'],
+                        'REMARK': groupObject['REMARK'],
+                        'SYS_SOURCE': sourceObject[sourceObject.SYS_LABEL],
+                        'id': groupObject['_id'],
+                    })
+                }
+            }
         }
-    )
+    }
+    //console.log("data length", sheets['sheet2'][groupKey]['data'].length)
 
+    headers.push('IDENTIFIER')
+    fields.push('id')
+    types.push('string')
+
+    // Processing auxiliary attributes
+    // null or undefined can not be converted to object
+    if (auxiliaryAttributeObject){
+        Object.keys(auxiliaryAttributeObject).forEach(key => {
+            let attributeObject = auxiliaryAttributeObject[key]
+            headers.push(attributeObject['SYS_LABEL'])
+            fields.push(attributeObject['SYS_CODE'])
+            types.push(attributeObject['SYS_TYPE'])
+        })
+    }
+
+    let data = []
+
+    let entityDocList = await Entity.find({_id: {$in: Object.keys(exportSampleIdListObject)}}).exec()
+
+    let hybridCode = {}
+
+    entityDocList.filter(entityDoc => {
+        //console.log("!", entityDoc)
+        return true
+    }).forEach(entityDoc => {
+        let entityObject = JSON.parse(JSON.stringify(entityDoc))
+        let result = {}
+        let isAuxiliaryAttribute = false
+        fields.forEach((key, index) => {
+
+            if (!isAuxiliaryAttribute){
+                // Export SYS_LABEL rather id
+                if (types[index] == 'entity'){
+
+                    // TODO: async
+                    Entity.findOne(
+                        {_id: entityObject[key]},
+                        (err, innerEntityDoc) => {
+                            if (innerEntityDoc){
+                                let innerEntityObject = JSON.parse(JSON.stringify(innerEntityDoc))
+                                result[key] = innerEntityObject[innerEntityObject['SYS_LABEL']]
+                            }
+                        })
+
+                } else if (key == 'id'){
+                    isAuxiliaryAttribute = true
+                    //let position = exportSampleIdList.indexOf(result[key])
+                    result[key] = exportSampleIdListObject[entityObject[key]]
+                } else {
+                    result[key] = entityObject[key]?entityObject[key]:''
+                }
+            } else {
+                //result[key] = hybridObjectMap[entityObject['SYS_SAMPLE_CODE']][key]['value']
+                //console.log(">>> entityObject._id", entityObject._id)
+                //console.log(">>> key", key)
+                if (hybridObjectMap[entityObject._id]['attributeObject'] &&
+                    hybridObjectMap[entityObject._id]['attributeObject'][key]){
+                    result[key] = hybridObjectMap[entityObject._id]['attributeObject'][key]['value']
+                }
+
+            }
+            //console.log("..", result)
+        })
+        data.push(result)
+    })
+
+
+    let _headers = headers
+        .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+        .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    let _data = {}
+    if (data.length > 0) {
+        _data = data
+            .sort((a,b) => {
+                if (a.SYS_SAMPLE_CODE > b.SYS_SAMPLE_CODE) {
+                    return 1
+                } else {
+                    return -1
+                }
+            })
+            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .reduce((prev, next) => prev.concat(next))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    }
+    let output = Object.assign({}, _headers, _data)
+    let outputPos = Object.keys(output)
+    let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+
+    let groupOutput = {}
+    let groupRef = ''
+    let _groupData = {}
+    if (groupKey != '' && // groupKey is empty for the workcenter without BoM
+        sheets['sheet2'][groupKey]['data'].length > 0){
+        let _groupHeaders = sheets['sheet2'][groupKey]['headers']
+            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+        _groupData = sheets['sheet2'][groupKey]['data']
+            .map((v, i) => sheets['sheet2'][groupKey]['fields'].map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .reduce((prev, next) => prev.concat(next))
+            .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+        groupOutput = Object.assign({}, _groupHeaders, _groupData)
+        let groupOutputPos = Object.keys(groupOutput)
+        groupRef = groupOutputPos[0] + ':' + groupOutputPos[groupOutputPos.length - 1]
+    }
+
+    let wb = {
+        SheetNames: ['样品列表', sheet2Name],
+        Sheets: {
+            '样品列表': Object.assign({}, output, { '!ref': ref }),
+        }
+    }
+    wb['Sheets'][sheet2Name] = Object.assign({}, groupOutput, {'!ref': groupRef})
+
+    let timestamp = getTimestamp()
+    let tempfile = `tempfolder/${timestamp}.${req.body.workcenterId}.xlsx`
+    XLSX.writeFile(wb, tempfile)
+    res.download(tempfile)
+
+    return
 }
 
 exports.updateInBatch = function(req, res, next){
