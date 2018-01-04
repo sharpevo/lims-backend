@@ -627,29 +627,29 @@ module.exports = async function(){
             ]),
         })
     let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
-    createAttribute({
-        label: '备注',
-        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'REMARK'),
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_GENRE: projectApprovalClassGenre.id})
     let attrPAStart = await createAttribute({
         label: '项目启动时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
-        SYS_ORDER: 20,
+        SYS_ORDER: 10,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
     let attrPAWarn = await createAttribute({
         label: '项目预警时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'WARN_DATE'),
-        SYS_ORDER: 30,
+        SYS_ORDER: 20,
         SYS_TYPE: 'date',
         SYS_GENRE: projectApprovalClassGenre.id})
     let attrPADeliver = await createAttribute({
         label: '项目交付时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'DELIVER_DATE'),
-        SYS_ORDER: 40,
+        SYS_ORDER: 30,
         SYS_TYPE: 'date',
+        SYS_GENRE: projectApprovalClassGenre.id})
+    createAttribute({
+        label: '备注',
+        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'REMARK'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
         SYS_GENRE: projectApprovalClassGenre.id})
     createAttribute({
         label: '操作人',
