@@ -620,7 +620,7 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
-                attrDEReport.id,
+                attrGPReportDeliveryDate.id,
                 attrDEQCGrade.id,
                 attrDEAmount.id,
                 attrGPSampleType.id,
