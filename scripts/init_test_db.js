@@ -397,7 +397,7 @@ module.exports = async function(){
         SYS_ORDER: 140,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPReportDelivery = await createAttribute({
+    let attrGPReportDeliveryDate = await createAttribute({
         label: '报告交付时间(液相)',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REPORT_DELIVERY_DATE"),
         SYS_ORDER: 150,
@@ -515,6 +515,8 @@ module.exports = async function(){
                 attrGPSampleCode.id,
                 attrGPSampleMedium.id,
                 attrGPSampleSpecies.id,
+                attrGPQCStartDate.id,
+                attrGPReportDeliveryDate.id,
             ]),
         })
     let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
@@ -585,21 +587,9 @@ module.exports = async function(){
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
-        label: '质检启动时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_START_DATE"),
-        SYS_ORDER: 100,
-        SYS_TYPE: 'date',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
         label: '质检完成时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_COMPLETE_DATE"),
         SYS_ORDER: 110,
-        SYS_TYPE: 'date',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEReport = await createAttribute({
-        label: '报告交付时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REPORT_DELIVER_DATE"),
-        SYS_ORDER: 120,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDERemark = await createAttribute({
