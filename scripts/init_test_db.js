@@ -566,30 +566,42 @@ module.exports = async function(){
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDEUsage = await createAttribute({
+        label: '样品投入量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, 'SAMPLE_USAGE'),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'number',
+        SYS_GENRE: DNAExtractClassGenre.id})
+    let attrDELeft = await createAttribute({
+        label: '样品剩余量',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, 'SAMPLE_LEFT'),
+        SYS_ORDER: 80,
+        SYS_TYPE: 'number',
+        SYS_GENRE: DNAExtractClassGenre.id})
     let attrDEQCGrade = await createAttribute({
         label: '质检结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_RESULT"),
-        SYS_ORDER: 70,
+        SYS_ORDER: 90,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDEQCRemark = await createAttribute({
         label: '质检备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_REMARK"),
-        SYS_ORDER: 80,
+        SYS_ORDER: 100,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '样品提取时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "EXTRACT_DATE"),
-        SYS_ORDER: 90,
+        SYS_ORDER: 110,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
         label: '质检完成时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_COMPLETE_DATE"),
-        SYS_ORDER: 110,
+        SYS_ORDER: 120,
         SYS_TYPE: 'date',
         SYS_GENRE: DNAExtractClassGenre.id})
     let attrDERemark = await createAttribute({
@@ -803,18 +815,6 @@ module.exports = async function(){
         SYS_ORDER: 80,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:污染,-1:不合格',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '样品投入量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_USAGE'),
-        SYS_ORDER: 90,
-        SYS_TYPE: 'number',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '样品剩余量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'SAMPLE_LEFT'),
-        SYS_ORDER: 100,
-        SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
