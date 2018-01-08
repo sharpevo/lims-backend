@@ -760,6 +760,8 @@ module.exports = async function(){
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
                 attrGPSampleType.id,
+                attrDEUsage.id,
+                attrDELeft.id,
                 attrPAStart.id,
                 attrPAWarn.id,
             ],
