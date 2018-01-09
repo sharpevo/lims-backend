@@ -752,6 +752,8 @@ module.exports = async function(){
                 attrDSRemainAmount.id,
                 attrPAStart.id,
                 attrPAWarn.id,
+                attrDEQCGrade.id,
+                attrDEQCRemark.id,
             ],
         })
 
@@ -855,7 +857,7 @@ module.exports = async function(){
                 attrLPAmount.id,
                 attrLPCycle.id,
                 attrLPResult.id,
-                attrLPGrade.id,
+                attrDEQCGrade.id,
             ],
         })
     let capturePrepareClassGenre = await createGenre(capturePrepareClassEntity)
