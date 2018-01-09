@@ -566,18 +566,6 @@ module.exports = async function(){
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEUsage = await createAttribute({
-        label: '样品投入量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, 'SAMPLE_USAGE'),
-        SYS_ORDER: 70,
-        SYS_TYPE: 'number',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDELeft = await createAttribute({
-        label: '样品剩余量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, 'SAMPLE_LEFT'),
-        SYS_ORDER: 80,
-        SYS_TYPE: 'number',
-        SYS_GENRE: DNAExtractClassGenre.id})
     let attrDEQCGrade = await createAttribute({
         label: '质检结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_RESULT"),
