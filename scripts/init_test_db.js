@@ -799,13 +799,6 @@ module.exports = async function(){
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:风险,-1:不合格',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPGrade = await createAttribute({
-        label: '质检评级',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "GRADE"),
-        SYS_ORDER: 80,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:合格,0:污染,-1:不合格',
-        SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
         SYS_CODE: 'SYS_S_INDEX_CODE_I7',
