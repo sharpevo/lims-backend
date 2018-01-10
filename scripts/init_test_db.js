@@ -788,41 +788,47 @@ module.exports = async function(){
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPLength = await createAttribute({
+        label: '文库长度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'LENGTH'),
+        SYS_ORDER: 60,
+        SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPCycle = await createAttribute({
         label: '循环数',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CYCLE'),
-        SYS_ORDER: 60,
+        SYS_ORDER: 70,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPResult = await createAttribute({
         label: '建库结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "RESULT"),
-        SYS_ORDER: 70,
+        SYS_ORDER: 80,
         SYS_TYPE: 'list',
         SYS_TYPE_LIST: '1:合格,0:风险,-1:不合格',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
         SYS_CODE: 'SYS_S_INDEX_CODE_I7',
-        SYS_ORDER: 110,
+        SYS_ORDER: 90,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
         SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
-        SYS_ORDER: 120,
+        SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, '_REMARK'),
-        SYS_ORDER: 130,
+        SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 140,
+        SYS_ORDER: 120,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
@@ -831,7 +837,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 150,
+        SYS_ORDER: 130,
         SYS_TYPE: 'date',
         SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
