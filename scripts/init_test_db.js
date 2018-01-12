@@ -1042,6 +1042,7 @@ module.exports = async function(){
                 attrMLPIndexSeqI7.id,
                 attrMLPIndexCodeI5.id,
                 attrMLPIndexSeqI5.id,
+                attrLPLength.id,
             ],
         })
     let poolingClassGenre = await createGenre(poolingClassEntity)
@@ -1056,12 +1057,6 @@ module.exports = async function(){
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_TYPE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
-        SYS_GENRE: poolingClassGenre.id})
-    createAttribute({
-        label: '文库长度',
-        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_LENGTH'),
-        SYS_ORDER: 30,
-        SYS_TYPE: 'number',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
         label: '合成ID',
