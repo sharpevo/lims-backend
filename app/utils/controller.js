@@ -1,10 +1,11 @@
-
 exports.list = function(req, model){
     let where_params = ""
         , limit_params = ""
         , skip_params = ""
         , sort_params = ""
         , select_params = ""
+        , completestart_params = ""
+        , completeend_params = ""
 
     if (req.query.limit){
         limit_params = parseInt(req.query.limit)
@@ -33,6 +34,18 @@ exports.list = function(req, model){
     if (req.query.select){
         select_params = req.query.select
         delete req.query["select"]
+    }
+
+    if (req.query.completestart){
+        completestart_params = req.query.completestart
+        delete req.query["completestart"]
+        req.query['SYS_DATE_COMPLETED'] = {"$gte": completestart_params}
+    }
+
+    if (req.query.completeend){
+        completeend_params = req.query.completeend
+        delete req.query["completeend"]
+        req.query['SYS_DATE_COMPLETED'] = {"$lt": completeend_params}
     }
 
     let query = model.find(req.query)
@@ -90,5 +103,6 @@ exports.list = function(req, model){
         query.select(select_params)
         //query.select('-SYS_IDENTIFIER')
     }
+
     return query
 }

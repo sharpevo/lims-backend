@@ -43,7 +43,7 @@ module.exports = function() {
         rolesKey = 'igenetech-user-roles'
         roleKey = 'igenetech-user-role'
 
-        if (limsId == "" && req.headers[emailKey]) {
+        if (!req.headers[limsIdKey] && req.headers[emailKey]) {
             Entity.find({
                 "SYS_USER_EMAIL": req.headers[emailKey],
             }, (err, entities) =>  {
@@ -52,16 +52,23 @@ module.exports = function() {
                 } else {
                     limsId = entities[0].id
                 }
+                res.header(idKey, req.headers[idKey])
+                res.header(limsIdKey, limsId)
+                res.header(nameKey, req.headers[nameKey])
+                res.header(emailKey, req.headers[emailKey])
+                res.header(rolesKey, req.headers[rolesKey])
+                res.header(roleKey, req.headers[roleKey])
+                next()
             })
+        } else {
+            res.header(idKey, req.headers[idKey])
+            res.header(limsIdKey, limsId)
+            res.header(nameKey, req.headers[nameKey])
+            res.header(emailKey, req.headers[emailKey])
+            res.header(rolesKey, req.headers[rolesKey])
+            res.header(roleKey, req.headers[roleKey])
+            next()
         }
-
-        res.header(idKey, req.headers[idKey])
-        res.header(limsIdKey, limsId)
-        res.header(nameKey, req.headers[nameKey])
-        res.header(emailKey, req.headers[emailKey])
-        res.header(rolesKey, req.headers[rolesKey])
-        res.header(roleKey, req.headers[roleKey])
-        next()
     })
 
     require('../app/routes/entity')(app)
