@@ -10,7 +10,8 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     configureTestDatabase()
 }
 const app = configureExpress()
-app.listen(3000)
+const port = process.env.NODE_PORT || 3000
+app.listen(port)
 
 module.exports = app
-console.log('Server running at 3000')
+console.log('Server running at ' + port)
