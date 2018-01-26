@@ -16,7 +16,7 @@ module.exports = function() {
     } else if (process.env.NODE_ENV === 'production') {
         app.use(compress())
     }
-
+    app.use(bodyParser.json({limit: '50mb'}))
     app.use(bodyParser.urlencoded({
         extended: true
     }))
