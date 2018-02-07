@@ -1,3 +1,7 @@
+const path = require('path')
+const config = require(path.join(__dirname, '../../config/config.js'))
+const http = require('http')
+
 exports.list = function(req, model){
     let where_params = ""
         , limit_params = ""
@@ -106,3 +110,45 @@ exports.list = function(req, model){
 
     return query
 }
+
+exports.audit = function (
+    operation,
+    opset,
+    docset,
+    collection,
+    docid,
+    oridoc,
+    newdoc){
+    console.log("DDD", newdoc)
+    let bodyString = JSON.stringify({
+        "op": operation,
+        "opset": opset,
+        "docset": docset,
+        "docid": docid,
+        "loc": collection,
+        "oridoc": JSON.stringify(oridoc),
+        "newdoc": JSON.stringify(newdoc),
+    })
+    console.log("BBB", bodyString)
+    let options = {
+        host: config.auditHost,
+        path: config.auditPath,
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    }
+    let req = http.request(options, (res) => {
+        res.on('data', (body) => {
+            console.log("ResBody: "+ body)
+        })
+        res.on('error', (body) => {
+            console.log("ResError: "+ err)
+        })
+    })
+
+    req.write(bodyString)
+    req.end()
+
+}
+
