@@ -123,7 +123,6 @@ exports.audit = function (
     docid,
     oridoc,
     newdoc){
-    console.log("DDD", newdoc)
     let bodyString = JSON.stringify({
         "op": operation,
         "opset": opset,
@@ -133,7 +132,6 @@ exports.audit = function (
         "oridoc": JSON.stringify(oridoc),
         "newdoc": JSON.stringify(newdoc),
     })
-    console.log("BBB", bodyString)
     let options = {
         host: config.auditHost,
         path: config.auditPath,
