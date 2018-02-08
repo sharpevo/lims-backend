@@ -44,9 +44,13 @@ exports.list = function(req, model){
         completestart_params = req.query.completestart
         delete req.query["completestart"]
         req.query['SYS_DATE_COMPLETED'] = {"$gte": completestart_params}
-    }
 
-    if (req.query.completeend){
+        if (req.query.completeend){
+            completeend_params = req.query.completeend
+            delete req.query["completeend"]
+            req.query['SYS_DATE_COMPLETED'] = {"$lt": completeend_params, "$gte": completestart_params}
+        }
+    } else if (req.query.completeend){
         completeend_params = req.query.completeend
         delete req.query["completeend"]
         req.query['SYS_DATE_COMPLETED'] = {"$lt": completeend_params}
