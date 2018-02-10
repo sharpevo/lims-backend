@@ -142,7 +142,6 @@ exports.audit = function (
     }
     let req = http.request(options, (res) => {
         res.on('data', (body) => {
-            console.log("ResBody: "+ body)
         })
         res.on('error', (body) => {
             console.log("ResError: "+ err)
