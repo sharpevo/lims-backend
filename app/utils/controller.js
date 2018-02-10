@@ -1,3 +1,7 @@
+const path = require('path')
+const config = require(path.join(__dirname, '../../config/config.js'))
+const http = require('http')
+
 exports.list = function(req, model){
     let where_params = ""
         , limit_params = ""
@@ -40,9 +44,13 @@ exports.list = function(req, model){
         completestart_params = req.query.completestart
         delete req.query["completestart"]
         req.query['SYS_DATE_COMPLETED'] = {"$gte": completestart_params}
-    }
 
-    if (req.query.completeend){
+        if (req.query.completeend){
+            completeend_params = req.query.completeend
+            delete req.query["completeend"]
+            req.query['SYS_DATE_COMPLETED'] = {"$lt": completeend_params, "$gte": completestart_params}
+        }
+    } else if (req.query.completeend){
         completeend_params = req.query.completeend
         delete req.query["completeend"]
         req.query['SYS_DATE_COMPLETED'] = {"$lt": completeend_params}
@@ -106,3 +114,42 @@ exports.list = function(req, model){
 
     return query
 }
+
+exports.audit = function (
+    operation,
+    opset,
+    docset,
+    collection,
+    docid,
+    oridoc,
+    newdoc){
+    let bodyString = JSON.stringify({
+        "op": operation,
+        "opset": opset,
+        "docset": docset,
+        "docid": docid,
+        "loc": collection,
+        "oridoc": JSON.stringify(oridoc),
+        "newdoc": JSON.stringify(newdoc),
+    })
+    let options = {
+        host: config.auditHost,
+        path: config.auditPath,
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    }
+    let req = http.request(options, (res) => {
+        res.on('data', (body) => {
+        })
+        res.on('error', (body) => {
+            console.log("ResError: "+ err)
+        })
+    })
+
+    req.write(bodyString)
+    req.end()
+
+}
+
