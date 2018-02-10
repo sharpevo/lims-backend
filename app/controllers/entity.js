@@ -152,6 +152,16 @@ exports.update = function(req, res, next){
                     message: parseError(err)
                 })
             } else {
+
+                Utils.audit(
+                    "update",
+                    req.query.opset?req.query.opset:"unknown",
+                    req.query.docset?req.query.docset:"unknown",
+                    "entity",
+                    entity.id,
+                    req.entity, // awesome
+                    entity,
+                )
                 res.status(200).json(entity)
             }
         }
