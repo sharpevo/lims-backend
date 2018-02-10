@@ -4,6 +4,8 @@ const Entity = require('mongoose').model('Entity')
 const Utils = require('../utils/controller')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
+//const https = require('https');
+const http = require('http');
 
 exports.create = function(req, res, next){
     const entity = new Entity(req.body) // perfect
@@ -19,6 +21,15 @@ exports.create = function(req, res, next){
                 message: parseError(err)
             })
         } else {
+            Utils.audit(
+                "create",
+                req.query.opset?req.query.opset:"unknown",
+                req.query.docset?req.query.docset:"unknown",
+                "entity",
+                entity.id,
+                {},
+                entity,
+            )
             res.status(200).json(entity)
         }
     })
@@ -141,6 +152,16 @@ exports.update = function(req, res, next){
                     message: parseError(err)
                 })
             } else {
+
+                Utils.audit(
+                    "update",
+                    req.query.opset?req.query.opset:"unknown",
+                    req.query.docset?req.query.docset:"unknown",
+                    "entity",
+                    entity.id,
+                    req.entity, // awesome
+                    entity,
+                )
                 res.status(200).json(entity)
             }
         }
