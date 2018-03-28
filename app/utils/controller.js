@@ -83,6 +83,8 @@ exports.list = function(req, model){
                         //console.log(where_params[key]["="])
                         query.where(key).equals(where_params[key]["="])
                         break
+                    case "exists":
+                        query.where(key).exists(where_params[key]["exists"])
                     default:
                         console.log("invalid operation")
                 }
