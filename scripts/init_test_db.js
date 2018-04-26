@@ -977,7 +977,15 @@ module.exports = async function(){
             ]),
         })
 
-    let DNAExtractClassGenre = await createGenre(DNAExtractClassEntity)
+    let DNAExtractClassGenre = await createGenreWithAttributes(
+        DNAExtractClassEntity,
+        {
+            'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
+
     let attrDENanodrop = await createAttribute({
         label: 'Nanodrop ng/ul',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
@@ -1294,13 +1302,21 @@ module.exports = async function(){
             ],
         })
 
-    //let libraryPrepareClassGenre = await createGenre(libraryPrepareClassEntity)
     let libraryPrepareClassGenre = await createGenreWithAttributes(
+        libraryPrepareClassEntity,
+        {
+            'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
+
+    let libraryPrepareClassGenreOne = await createGenreWithAttributes(
         libraryPrepareClassEntity,
         {
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '建库BoM',
+            'label': '文库-1',
         }
     )
 
@@ -1313,7 +1329,7 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: libraryPrepBomOneEntity.id,
         SYS_TYPE_ENTITY_REF: false,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: libraryPrepareClassGenre.id,
+        SYS_GENRE: libraryPrepareClassGenreOne.id,
         SYS_IS_ON_BOARD: true,
     })
 
@@ -1427,13 +1443,21 @@ module.exports = async function(){
                 attrDEQCGrade.id,
             ],
         })
-
     let capturePrepareClassGenre = await createGenreWithAttributes(
+        capturePrepareClassEntity,
+        {
+            'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
+
+    let capturePrepareClassGenreOne = await createGenreWithAttributes(
         capturePrepareClassEntity,
         {
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '捕获BoM',
+            'label': '捕获-1',
         }
     )
 
@@ -1446,7 +1470,7 @@ module.exports = async function(){
         SYS_TYPE_ENTITY: captureBomOneEntity.id,
         SYS_TYPE_ENTITY_REF: false,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: capturePrepareClassGenre.id,
+        SYS_GENRE: capturePrepareClassGenreOne.id,
         SYS_IS_ON_BOARD: true,
     })
 
