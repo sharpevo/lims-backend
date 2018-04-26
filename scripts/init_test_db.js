@@ -85,6 +85,21 @@ function createEntity(genre, identifier, typeIndex, label){
         })
 }
 
+function createMaterialEntity(genre, identifier, label, unit){
+    return Entity({
+        SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
+        SYS_ENTITY_TYPE: ENTITY_TYPE[1],
+        SYS_GENRE: genre,
+        SYS_LABEL: "label",
+        label: label,
+        SYS_OUTBOUND_UNIT: unit,
+    })
+        .save()
+        .catch(err => {
+            console.log("createEntity", err)
+        })
+}
+
 function createEntityWithAttributes(genre, identifier, typeIndex, attributes){
     let entity = Entity({
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
@@ -246,6 +261,134 @@ module.exports = async function(){
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+
+    // Extract
+    let materialBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLOOD_DNA_EXTRACT_KIT", "磁珠法血液DNA提取试剂盒", "T")
+    let materialBloodExtractKitClassGenre = await createGenre(materialBloodExtractKitClassEntity)
+    createEntity(materialBloodExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialOrganBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "ORGAN_BLOOD_DNA_EXTRACT_KIT", "磁珠法组织与血液DNA提取试剂盒", "T")
+    let materialOrganBloodExtractKitClassGenre = await createGenre(materialOrganBloodExtractKitClassEntity)
+    createEntity(materialOrganBloodExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialBlackPrepExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLACKPREP_FFPE_DNA_EXTRACT_KIT", "BlackPREP FFPE DNA Kit", "T")
+    let materialBlackPrepExtractKitClassGenre = await createGenre(materialBlackPrepExtractKitClassEntity)
+    createEntity(materialBlackPrepExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialFaecesExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "FAECES_DNA_EXTRACT_KIT", "粪便基因组DNA提取试剂盒", "T")
+    let materialFaecesExtractKitClassGenre = await createGenre(materialFaecesExtractKitClassEntity)
+    createEntity(materialFaecesExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialCirculatingExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "CIRCULATING_DNA_EXTRACT_KIT", "Circulating DNA Kit", "T")
+    let materialCirculatingExtractKitClassGenre = await createGenre(materialCirculatingExtractKitClassEntity)
+    createEntity(materialCirculatingExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialHSBRQuantifyKitClassEntity = await createMaterialEntity(materialDomainGenre, "HS_BR_QUANTIFY_KIT", "HS/BR定量", "T")
+    let materialHSBRQuantifyKitClassGenre = await createGenre(materialHSBRQuantifyKitClassEntity)
+    createEntity(materialHSBRQuantifyKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialAgaroseClassEntity = await createMaterialEntity(materialDomainGenre, "AGAROSE", "琼脂糖", "g")
+    let materialAgaroseClassGenre = await createGenre(materialAgaroseClassEntity)
+    createEntity(materialAgaroseClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialSixLoadingBufferClassEntity = await createMaterialEntity(materialDomainGenre, "SIX_DNA_LOADING_BUFFER", "6*DNA Loading Buffer", "μL")
+    let materialSixLoadingBufferClassGenre = await createGenre(materialSixLoadingBufferClassEntity)
+    createEntity(materialSixLoadingBufferClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let materialLambdaDNAClassEntity = await createMaterialEntity(materialDomainGenre, "LAMBDA_DNA", "λDNA|HindIII", "μL")
+    let materialLambdaDNAClassGenre = await createGenre(materialLambdaDNAClassEntity)
+    createEntity(materialLambdaDNAClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    // MultiPCR
+    let IGTPolymeraseEntity = await createMaterialEntity(materialDomainGenre, "IGT_POLYMERASE_MIXTURE", "IGT polymerase mixture", "μL")
+    let IGTPolymeraseGenre = await createGenre(IGTPolymeraseEntity)
+    createEntity(IGTPolymeraseGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let primerEntity = await createMaterialEntity(materialDomainGenre, "PRIMER_MIXTURE", "primer mixture", "μL")
+    let primerGenre = await createGenre(primerEntity)
+    createEntity(primerGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let enhancerBufferEntity = await createMaterialEntity(materialDomainGenre, "ENHANCER_BUFFER_NB_", "Enhancer buffer NB(1N)", "μL")
+    let enhancerBufferGenre = await createGenre(enhancerBufferEntity)
+    createEntity(enhancerBufferGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let yfBufferEntity = await createMaterialEntity(materialDomainGenre, "YF_BUFFER_B", "YF buffer B", "μL")
+    let yfBufferGenre = await createGenre(yfBufferEntity)
+    createEntity(yfBufferGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let igtI5Entity = await createMaterialEntity(materialDomainGenre, "IGT_I5_INDEX", "IGT-I5 Index(10μM)", "μL")
+    let igtI5Genre = await createGenre(igtI5Entity)
+    createEntity(igtI5Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let igtI7Entity = await createMaterialEntity(materialDomainGenre, "IGT_I7_INDEX", "IGT-I7 Index(10μM)", "μL")
+    let igtI7Genre = await createGenre(igtI7Entity)
+    createEntity(igtI7Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    // Library preparing
+    let fastKitEntity = await createMaterialEntity(materialDomainGenre, "FAST_LIBRARY_PREPARATION_KIT", "FAST建库试剂盒", "μL")
+    let fastKitGenre = await createGenre(fastKitEntity)
+    createEntity(fastKitGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    // Capture
+    let ranseEntity = await createMaterialEntity(materialDomainGenre, "RANSE", "Ranse(10U/μl)", "μL")
+    let ranseGenre = await createGenre(ranseEntity)
+    createEntity(ranseGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let cot1Entity = await createMaterialEntity(materialDomainGenre, "COT_1", "COt-1", "μL")
+    let cot1Genre = await createGenre(cot1Entity)
+    createEntity(cot1Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let sssEntity = await createMaterialEntity(materialDomainGenre, "SSS_DNA", "sssDNA", "μL")
+    let sssGenre = await createGenre(sssEntity)
+    createEntity(sssGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let mp1Entity = await createMaterialEntity(materialDomainGenre, "MP_1", "MP 1.0(1000uM)", "μL")
+    let mp1Genre = await createGenre(mp1Entity)
+    createEntity(mp1Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let mp2Entity = await createMaterialEntity(materialDomainGenre, "MP_2", "MP 2.0", "μL")
+    let mp2Genre = await createGenre(mp2Entity)
+    createEntity(mp2Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let hybBufferEntity = await createMaterialEntity(materialDomainGenre, "HYB_BUFFER", "Hyb Buffer", "μL")
+    let hybBufferGenre = await createGenre(hybBufferEntity)
+    createEntity(hybBufferGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let bindingEntity = await createMaterialEntity(materialDomainGenre, "BINDING_BUFFER", "Binding Buffer", "μL")
+    let bindingGenre = await createGenre(bindingEntity)
+    createEntity(bindingGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let washingBuffer1Entity = await createMaterialEntity(materialDomainGenre, "WASHING_BUFFER_1", "Washing Buffer 1", "μL")
+    let washingBuffer1Genre = await createGenre(washingBuffer1Entity)
+    createEntity(washingBuffer1Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let washingBuffer2Entity = await createMaterialEntity(materialDomainGenre, "WASHING_BUFFER_2", "Washing Buffer 2", "μL")
+    let washingBuffer2Genre = await createGenre(washingBuffer2Entity)
+    createEntity(washingBuffer2Genre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let kapa5xFidelityEntity = await createMaterialEntity(materialDomainGenre, "5X_KAPA_HIFI_FIDELITY_BUFFER", "5X KAPA HiFi Fidelity buffer", "μL")
+    let kapa5xFidelityGenre = await createGenre(kapa5xFidelityEntity)
+    createEntity(kapa5xFidelityGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let kapa10mmDntpmixEntity = await createMaterialEntity(materialDomainGenre, "10MM_KAPA_DNTPMIX", "10mM KAPA dNTPMix", "μL")
+    let kapa10mmDntpmixGenre = await createGenre(kapa10mmDntpmixEntity)
+    createEntity(kapa10mmDntpmixGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let postPcrPrimerEntity = await createMaterialEntity(materialDomainGenre, "POST_PCR_PRIMER", "Post PCR Primer (25uM, for ILM)", "μL")
+    let postPcrPrimerGenre = await createGenre(postPcrPrimerEntity)
+    createEntity(postPcrPrimerGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let hotstartEntity = await createMaterialEntity(materialDomainGenre, "HIFI_HOTSTART_DNA_POLYMERASE", "HiFi HotStart DNA Polymerase", "μL")
+    let hotstartGenre = await createGenre(hotstartEntity)
+    createEntity(hotstartGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let myoneEntity = await createMaterialEntity(materialDomainGenre, "DYNABEADS_MYONE_STREPTAVIDIN_T1", "Dynabeads MyOne Streptavidin T1", "μL")
+    let myoneGenre = await createGenre(myoneEntity)
+    createEntity(myoneGenre, "DEFAULT_LOT", 2, "Default LOT")
+
+    let magpureEntity = await createMaterialEntity(materialDomainGenre, "MAGPURE", "MagPure A3 XP", "μL")
+    let magpureGenre = await createGenre(magpureEntity)
+    createEntity(magpureGenre, "DEFAULT_LOT", 2, "Default LOT")
     //}}}
 
     // BoM Domain{{{
