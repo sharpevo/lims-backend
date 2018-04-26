@@ -101,6 +101,56 @@ function createMaterialEntity(genre, identifier, label, unit){
         })
 }
 
+function createBomAttributes(bomGenre, materialDomainEntity){
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: '',
+        SYS_CODE: 'SYS_CHECKED',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'boolean',
+        SYS_GENRE: bomGenre.id})
+    createAttribute({
+        label: 'Material',
+        SYS_CODE: 'SYS_SOURCE',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: materialDomainEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_GENRE: bomGenre.id})
+    createAttribute({
+        label: 'Quantity',
+        SYS_CODE: 'SYS_QUANTITY',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: bomGenre.id})
+    createAttribute({
+        label: 'Remark',
+        SYS_CODE: 'REMARK',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'string',
+        SYS_GENRE: bomGenre.id})
+}
+
+function createBomSubEntity(bomGenre, materialObjectList){
+    for (let materialObject of materialObjectList){
+        let material = materialObject['material']
+        let materialIdentifier = material['SYS_IDENTIFIER']
+        let quantity = materialObject['quantity']
+        Entity({
+            SYS_IDENTIFIER: bomGenre['SYS_IDENTIFIER'] + materialIdentifier.substring(materialIdentifier.lastIndexOf("/") + 1),
+            SYS_ENTITY_TYPE: 'object',
+            SYS_GENRE: bomGenre.id,
+            SYS_CHECKED: true,
+            SYS_LABEL: 'label',
+            label: "MATERIAL: " + material[material['SYS_LABEL']],
+            REMARK: '',
+            SYS_SOURCE: material.id,
+            SYS_QUANTITY: quantity,
+        }).save()
+    }
+}
+
 function createEntityWithAttributes(genre, identifier, typeIndex, attributes){
     let entity = Entity({
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
@@ -383,10 +433,6 @@ module.exports = async function(){
     let hotstartGenre = await createGenre(hotstartEntity)
     createEntity(hotstartGenre, "DEFAULT_LOT", 2, "Default LOT")
 
-    let myoneEntity = await createMaterialEntity(materialDomainGenre, "DYNABEADS_MYONE_STREPTAVIDIN_T1", "Dynabeads MyOne Streptavidin T1", "μL")
-    let myoneGenre = await createGenre(myoneEntity)
-    createEntity(myoneGenre, "DEFAULT_LOT", 2, "Default LOT")
-
     let magpureEntity = await createMaterialEntity(materialDomainGenre, "MAGPURE", "MagPure A3 XP", "μL")
     let magpureGenre = await createGenre(magpureEntity)
     createEntity(magpureGenre, "DEFAULT_LOT", 2, "Default LOT")//}}}
@@ -450,6 +496,268 @@ module.exports = async function(){
         SYS_SOURCE: tipClassEntity.id,
         SYS_QUANTITY: 2,
     }).save()
+
+
+    // Extract BoMs{{{
+    let extractBomOneEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_ONE", 2, "全血/唾液/口腔拭子 BoM")
+    let extractBomOneGenre = await createGenre(extractBomOneEntity)
+    createBomAttributes(extractBomOneGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomOneGenre,
+        [
+            {
+                'material': materialBloodExtractKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )
+
+    let extractBomTwoEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_TWO", 2, "血片/组织 BoM")
+    let extractBomTwoGenre = await createGenre(extractBomTwoEntity)
+    createBomAttributes(extractBomTwoGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomTwoGenre,
+        [
+            {
+                'material': materialOrganBloodExtractKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )
+
+    let extractBomThreeEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_THREE", 2, "石蜡块/石蜡切片 BoM")
+    let extractBomThreeGenre = await createGenre(extractBomThreeEntity)
+    createBomAttributes(extractBomThreeGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomThreeGenre,
+        [
+            {
+                'material': materialBlackPrepExtractKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )
+
+    let extractBomFourEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_FOUR", 2, "粪便/尿液 BoM")
+    let extractBomFourGenre = await createGenre(extractBomFourEntity)
+    createBomAttributes(extractBomFourGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomFourGenre,
+        [
+            {
+                'material': materialFaecesExtractKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )
+
+    let extractBomFiveEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_FIVE", 2, "血浆 BoM")
+    let extractBomFiveGenre = await createGenre(extractBomFiveEntity)
+    createBomAttributes(extractBomFiveGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomFiveGenre,
+        [
+            {
+                'material': materialCirculatingExtractKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )//}}}
+
+    // Library Preparation BoM
+    let libraryPrepBomOneEntity = await createEntity(manuClassGenre, "LIBRARY_PREP_BOM_ONE", 2, "建库BoM")
+    let libraryPrepBomOneGenre = await createGenre(libraryPrepBomOneEntity)
+    createBomAttributes(libraryPrepBomOneGenre, materialDomainEntity)
+    createBomSubEntity(
+        libraryPrepBomOneGenre,
+        [
+            {
+                'material': fastKitEntity,
+                //'quantity': 0,
+            },
+        ]
+    )//}}}
+
+    // MultiPCR BoM{{{
+    let multiPcrBomOneEntity = await createEntity(manuClassGenre, "MULTIPCR_BOM_ONE", 2, "多重BoM")
+    let multiPcrBomOneGenre = await createGenre(multiPcrBomOneEntity)
+    createBomAttributes(multiPcrBomOneGenre, materialDomainEntity)
+    createBomSubEntity(
+        multiPcrBomOneGenre,
+        [
+            {
+                'material': IGTPolymeraseEntity,
+                //'quantity': 0,
+            },
+            {
+                'material': primerEntity,
+                //'quantity': 0,
+            },
+            {
+                'material': enhancerBufferEntity,
+                //'quantity': 0,
+            },
+            {
+                'material': yfBufferEntity,
+                //'quantity': 0,
+            },
+            {
+                'material': igtI5Entity,
+                //'quantity': 0,
+            },
+            {
+                'material': igtI7Entity,
+                //'quantity': 0,
+            },
+        ]
+    )//}}}
+
+    // Capture BoM{{{
+    let captureBomOneEntity = await createEntity(manuClassGenre, "CAPTURE_BOM_ONE", 2, "捕获BoM")
+    let captureBomOneGenre = await createGenre(captureBomOneEntity)
+    createBomAttributes(captureBomOneGenre, materialDomainEntity)
+    createBomSubEntity(
+        captureBomOneGenre,
+        [
+            {
+                'material': ranseEntity,
+                'quantity': 2,
+            },
+            {
+                'material': cot1Entity,
+                'quantity': 2.5,
+            },
+            {
+                'material': sssEntity,
+                'quantity': 2.5,
+            },
+            {
+                'material': mp1Entity,
+                'quantity': 1,
+            },
+            {
+                'material': mp2Entity,
+                'quantity': 1,
+            },
+            {
+                'material': hybBufferEntity,
+                'quantity': 18,
+            },
+            {
+                'material': bindingEntity,
+                'quantity': 600,
+            },
+            {
+                'material': washingBuffer1Entity,
+                'quantity': 200,
+            },
+            {
+                'material': washingBuffer2Entity,
+                'quantity': 630,
+            },
+            {
+                'material': kapa5xFidelityEntity,
+                'quantity': 0.8,
+            },
+            {
+                'material': kapa10mmDntpmixEntity,
+                'quantity': 0.8,
+            },
+            {
+                'material': postPcrPrimerEntity,
+                'quantity': 8,
+            },
+            {
+                'material': hotstartEntity,
+                'quantity': 1.2,
+            },
+            {
+                'material': magpureEntity,
+                'quantity': 48,
+            },
+        ]
+    )//}}}
+
 
     //}}}
 
