@@ -77,6 +77,7 @@ function createEntity(genre, identifier, typeIndex, label){
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
         SYS_ENTITY_TYPE: ENTITY_TYPE[typeIndex],
         SYS_GENRE: genre,
+        SYS_LABEL: "label",
         label: label.replace(" Genre","")
     })
         .save()
@@ -262,7 +263,7 @@ module.exports = async function(){
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
 
-    // Extract
+    // Extract{{{
     let materialBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLOOD_DNA_EXTRACT_KIT", "磁珠法血液DNA提取试剂盒", "T")
     let materialBloodExtractKitClassGenre = await createGenre(materialBloodExtractKitClassEntity)
     createEntity(materialBloodExtractKitClassGenre, "DEFAULT_LOT", 2, "Default LOT")
@@ -297,9 +298,9 @@ module.exports = async function(){
 
     let materialLambdaDNAClassEntity = await createMaterialEntity(materialDomainGenre, "LAMBDA_DNA", "λDNA|HindIII", "μL")
     let materialLambdaDNAClassGenre = await createGenre(materialLambdaDNAClassEntity)
-    createEntity(materialLambdaDNAClassGenre, "DEFAULT_LOT", 2, "Default LOT")
+    createEntity(materialLambdaDNAClassGenre, "DEFAULT_LOT", 2, "Default LOT")//}}}
 
-    // MultiPCR
+    // MultiPCR{{{
     let IGTPolymeraseEntity = await createMaterialEntity(materialDomainGenre, "IGT_POLYMERASE_MIXTURE", "IGT polymerase mixture", "μL")
     let IGTPolymeraseGenre = await createGenre(IGTPolymeraseEntity)
     createEntity(IGTPolymeraseGenre, "DEFAULT_LOT", 2, "Default LOT")
@@ -322,14 +323,14 @@ module.exports = async function(){
 
     let igtI7Entity = await createMaterialEntity(materialDomainGenre, "IGT_I7_INDEX", "IGT-I7 Index(10μM)", "μL")
     let igtI7Genre = await createGenre(igtI7Entity)
-    createEntity(igtI7Genre, "DEFAULT_LOT", 2, "Default LOT")
+    createEntity(igtI7Genre, "DEFAULT_LOT", 2, "Default LOT")//}}}
 
-    // Library preparing
+    // Library preparing{{{
     let fastKitEntity = await createMaterialEntity(materialDomainGenre, "FAST_LIBRARY_PREPARATION_KIT", "FAST建库试剂盒", "μL")
     let fastKitGenre = await createGenre(fastKitEntity)
-    createEntity(fastKitGenre, "DEFAULT_LOT", 2, "Default LOT")
+    createEntity(fastKitGenre, "DEFAULT_LOT", 2, "Default LOT")//}}}
 
-    // Capture
+    // Capture{{{
     let ranseEntity = await createMaterialEntity(materialDomainGenre, "RANSE", "Ranse(10U/μl)", "μL")
     let ranseGenre = await createGenre(ranseEntity)
     createEntity(ranseGenre, "DEFAULT_LOT", 2, "Default LOT")
@@ -388,7 +389,8 @@ module.exports = async function(){
 
     let magpureEntity = await createMaterialEntity(materialDomainGenre, "MAGPURE", "MagPure A3 XP", "μL")
     let magpureGenre = await createGenre(magpureEntity)
-    createEntity(magpureGenre, "DEFAULT_LOT", 2, "Default LOT")
+    createEntity(magpureGenre, "DEFAULT_LOT", 2, "Default LOT")//}}}
+
     //}}}
 
     // BoM Domain{{{
