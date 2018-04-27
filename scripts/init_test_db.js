@@ -133,6 +133,7 @@ function createBomAttributes(bomGenre, materialDomainEntity){
 }
 
 function createBomSubEntity(bomGenre, materialObjectList){
+    let order = 1
     for (let materialObject of materialObjectList){
         let material = materialObject['material']
         let materialIdentifier = material['SYS_IDENTIFIER']
@@ -147,7 +148,9 @@ function createBomSubEntity(bomGenre, materialObjectList){
             REMARK: '',
             SYS_SOURCE: material.id,
             SYS_QUANTITY: quantity,
+            SYS_ORDER: order * 10,
         }).save()
+        order += 1
     }
 }
 
@@ -983,6 +986,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
+            'SYS_ORDER': 10,
         }
     )
 
@@ -1076,6 +1080,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
             'label': '全血/唾液/口腔拭子',
+            'SYS_ORDER': 20,
         }
     )
     let DNAExtractClassGenreTwo = await createGenreWithAttributes(
@@ -1084,6 +1089,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_TWO/',
             'SYS_LABEL': 'label',
             'label': '血片/组织',
+            'SYS_ORDER': 30,
         }
     )
     let DNAExtractClassGenreThree = await createGenreWithAttributes(
@@ -1092,6 +1098,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_THREE/',
             'SYS_LABEL': 'label',
             'label': '石蜡块/石蜡切片',
+            'SYS_ORDER': 40,
         }
     )
     let DNAExtractClassGenreFour = await createGenreWithAttributes(
@@ -1100,6 +1107,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_FOUR/',
             'SYS_LABEL': 'label',
             'label': '粪便/尿液',
+            'SYS_ORDER': 50,
         }
     )
     let DNAExtractClassGenreFive = await createGenreWithAttributes(
@@ -1108,6 +1116,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_FIVE/',
             'SYS_LABEL': 'label',
             'label': '血浆',
+            'SYS_ORDER': 60,
         }
     )
     let DNAExtractClassGenreSix = await createGenreWithAttributes(
@@ -1116,6 +1125,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_SIX/',
             'SYS_LABEL': 'label',
             'label': 'DNA',
+            'SYS_ORDER': 70,
         }
     )
     let DNAExtractClassGenreSeven = await createGenreWithAttributes(
@@ -1124,6 +1134,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '_SEVEN/',
             'SYS_LABEL': 'label',
             'label': '其他',
+            'SYS_ORDER': 80,
         }
     )
 
@@ -1322,6 +1333,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
+            'SYS_ORDER': 10,
         }
     )
 
@@ -1331,6 +1343,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
             'label': '文库-1',
+            'SYS_ORDER': 20,
         }
     )
 
@@ -1463,6 +1476,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
+            'SYS_ORDER': 10,
         }
     )
 
@@ -1472,6 +1486,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
             'label': '捕获-1',
+            'SYS_ORDER': 20,
         }
     )
 
