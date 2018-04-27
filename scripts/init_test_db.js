@@ -1171,7 +1171,14 @@ module.exports = async function(){
                 attrGPSampleType.id,
             ]),
         })
-    let projectApprovalClassGenre = await createGenre(projectApprovalClassEntity)
+    let projectApprovalClassGenre = await createGenreWithAttributes(
+        projectApprovalClassEntity,
+        {
+            'SYS_IDENTIFIER': projectApprovalClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
     let attrPAStart = await createAttribute({
         label: '项目启动时间',
         SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
@@ -1228,7 +1235,14 @@ module.exports = async function(){
                 attrDEAmount.id,
             ]),
         })
-    let dnaShearClassGenre = await createGenre(dnaShearClassEntity)
+    let dnaShearClassGenre = await createGenreWithAttributes(
+        dnaShearClassEntity,
+        {
+            'SYS_IDENTIFIER': dnaShearClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
     createAttribute({
         label: '打断日期',
         SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "DATE"),
@@ -1543,7 +1557,14 @@ module.exports = async function(){
             ],
         })
 
-    let multiplexLibraryPrepareClassGenre = await createGenre(multiplexLibraryPrepareClassEntity)
+    let multiplexLibraryPrepareClassGenre = await createGenreWithAttributes(
+        multiplexLibraryPrepareClassEntity,
+        {
+            'SYS_IDENTIFIER': multiplexLibraryPrepareClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
     createAttribute({
         label: '样本位置',
         SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'SAMPLE_LOCATION'),
@@ -1652,7 +1673,14 @@ module.exports = async function(){
                 attrLPLength.id,
             ],
         })
-    let poolingClassGenre = await createGenre(poolingClassEntity)
+    let poolingClassGenre = await createGenreWithAttributes(
+        poolingClassEntity,
+        {
+            'SYS_IDENTIFIER': poolingClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
     createAttribute({
         label: '混合文库名称',
         SYS_CODE: 'SYS_LANE_CODE',
@@ -1712,7 +1740,14 @@ module.exports = async function(){
                 attrGPSampleSpecies.id,
             ],
         })
-    let dataSequenceClassGenre = await createGenre(dataSequenceClassEntity)
+    let dataSequenceClassGenre = await createGenreWithAttributes(
+        dataSequenceClassEntity,
+        {
+            'SYS_IDENTIFIER': dataSequenceClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': 'No BoM',
+        }
+    )
     createAttribute({
         label: '数据文件路径',
         SYS_CODE: getAttributeIdentifier(WC_ID_SEQUENCE_DATA, "FILE_PATH"),
