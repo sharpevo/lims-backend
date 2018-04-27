@@ -644,7 +644,7 @@ module.exports = async function(){
         ]
     )//}}}
 
-    // Library Preparation BoM
+    // Library Preparation BoM{{{
     let libraryPrepBomOneEntity = await createEntity(manuClassGenre, "LIBRARY_PREP_BOM_ONE", 2, "建库BoM")
     let libraryPrepBomOneGenre = await createGenre(libraryPrepBomOneEntity)
     createBomAttributes(libraryPrepBomOneGenre, materialDomainEntity)
