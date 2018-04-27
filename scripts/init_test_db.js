@@ -912,30 +912,6 @@ module.exports = async function(){
         SYS_ORDER: 130,
         SYS_TYPE: 'number',
         SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPQCStartDate = await createAttribute({
-        label: '质检启动时间(液相)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "QC_START_DATE"),
-        SYS_ORDER: 140,
-        SYS_TYPE: 'date',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPReportDeliveryDate = await createAttribute({
-        label: '报告交付时间(液相)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REPORT_DELIVERY_DATE"),
-        SYS_ORDER: 150,
-        SYS_TYPE: 'date',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPProjectWarnDate = await createAttribute({
-        label: '项目预警时间(多重)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_WARN_DATE"),
-        SYS_ORDER: 160,
-        SYS_TYPE: 'date',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPProjectDeliveryDate = await createAttribute({
-        label: '项目交付时间(多重)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_DELIVERY_DATE"),
-        SYS_ORDER: 170,
-        SYS_TYPE: 'date',
-        SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleRemark = await createAttribute({
         label: '备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REMARK"),
@@ -985,6 +961,20 @@ module.exports = async function(){
             'enabled': true,
         }
     )
+    let attrGPQCStartDate = await createAttribute({
+        label: '质检启动时间(液相)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "QC_START_DATE"),
+        SYS_ORDER: 140,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreLiquid.id})
+    let attrGPReportDeliveryDate = await createAttribute({
+        label: '报告交付时间(液相)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REPORT_DELIVERY_DATE"),
+        SYS_ORDER: 150,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreLiquid.id})
 
     let generalProjectClassGenreMultiplex = await createGenreWithAttributes(
         generalProjectClassEntity,
@@ -996,6 +986,20 @@ module.exports = async function(){
             'enabled': true,
         }
     )
+    let attrGPProjectWarnDate = await createAttribute({
+        label: '项目预警时间(多重)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_WARN_DATE"),
+        SYS_ORDER: 160,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreMultiplex.id})
+    let attrGPProjectDeliveryDate = await createAttribute({
+        label: '项目交付时间(多重)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_DELIVERY_DATE"),
+        SYS_ORDER: 170,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
     let attrGP = [
         attrGPSerialNumber.id,
