@@ -975,6 +975,28 @@ module.exports = async function(){
         }
     )
 
+    let generalProjectClassGenreLiquid = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_LIQUID/',
+            'SYS_LABEL': 'label',
+            'label': '液相',
+            'SYS_ORDER': 20,
+            'enabled': true,
+        }
+    )
+
+    let generalProjectClassGenreMultiplex = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_MULTIPLEX/',
+            'SYS_LABEL': 'label',
+            'label': '多重',
+            'SYS_ORDER': 30,
+            'enabled': true,
+        }
+    )
+
     let attrGP = [
         attrGPSerialNumber.id,
         attrGPProjectManager.id,
@@ -1931,6 +1953,117 @@ module.exports = async function(){
                 'workcenter': multiplexLibraryPrepareClassEntity,
                 'duration': 2,
                 'checked': false,
+            },
+            {
+                'workcenter': poolingClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': dataSequenceClassEntity,
+                'duration': 7,
+                'checked': true,
+            },
+        ]
+    )
+    //}}}
+
+    // Liquid Phase Routing{{{
+    let liquidRoutingEntity = await createEntity(productRoutingClassGenre, "LIQUID_PHASE_ROUTING", 2, "液相生产流程")
+    let liquidRoutingGenre = await createGenre(liquidRoutingEntity)
+    createAttribute({
+        label: 'Routing',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: liquidRoutingEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreLiquid.id
+    })
+    createRoutingAttributes(liquidRoutingGenre, productRoutingClassEntity)
+    createRoutingSubEntity(
+        liquidRoutingGenre,
+        [
+            {
+                'workcenter': DNAExtractClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': projectApprovalClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': dnaShearClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': libraryPrepareClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': capturePrepareClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': poolingClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': dataSequenceClassEntity,
+                'duration': 7,
+                'checked': true,
+            },
+        ]
+    )
+    //}}}
+
+    // Multiplex Routing{{{
+    let multiplexRoutingEntity = await createEntity(productRoutingClassGenre, "MULTIPLEX_ROUTING", 2, "多重生产流程")
+    let multiplexRoutingGenre = await createGenre(multiplexRoutingEntity)
+    createAttribute({
+        label: 'Routing',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: multiplexRoutingEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreMultiplex.id
+    })
+    createRoutingAttributes(multiplexRoutingGenre, productRoutingClassEntity)
+    createRoutingSubEntity(
+        multiplexRoutingGenre,
+        [
+            {
+                'workcenter': DNAExtractClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': projectApprovalClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': dnaShearClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': multiplexLibraryPrepareClassEntity,
+                'duration': 2,
+                'checked': true,
             },
             {
                 'workcenter': poolingClassEntity,
