@@ -969,7 +969,7 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '生产加工流程',
+            'label': '标准生产流程',
             'SYS_ORDER': 20,
             'enabled': true,
         }
@@ -1884,9 +1884,8 @@ module.exports = async function(){
         SYS_IS_ENTITY_LABEL: true,
         SYS_GENRE: productRoutingClassEntity.id})
 
-
     // Standard Product Routing{{{
-    let standardRoutingEntity = await createEntity(productRoutingClassGenre, "STANDARD_PRODUCT_ROUTING", 2, "标准流程")
+    let standardRoutingEntity = await createEntity(productRoutingClassGenre, "STANDARD_PRODUCT_ROUTING", 2, "标准生产流程")
     let standardRoutingGenre = await createGenre(standardRoutingEntity)
     createAttribute({
         label: 'Routing',
