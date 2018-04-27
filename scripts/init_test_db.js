@@ -154,6 +154,58 @@ function createBomSubEntity(bomGenre, materialObjectList){
     }
 }
 
+function createRoutingAttributes(routingCollectionGenre, routingClassEntity){
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: '',
+        SYS_CODE: 'SYS_CHECKED',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'boolean',
+        SYS_GENRE: routingCollectionGenre.id})
+    createAttribute({
+        label: 'Order',
+        SYS_CODE: 'SYS_ORDER',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'number',
+        SYS_GENRE: routingCollectionGenre.id})
+    createAttribute({
+        label: 'Routing',
+        SYS_CODE: 'SYS_SOURCE',
+        SYS_ORDER: 30,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: routingClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_GENRE: routingCollectionGenre.id})
+    createAttribute({
+        label: 'Duration',
+        SYS_CODE: 'SYS_DURATION',
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: routingCollectionGenre.id})
+}
+
+function createRoutingSubEntity(routingCollectionGenre, workcenterObjectList){
+
+    let order = 1
+    for (let workcenterObject of workcenterObjectList){
+        let workcenter = workcenterObject['workcenter']
+        let workcenterIdentifier = workcenter['SYS_IDENTIFIER']
+        let duration = workcenterObject['duration']
+        let checked = workcenterObject['checked']
+        Entity({
+            SYS_IDENTIFIER: routingCollectionGenre['SYS_IDENTIFIER'] + workcenterIdentifier.substring(workcenterIdentifier.lastIndexOf("/") + 1),
+            SYS_ENTITY_TYPE: 'object',
+            SYS_GENRE: routingCollectionGenre.id,
+            SYS_CHECKED: checked,
+            SYS_ORDER: order * 10,
+            SYS_SOURCE: workcenter.id,
+            SYS_DURATION: duration,
+        }).save()
+        order += 1
+    }
+}
+
 function createEntityWithAttributes(genre, identifier, typeIndex, attributes){
     let entity = Entity({
         SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
@@ -768,7 +820,16 @@ module.exports = async function(){
     let projectWCDomainEntity = await createEntity(domainGenre, "PROJECT_MANAGEMENT", 0, "Project Management Workcenters")
     let projectWCDomainGenre = await createGenre(projectWCDomainEntity)
     let generalProjectClassEntity = await createEntity(projectWCDomainGenre, WC_ID_GENERAL_PROJECT, 1, "General Project")
-    let generalProjectClassGenre = await createGenre(generalProjectClassEntity)
+    let generalProjectClassGenre = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '/',
+            'SYS_LABEL': 'label',
+            'label': '空流程',
+            'SYS_ORDER': 10,
+        }
+    )
+
     let attrGPSerialNumber = await createAttribute({
         label: '序号',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SERIAL_NUMBER"),
@@ -902,6 +963,28 @@ module.exports = async function(){
         SYS_ORDER: 210,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
+
+    let generalProjectClassGenreOne = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_ONE/',
+            'SYS_LABEL': 'label',
+            'label': '生产加工流程',
+            'SYS_ORDER': 20,
+            'enabled': true,
+        }
+    )
+
+    let generalProjectClassGenreTwo = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_TWO/',
+            'SYS_LABEL': 'label',
+            'label': '试剂盒流程',
+            'SYS_ORDER': 30,
+            'enabled': false,
+        }
+    )
 
     let attrGP = [
         attrGPSerialNumber.id,
@@ -1801,10 +1884,74 @@ module.exports = async function(){
         SYS_IS_ENTITY_LABEL: true,
         SYS_GENRE: productRoutingClassEntity.id})
 
+
+    // Standard Product Routing{{{
+    let standardRoutingEntity = await createEntity(productRoutingClassGenre, "STANDARD_PRODUCT_ROUTING", 2, "标准流程")
+    let standardRoutingGenre = await createGenre(standardRoutingEntity)
+    createAttribute({
+        label: 'Routing',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: standardRoutingEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreOne.id
+    })
+    createRoutingAttributes(standardRoutingGenre, productRoutingClassEntity)
+    createRoutingSubEntity(
+        standardRoutingGenre,
+        [
+            {
+                'workcenter': DNAExtractClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': projectApprovalClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': dnaShearClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': libraryPrepareClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': capturePrepareClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': multiplexLibraryPrepareClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': poolingClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+            {
+                'workcenter': dataSequenceClassEntity,
+                'duration': 2,
+                'checked': true,
+            },
+        ]
+    )
+    //}}}
+
     let v1CollEntity = await Entity({
         SYS_IDENTIFIER: productRoutingClassGenre.SYS_IDENTIFIER + 'ROUTING_V1',
         SYS_ENTITY_TYPE: 'collection',
-        PRODUCT_ROUTING_ATTR_TITLE: 'Routing V1',
+        PRODUCT_ROUTING_ATTR_TITLE: 'Routing 1 of Product Dept.',
         SYS_LABEL: 'PRODUCT_ROUTING_ATTR_TITLE',
         SYS_GENRE: productRoutingClassGenre.id,
         label: 'Routing V1' // compatable with the createEntity
