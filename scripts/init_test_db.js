@@ -826,7 +826,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': '空流程',
-            'SYS_ORDER': 10,
+            'SYS_ORDER': 100,
         }
     )
 
@@ -969,8 +969,8 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '标准生产流程',
-            'SYS_ORDER': 20,
+            'label': 'All Workcenters',
+            'SYS_ORDER': 10,
             'enabled': true,
         }
     )
@@ -1058,7 +1058,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
-            'SYS_ORDER': 10,
+            'SYS_ORDER': 100,
         }
     )
 
@@ -1153,6 +1153,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '全血/唾液/口腔拭子',
             'SYS_ORDER': 20,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreTwo = await createGenreWithAttributes(
@@ -1162,6 +1163,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '血片/组织',
             'SYS_ORDER': 30,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreThree = await createGenreWithAttributes(
@@ -1171,6 +1173,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '石蜡块/石蜡切片',
             'SYS_ORDER': 40,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreFour = await createGenreWithAttributes(
@@ -1180,6 +1183,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '粪便/尿液',
             'SYS_ORDER': 50,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreFive = await createGenreWithAttributes(
@@ -1189,6 +1193,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '血浆',
             'SYS_ORDER': 60,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreSix = await createGenreWithAttributes(
@@ -1198,6 +1203,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': 'DNA',
             'SYS_ORDER': 70,
+            'enabled': true,
         }
     )
     let DNAExtractClassGenreSeven = await createGenreWithAttributes(
@@ -1207,6 +1213,7 @@ module.exports = async function(){
             'SYS_LABEL': 'label',
             'label': '其他',
             'SYS_ORDER': 80,
+            'enabled': true,
         }
     )
 
@@ -1405,7 +1412,7 @@ module.exports = async function(){
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
-            'SYS_ORDER': 10,
+            'SYS_ORDER': 100,
         }
     )
 
@@ -1414,8 +1421,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '文库-1',
-            'SYS_ORDER': 20,
+            'label': 'Standard Library',
+            'SYS_ORDER': 10,
+            'enabled': true,
         }
     )
 
@@ -1542,13 +1550,14 @@ module.exports = async function(){
                 attrDEQCGrade.id,
             ],
         })
+
     let capturePrepareClassGenre = await createGenreWithAttributes(
         capturePrepareClassEntity,
         {
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
             'label': 'No BoM',
-            'SYS_ORDER': 10,
+            'SYS_ORDER': 100,
         }
     )
 
@@ -1557,8 +1566,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '_ONE/',
             'SYS_LABEL': 'label',
-            'label': '捕获-1',
-            'SYS_ORDER': 20,
+            'label': 'Standard Capture',
+            'SYS_ORDER': 10,
+            'enabled': true,
         }
     )
 
