@@ -2051,16 +2051,6 @@ module.exports = async function(){
                 'checked': true,
             },
             {
-                'workcenter': projectApprovalClassEntity,
-                'duration': 2,
-                'checked': true,
-            },
-            {
-                'workcenter': dnaShearClassEntity,
-                'duration': 2,
-                'checked': true,
-            },
-            {
                 'workcenter': multiplexLibraryPrepareClassEntity,
                 'duration': 2,
                 'checked': true,
