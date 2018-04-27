@@ -1920,27 +1920,27 @@ module.exports = async function(){
             },
             {
                 'workcenter': libraryPrepareClassEntity,
-                'duration': 2,
+                'duration': 5,
                 'checked': true,
             },
             {
                 'workcenter': capturePrepareClassEntity,
-                'duration': 2,
+                'duration': 5,
                 'checked': true,
             },
             {
                 'workcenter': multiplexLibraryPrepareClassEntity,
                 'duration': 2,
-                'checked': true,
+                'checked': false,
             },
             {
                 'workcenter': poolingClassEntity,
-                'duration': 2,
+                'duration': 5,
                 'checked': true,
             },
             {
                 'workcenter': dataSequenceClassEntity,
-                'duration': 2,
+                'duration': 7,
                 'checked': true,
             },
         ]
