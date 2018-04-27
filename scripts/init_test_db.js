@@ -975,6 +975,28 @@ module.exports = async function(){
         }
     )
 
+    let generalProjectClassGenreLiquid = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_LIQUID/',
+            'SYS_LABEL': 'label',
+            'label': '液相',
+            'SYS_ORDER': 20,
+            'enabled': true,
+        }
+    )
+
+    let generalProjectClassGenreMultiplex = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_MULTIPLEX/',
+            'SYS_LABEL': 'label',
+            'label': '多重',
+            'SYS_ORDER': 30,
+            'enabled': true,
+        }
+    )
+
     let attrGP = [
         attrGPSerialNumber.id,
         attrGPProjectManager.id,
