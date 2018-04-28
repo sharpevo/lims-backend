@@ -825,8 +825,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': '空流程',
+            'label': 'Common Genre',
             'SYS_ORDER': 100,
+            'visible': false,
         }
     )
 
@@ -948,6 +949,7 @@ module.exports = async function(){
             'label': 'All Workcenters',
             'SYS_ORDER': 10,
             'enabled': true,
+            'visible': true,
         }
     )
 
@@ -959,6 +961,7 @@ module.exports = async function(){
             'label': '液相',
             'SYS_ORDER': 20,
             'enabled': true,
+            'visible': true,
         }
     )
     let attrGPQCStartDate = await createAttribute({
@@ -984,6 +987,7 @@ module.exports = async function(){
             'label': '多重',
             'SYS_ORDER': 30,
             'enabled': true,
+            'visible': true,
         }
     )
     let attrGPProjectWarnDate = await createAttribute({
@@ -1083,8 +1087,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': DNAExtractClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
             'SYS_ORDER': 100,
+            'visible': false,
         }
     )
 
@@ -1180,6 +1185,7 @@ module.exports = async function(){
             'label': '全血/唾液/口腔拭子',
             'SYS_ORDER': 20,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreTwo = await createGenreWithAttributes(
@@ -1190,6 +1196,7 @@ module.exports = async function(){
             'label': '血片/组织',
             'SYS_ORDER': 30,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreThree = await createGenreWithAttributes(
@@ -1200,6 +1207,7 @@ module.exports = async function(){
             'label': '石蜡块/石蜡切片',
             'SYS_ORDER': 40,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreFour = await createGenreWithAttributes(
@@ -1210,6 +1218,7 @@ module.exports = async function(){
             'label': '粪便/尿液',
             'SYS_ORDER': 50,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreFive = await createGenreWithAttributes(
@@ -1220,6 +1229,7 @@ module.exports = async function(){
             'label': '血浆',
             'SYS_ORDER': 60,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreSix = await createGenreWithAttributes(
@@ -1230,6 +1240,7 @@ module.exports = async function(){
             'label': 'DNA',
             'SYS_ORDER': 70,
             'enabled': true,
+            'visible': true,
         }
     )
     let DNAExtractClassGenreSeven = await createGenreWithAttributes(
@@ -1240,6 +1251,7 @@ module.exports = async function(){
             'label': '其他',
             'SYS_ORDER': 80,
             'enabled': true,
+            'visible': true,
         }
     )
 
@@ -1292,7 +1304,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': projectApprovalClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
+            'SYS_ORDER': 100,
+            'visible': false,
         }
     )
     let attrPAStart = await createAttribute({
@@ -1356,7 +1370,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': dnaShearClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
+            'SYS_ORDER': 100,
+            'visible': false,
         }
     )
     createAttribute({
@@ -1437,8 +1453,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': libraryPrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
             'SYS_ORDER': 100,
+            'visible': false,
         }
     )
 
@@ -1450,6 +1467,7 @@ module.exports = async function(){
             'label': 'Standard Library',
             'SYS_ORDER': 10,
             'enabled': true,
+            'visible': true,
         }
     )
 
@@ -1582,8 +1600,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': capturePrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
             'SYS_ORDER': 100,
+            'visible': false,
         }
     )
 
@@ -1595,6 +1614,7 @@ module.exports = async function(){
             'label': 'Standard Capture',
             'SYS_ORDER': 10,
             'enabled': true,
+            'visible': true,
         }
     )
 
@@ -1685,7 +1705,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': multiplexLibraryPrepareClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
+            'SYS_ORDER': 100,
+            'visible': false,
         }
     )
     createAttribute({
@@ -1801,7 +1823,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': poolingClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
+            'SYS_ORDER': 100,
+            'visible': false,
         }
     )
     createAttribute({
@@ -1868,7 +1892,9 @@ module.exports = async function(){
         {
             'SYS_IDENTIFIER': dataSequenceClassEntity.SYS_IDENTIFIER + '/',
             'SYS_LABEL': 'label',
-            'label': 'No BoM',
+            'label': 'Common Genre',
+            'SYS_ORDER': 100,
+            'visible': false,
         }
     )
     createAttribute({
