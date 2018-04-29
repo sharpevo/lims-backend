@@ -850,7 +850,7 @@ module.exports = async function(){
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPPanelCode = await createAttribute({
-        label: 'Panel名称',
+        label: 'Panel编号',
         SYS_CODE: 'SYS_PANEL_CODE',
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
@@ -860,12 +860,14 @@ module.exports = async function(){
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "DEPTH"),
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: 'X',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPDataSize = await createAttribute({
-        label: '数据量',
+        label: '参考数据量',
         SYS_CODE: 'SYS_DATA_SIZE',
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
+        SYS_ATTRIBUTE_UNIT: 'G',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleName = await createAttribute({
         label: '样品名称',
@@ -884,13 +886,13 @@ module.exports = async function(){
         SYS_IS_ENTITY_LABEL: true,
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleType = await createAttribute({
-        label: '样品类型',
+        label: '样本类型',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SAMPLE_TYPE"),
         SYS_ORDER: 90,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleSpecies = await createAttribute({
-        label: '样品物种',
+        label: '样本物种',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "SAMPLE_SPECIES"),
         SYS_ORDER: 100,
         SYS_TYPE: 'string',
@@ -925,20 +927,24 @@ module.exports = async function(){
         SYS_ORDER: 190,
         SYS_TYPE: 'date',
         SYS_GENRE: generalProjectClassGenre.id})
+
+    // on board
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 200,
+        SYS_ORDER: 1000,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: generalProjectClassGenre.id})
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 210,
+        SYS_ORDER: 1010,
         SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: generalProjectClassGenre.id})
 
     let generalProjectClassGenreOne = await createGenreWithAttributes(
