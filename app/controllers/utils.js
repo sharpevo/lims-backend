@@ -377,7 +377,7 @@ exports.JSONToExcel = async function(req, res, next){
 
 
     let _headers = headers
-        .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+        .map((v, i) => Object.assign({}, {v: v, position: numToAlpha(i) + 1 }))
         .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
     let _data = {}
     if (data.length > 0) {
@@ -389,7 +389,7 @@ exports.JSONToExcel = async function(req, res, next){
                     return -1
                 }
             })
-            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .map((v, i) => fields.map((k, j) => Object.assign({}, { v: v[k], position: '' + numToAlpha(j) + (i+2) })))
             .reduce((prev, next) => prev.concat(next))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
     }
@@ -403,10 +403,10 @@ exports.JSONToExcel = async function(req, res, next){
     if (groupKey != '' && // groupKey is empty for the workcenter without BoM
         sheets['sheet2'][groupKey]['data'].length > 0){
         let _groupHeaders = sheets['sheet2'][groupKey]['headers']
-            .map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 1 }))
+            .map((v, i) => Object.assign({}, {v: v, position: numToAlpha(i) + 1 }))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
         _groupData = sheets['sheet2'][groupKey]['data']
-            .map((v, i) => sheets['sheet2'][groupKey]['fields'].map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+2) })))
+            .map((v, i) => sheets['sheet2'][groupKey]['fields'].map((k, j) => Object.assign({}, { v: v[k], position: numToAlpha(j) + (i+2) })))
             .reduce((prev, next) => prev.concat(next))
             .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
         groupOutput = Object.assign({}, _groupHeaders, _groupData)
@@ -533,4 +533,28 @@ const parseError = function(err) {
         console.error(err)
         return 'Unknown server errer'
     }
+}
+
+function numToAlpha(num) {
+
+  var alpha = '';
+
+  for (; num >= 0; num = parseInt(num / 26, 10) - 1) {
+    alpha = String.fromCharCode(num % 26 + 0x41) + alpha;
+  }
+
+  return alpha;
+}
+
+function alphaToNum(alpha) {
+
+  var i = 0,
+      num = 0,
+      len = alpha.length;
+
+  for (; i < len; i++) {
+    num = num * 26 + alpha.charCodeAt(i) - 0x40;
+  }
+
+  return num - 1;
 }
