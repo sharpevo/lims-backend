@@ -697,7 +697,33 @@ module.exports = async function(){
                 'quantity': 5,
             },
         ]
-    )//}}}
+    )
+
+    let extractBomSixEntity = await createEntity(manuClassGenre, "EXTRACT_BOM_SIX", 2, "DNA BoM")
+    let extractBomSixGenre = await createGenre(extractBomSixEntity)
+    createBomAttributes(extractBomSixGenre, materialDomainEntity)
+    createBomSubEntity(
+        extractBomSixGenre,
+        [
+            {
+                'material': materialHSBRQuantifyKitClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialAgaroseClassEntity,
+                'quantity': 1,
+            },
+            {
+                'material': materialSixLoadingBufferClassEntity,
+                'quantity': 2,
+            },
+            {
+                'material': materialLambdaDNAClassEntity,
+                'quantity': 5,
+            },
+        ]
+    )
+    //}}}
 
     // Library Preparation BoM{{{
     let libraryPrepBomOneEntity = await createEntity(manuClassGenre, "LIBRARY_PREP_BOM_ONE", 2, "建库BoM")
@@ -1297,6 +1323,7 @@ module.exports = async function(){
         DNAExtractClassGenreThree,
         DNAExtractClassGenreFour,
         DNAExtractClassGenreFive,
+        DNAExtractClassGenreSix,
     ]
 
     let DNAExtractClassBoMList = [
@@ -1305,6 +1332,7 @@ module.exports = async function(){
         extractBomThreeEntity,
         extractBomFourEntity,
         extractBomFiveEntity,
+        extractBomSixEntity,
     ]
 
     for (let index in DNAExtractClassGenreList) {
