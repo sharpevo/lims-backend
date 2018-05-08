@@ -1342,6 +1342,15 @@ module.exports = async function(){
         }
     )
 
+    createAttribute({
+        SYS_LABEL: 'label',
+        label: '临时物料',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "TEMP_MATERIAL"),
+        SYS_ORDER: 150,
+        SYS_TYPE: 'string',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: DNAExtractClassGenreSeven.id})
+
     let DNAExtractClassGenreList = [
         DNAExtractClassGenreOne,
         DNAExtractClassGenreTwo,
