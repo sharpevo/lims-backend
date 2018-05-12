@@ -13,4 +13,7 @@ module.exports = function(app){
     app
         .route('/excelparse')
         .post(utils.excelToJSON)
+    app
+        .route('/excelexport')
+        .post(utils.excelExport)
 }
