@@ -85,8 +85,9 @@ exports.list = function(req, model){
                         break
                     case "exists":
                         query.where(key).exists(where_params[key]["exists"])
+                        break
                     default:
-                        console.log("invalid operation")
+                        console.log("invalid operation:", operation)
                 }
 
             })
