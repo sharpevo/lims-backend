@@ -2110,12 +2110,14 @@ module.exports = async function(){
         label: '数据文件路径',
         SYS_CODE: getAttributeIdentifier(WC_ID_SEQUENCE_DATA, "FILE_PATH"),
         SYS_ORDER: 10,
+        SYS_IS_ON_BOARD: true,
         SYS_TYPE: 'string',
         SYS_GENRE: dataSequenceClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
         SYS_ORDER: 20,
+        SYS_IS_ON_BOARD: true,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
@@ -2124,6 +2126,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_IS_ON_BOARD: true,
         SYS_ORDER: 30,
         SYS_TYPE: 'date',
         SYS_GENRE: dataSequenceClassGenre.id})
