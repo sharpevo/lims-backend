@@ -7,6 +7,9 @@ const Entity = require('mongoose').model('Entity')
 const formidable = require('formidable')
 const XLSX = require('xlsx')
 
+const Utils = require('../utils/controller')
+const async = require('async')
+
 exports.setCookie = function(req, res, next){
     let token = req.query.token
     let remember = req.query.remember
@@ -48,6 +51,216 @@ exports.getUserInfo = function(req, res, next){
             "errmsg": "invalid request"
         })
     }
+}
+
+exports.excelExport = async function(req, res, next){
+
+    req.query['SYS_ENTITY_TYPE'] = 'collection'
+    req.query['SYS_IDENTIFIER'] = new RegExp("^/PROJECT_MANAGEMENT/GENERAL_PROJECT" )
+
+    let query = Utils.list(req, Entity)
+
+    let sampleList = await query.exec()
+    //console.log(sampleList.length, sampleList[0])
+    let productWorkcenterList = await Entity.find({
+        'SYS_IDENTIFIER': { $regex: '^/PRODUCT_WORKCENTER' },
+        'SYS_ENTITY_TYPE': 'class',
+    })
+    //console.log(productWorkcenterList.length, productWorkcenterList[0])
+    let projectWorkcenterDoc = await Entity.findOne({
+        'SYS_IDENTIFIER': { $regex: '^/PROJECT_MANAGEMENT' },
+        'SYS_ENTITY_TYPE': 'class',
+    })
+    let projectWorkcenter = projectWorkcenterDoc.toObject()
+    //console.log(projectWorkcenter)
+
+    let productWorkcenterListWithOrder = await Entity.find(
+        {
+            'SYS_IDENTIFIER': {
+                $regex: '^/ROUTING/PRODUCT_ROUTING/STANDARD_PRODUCT_ROUTING'
+            },
+            'SYS_ENTITY_TYPE': 'object',
+        })
+    .sort({SYS_ORDER: 1})
+    //console.log(productWorkcenterListWithOrder.length, productWorkcenterListWithOrder[0])
+    let workcenterList = []
+    workcenterList.push(projectWorkcenter)
+    for (let workcenter of productWorkcenterListWithOrder) {
+        let workcenterObject = workcenter.toObject()
+        for (w of productWorkcenterList) {
+                if (w.id == workcenterObject.SYS_SOURCE){
+                    workcenterList.push(w.toObject())
+                }
+        }
+    }
+    //console.log(workcenterList[1])
+    // TODO: append the difference between two arrays
+
+    let columnList = []
+    for (let workcenter of workcenterList){
+        let column = {}
+        column['workcenter'] = workcenter
+        column['attributes'] = []
+
+        let genreList = await Genre.find({
+            'SYS_ENTITY': workcenter.id
+        })
+        for (let genre of genreList){
+            let attributeList = await Attribute.find({
+                'SYS_GENRE': genre.id,
+                $or: [
+                    {
+                        'SYS_TYPE': { $ne: 'entity' }
+                    },
+                    {
+                        $and: [ // keep workcenter but bom/routing
+                            {
+                                'SYS_TYPE': 'entity' 
+                            },
+                            {
+                                'SYS_TYPE_ENTITY_REF': true,
+                            },
+                        ]
+                    },
+                ]
+            })
+            .sort({'SYS_ORDER': 1})
+            attributeList.forEach(attr => {
+                column['attributes'].push(attr.toObject())
+            })
+        }
+        columnList.push(column)
+    }
+    //console.log(columnList[0]['workcenter'], columnList[0]['attributes'].length)
+    //console.log(columnList.length, columnList[1])
+
+    let workcenterHeaders = []
+    let attributeHeaders = []
+    let merges = []
+    //for (let column of columnList){
+    let prevLength = 0
+    for (let i = 0; i < columnList.length; i++){
+        column = columnList[i]
+        let workcenter = column['workcenter']
+        let attributes = column['attributes']
+
+        workcenterHeaders.push(
+            Object.assign(
+                {},
+                {
+                    t: 's',
+                    v: workcenter[workcenter['SYS_LABEL']],
+                    position: numToAlpha(prevLength) + 1,
+                }
+            )
+        )
+        merges.push(
+            {
+                s: {
+                    r: 0,
+                    c: prevLength,
+                },
+                e: {
+                    r: 0,
+                    c: prevLength + attributes.length - 1,
+                }
+            }
+        )
+
+        for (let i = 0; i < attributes.length; i++) {
+            let attr = attributes[i]
+            attributeHeaders.push({
+                v: attr[attr['SYS_LABEL']],
+                position: numToAlpha(prevLength + i) + 2,
+            })
+        }
+
+        prevLength += attributes.length
+    }
+    //console.log(attributeHeaders)
+
+    //let headers = attributeHeaders
+    let _workcenterHeaders = workcenterHeaders
+        //.map((v, i) => Object.assign({}, {v: v, position: numToAlpha(i) + 1 }))
+        .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    let _attributeHeaders = attributeHeaders
+        .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+
+
+    let sampleMap = {}
+    for (let sampleDoc of sampleList){
+        let sample = sampleDoc.toObject()
+        sampleMap[sample['SYS_SAMPLE_CODE']] = await Entity.find({
+            'SYS_SAMPLE_CODE': sample['SYS_SAMPLE_CODE'],
+            'SYS_DATE_COMPLETED': {$ne: ''},
+        })
+    }
+    //console.log(sampleMap)
+
+    let data = []
+    for (let i = 0; i < sampleList.length; i++) {
+        let sample = sampleList[i].toObject()
+        let prevLength = 0
+
+        // traverse attributes for each submitted samples in requset
+
+        for (let column of columnList){
+            let attributeList = column['attributes']
+            for (let j = 0; j < attributeList.length; j ++){
+                let attribute = attributeList[j]
+
+                let latest = new Date(1993)
+                let value = ''
+
+                // get the latest value of attributes by the same sample code
+
+                for (let item of sampleMap[sample['SYS_SAMPLE_CODE']]){
+                    let s = item.toObject()
+                    let v = s[attribute['SYS_CODE']]
+                    let d = new Date(s['SYS_DATE_COMPLETED'])
+                    if (s.hasOwnProperty(attribute['SYS_CODE'])) {
+                        if (d > latest) {
+                            latest = new Date(s['SYS_DATE_COMPLETED'])
+                            //console.log(">>> ",attribute['SYS_CODE'], v, ' > ', value)
+                            value = v
+                        }
+                    }
+                }
+                data.push(
+                    Object.assign(
+                        {},
+                        {
+                            //v: sample[attribute['SYS_CODE']],
+                            v: value,
+                            position: numToAlpha(prevLength + j) + (i + 3)
+                        }
+                    )
+                )
+            }
+            prevLength += column['attributes'].length
+        }
+    }
+    let _data = data
+        .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
+    //console.log(_data)
+
+    let output = Object.assign({}, _workcenterHeaders, _attributeHeaders, _data)
+    let outputPos = Object.keys(output)
+    let ref = outputPos[0] + ':' + outputPos[outputPos.length - 1]
+
+    //console.log(ref, merges, _workcenterHeaders, _attributeHeaders)
+    let wb = {
+        SheetNames: ['样品总表'],
+        Sheets: {
+            '样品总表': Object.assign({}, output, {'!ref': ref}, {'!merges': merges}),
+        }
+    }
+    //console.log(ref, output)
+    let timestamp = getTimestamp()
+    //let tempfile = `tempfolder/${timestamp}.xlsx`
+    let tempfile = `tempfolder/test.xlsx`
+    XLSX.writeFile(wb, tempfile)
+    res.download(tempfile)
 }
 
 exports.excelToJSON = function(req, res, next){
