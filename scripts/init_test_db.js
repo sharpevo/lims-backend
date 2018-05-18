@@ -1836,14 +1836,11 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrDSCode.id,
                 attrGPPanelCode.id,
-                attrGPDepth.id,
-                attrGPSampleName.id,
+                attrGPDataSize.id,
                 attrGPSampleCode.id,
-                attrGPSampleType.id,
-                attrPAStart.id,
-                attrPAWarn.id,
+                attrDEConc.id,
+                attrDEAmount.id,
             ],
         })
 
@@ -1857,92 +1854,126 @@ module.exports = async function(){
             'visible': false,
         }
     )
+
+    // on board
     createAttribute({
-        label: '样本位置',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'SAMPLE_LOCATION'),
-        SYS_ORDER: 10,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    createAttribute({
-        label: 'gDNA浓度',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'GDNA_CONC'),
-        SYS_ORDER: 20,
-        SYS_TYPE: 'number',
+        label: '取样日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "SAMPLING_DATE"),
+        SYS_ORDER: 1000,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
-        label: 'gDNA浓度均一化',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'GDNA_CONC_HOMOGENIZED'),
-        SYS_ORDER: 30,
-        SYS_TYPE: 'number',
+        label: '建库日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "PREPARE_DATE"),
+        SYS_ORDER: 1010,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
-        label: '多重文库名称',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'NAME'),
-        SYS_ORDER: 40,
+        label: '温度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "ENV_TEMPERATURE"),
+        SYS_ORDER: 1020,
         SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '℃',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
-        label: '多重文库Index编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'INDEX_CODE'),
-        SYS_ORDER: 50,
+        label: '湿度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "ENV_HUMIDITY"),
+        SYS_ORDER: 1030,
         SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '%RH',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
-        label: '多重文库浓度',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'CONC'),
-        SYS_ORDER: 60,
-        SYS_TYPE: 'number',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    createAttribute({
-        label: '多重文库体积',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'VOLUME'),
-        SYS_ORDER: 70,
-        SYS_TYPE: 'number',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexCodeI7 = await createAttribute({
-        label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I7',
-        SYS_ORDER: 80,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexSeqI7 = await createAttribute({
-        label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I7',
-        SYS_ORDER: 90,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexCodeI5 = await createAttribute({
-        label: 'Index编号 #2 (I5)',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I5',
-        SYS_ORDER: 100,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexSeqI5 = await createAttribute({
-        label: 'Index序列 #2 (I5)',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I5',
-        SYS_ORDER: 110,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'REMARK'),
-        SYS_ORDER: 120,
-        SYS_TYPE: 'string',
+        label: '设备编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "INSTRUMENT_1"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 130,
+        SYS_ORDER: 1010,
         SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 140,
+        SYS_ORDER: 1020,
         SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+
+    // in excel
+    let attrMLPDnaUsageAmount = await createAttribute({
+        label: 'DNA投入量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'DNA_USAGE_AMOUNT'),
+        SYS_ORDER: 10,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPDnaUsageVolume = await createAttribute({
+        label: 'DNA投入体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'DNA_USAGE_VOLUME'),
+        SYS_ORDER: 20,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPDnaVolume = await createAttribute({
+        label: '加样体积(uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'DNA_USAGE_VOLUME_EXTRA'),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPWaterVolume = await createAttribute({
+        label: '加水体积(uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'WATER_USAGE_VOLUME_EXTRA'),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPIndexCodeI7 = await createAttribute({
+        label: 'IGT-I7编号',
+        SYS_CODE: 'SYS_M_INDEX_CODE_I7',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPIndexSeqI7 = await createAttribute({
+        label: 'IGT-I7序列',
+        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I7',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPIndexCodeI5 = await createAttribute({
+        label: 'IGT-I5编号',
+        SYS_CODE: 'SYS_M_INDEX_CODE_I5',
+        SYS_ORDER: 70,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPIndexSeqI5 = await createAttribute({
+        label: 'IGT-I5序列',
+        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I5',
+        SYS_ORDER: 80,
+        SYS_TYPE: 'string',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPConc = await createAttribute({
+        label: '文库浓度(ng/uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'CONC'),
+        SYS_ORDER: 90,
+        SYS_TYPE: 'number',
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    let attrMLPResult = await createAttribute({
+        label: '建库结论',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "RESULT"),
+        SYS_ORDER: 100,
+        SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     //}}}
 
