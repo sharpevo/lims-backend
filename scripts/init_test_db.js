@@ -1983,6 +1983,8 @@ module.exports = async function(){
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectCode.id,
+                attrGPSampleCode.id,
                 attrGPSampleName.id,
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
@@ -2005,9 +2007,30 @@ module.exports = async function(){
             'visible': false,
         }
     )
+
+    // on board
     createAttribute({
-        label: '混合文库名称',
-        SYS_CODE: 'SYS_LANE_CODE',
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 70,
+        SYS_IS_ON_BOARD: true,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_GENRE: poolingClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 80,
+        SYS_IS_ON_BOARD: true,
+        SYS_TYPE: 'date',
+        SYS_GENRE: poolingClassGenre.id})
+
+    // in excel
+    createAttribute({
+        label: '样品名称',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_NAME'),
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
         SYS_GENRE: poolingClassGenre.id})
@@ -2018,37 +2041,46 @@ module.exports = async function(){
         SYS_TYPE: 'string',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
+        label: '文库长度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'LIBRARY_LENGTH'),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'string',
+        SYS_GENRE: poolingClassGenre.id})
+    createAttribute({
         label: '合成ID',
         SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'SYNTHETIC_ID'),
         SYS_ORDER: 40,
         SYS_TYPE: 'string',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
-        label: '分析要求',
-        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
+        label: '数据量(G)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'DATA_SIZE'),
         SYS_ORDER: 50,
-        SYS_TYPE: 'string',
+        SYS_TYPE: 'number',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
-        label: '总数据量(G)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'TOTAL_DATA_SIZE'),
+        label: 'Qubit(ng/uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'QUBIT'),
         SYS_ORDER: 60,
         SYS_TYPE: 'number',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
-        label: '操作人',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        label: '分析要求',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'ANALYSIS_REQUIREMENT'),
         SYS_ORDER: 70,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_TYPE: 'string',
         SYS_GENRE: poolingClassGenre.id})
     createAttribute({
-        label: '操作日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
+        label: '物种',
+        SYS_CODE: getAttributeIdentifier(WC_ID_POOLING, 'SPECIES'),
         SYS_ORDER: 80,
-        SYS_TYPE: 'date',
+        SYS_TYPE: 'string',
+        SYS_GENRE: poolingClassGenre.id})
+    createAttribute({
+        label: '混合文库名称',
+        SYS_CODE: 'SYS_LANE_CODE',
+        SYS_ORDER: 90,
+        SYS_TYPE: 'string',
         SYS_GENRE: poolingClassGenre.id})
     //}}}
 
