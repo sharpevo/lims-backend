@@ -1331,66 +1331,6 @@ module.exports = async function(){
     }
     //}}}
 
-    // Project Approve{{{
-    let projectApprovalClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_APPROVE, 1, "项目审核", 20,
-        {
-            'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
-                attrDEAmount.id,
-                attrGPSampleType.id,
-            ]),
-        })
-    let projectApprovalClassGenre = await createGenreWithAttributes(
-        projectApprovalClassEntity,
-        {
-            'SYS_IDENTIFIER': projectApprovalClassEntity.SYS_IDENTIFIER + '/',
-            'SYS_LABEL': 'label',
-            'label': 'Common Genre',
-            'SYS_ORDER': 100,
-            'visible': false,
-        }
-    )
-    let attrPAStart = await createAttribute({
-        label: '项目启动时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'START_DATE'),
-        SYS_ORDER: 10,
-        SYS_TYPE: 'date',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    let attrPAWarn = await createAttribute({
-        label: '项目预警时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'WARN_DATE'),
-        SYS_ORDER: 20,
-        SYS_TYPE: 'date',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    let attrPADeliver = await createAttribute({
-        label: '项目交付时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'DELIVER_DATE'),
-        SYS_ORDER: 30,
-        SYS_TYPE: 'date',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: getAttributeIdentifier(WC_ID_APPROVE, 'REMARK'),
-        SYS_ORDER: 40,
-        SYS_TYPE: 'string',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    createAttribute({
-        label: '操作人',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 50,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    createAttribute({
-        label: '操作日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 60,
-        SYS_TYPE: 'date',
-        SYS_GENRE: projectApprovalClassGenre.id})
-    //}}}
-
     // DNA Shear{{{
     let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SHEAR, 1, "打断", 30,
         {
@@ -2172,11 +2112,6 @@ module.exports = async function(){
                 'checked': true,
             },
             {
-                'workcenter': projectApprovalClassEntity,
-                'duration': 2,
-                'checked': true,
-            },
-            {
                 'workcenter': dnaShearClassEntity,
                 'duration': 2,
                 'checked': true,
@@ -2231,11 +2166,6 @@ module.exports = async function(){
         [
             {
                 'workcenter': DNAExtractClassEntity,
-                'duration': 2,
-                'checked': true,
-            },
-            {
-                'workcenter': projectApprovalClassEntity,
                 'duration': 2,
                 'checked': true,
             },
