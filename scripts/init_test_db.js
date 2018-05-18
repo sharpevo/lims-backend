@@ -1130,12 +1130,9 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
+                attrGPProjectCode.id,
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
-                attrGPSampleMedium.id,
-                attrGPSampleSpecies.id,
-                attrGPQCStartDate.id,
-                attrGPReportDeliveryDate.id,
             ]),
         })
 
@@ -1150,72 +1147,30 @@ module.exports = async function(){
         }
     )
 
-    let attrDENanodrop = await createAttribute({
-        label: 'Nanodrop ng/ul',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "NANODROP"),
+    // in excel
+
+    let attrDEConc = await createAttribute({
+        label: 'DNA浓度(ng/uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "CONC"),
         SYS_ORDER: 10,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEQubit = await createAttribute({
-        label: 'Qubit ng/ul',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QUBIT"),
+    let attrDEVolume = await createAttribute({
+        label: 'DNA体积(uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "VOLUME"),
         SYS_ORDER: 20,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDE230 = await createAttribute({
-        label: 'OD 260/230',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD230"),
+    let attrDEAmount = await createAttribute({
+        label: 'DNA总量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "AMOUNT"),
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDE280 = await createAttribute({
-        label: 'OD 260/280',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "OD280"),
+    let attrDEGrade = await createAttribute({
+        label: '评级',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "GRADE"),
         SYS_ORDER: 40,
-        SYS_TYPE: 'number',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEVolume = await createAttribute({
-        label: '样品体积(ul)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "VOLUME"),
-        SYS_ORDER: 50,
-        SYS_TYPE: 'number',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEAmount = await createAttribute({
-        label: '样品总量(ng)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "AMOUNT"),
-        SYS_ORDER: 60,
-        SYS_TYPE: 'number',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEQCGrade = await createAttribute({
-        label: '质检结论',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_RESULT"),
-        SYS_ORDER: 90,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: 'A:A,B:B,Ca:C-a,Cb:C-b,Cd:C-d,D:D',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDEQCRemark = await createAttribute({
-        label: '质检备注',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_REMARK"),
-        SYS_ORDER: 100,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:合格,0:只电泳检测,-1:不合格',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
-        label: '样品提取时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "EXTRACT_DATE"),
-        SYS_ORDER: 110,
-        SYS_TYPE: 'date',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    createAttribute({
-        label: '质检完成时间',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "QC_COMPLETE_DATE"),
-        SYS_ORDER: 120,
-        SYS_TYPE: 'date',
-        SYS_GENRE: DNAExtractClassGenre.id})
-    let attrDERemark = await createAttribute({
-        label: '备注(DNA提取来源)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMARK"),
-        SYS_ORDER: 130,
         SYS_TYPE: 'string',
         SYS_GENRE: DNAExtractClassGenre.id})
 
