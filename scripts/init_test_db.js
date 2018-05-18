@@ -1690,20 +1690,16 @@ module.exports = async function(){
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrLPCode.id,
+                attrGPProjectCode.id,
                 attrGPPanelCode.id,
                 attrGPDepth.id,
-                attrGPSampleName.id,
-                attrGPSampleCode.id,
-                attrGPSampleType.id,
-                attrLPIndexCodeI7.id,
-                attrLPIndexSeqI7.id,
                 attrGPDataSize.id,
-                attrLPQubit.id,
-                attrLPVolume.id,
+                attrGPSampleCode.id,
+                attrLPCode.id,
+                attrLPTpe1.id,
+                attrLPTpe2.id,
+                attrLPConc.id,
                 attrLPAmount.id,
-                attrLPCycle.id,
-                attrLPResult.id,
             ],
         })
 
@@ -1743,17 +1739,77 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
     })
 
+    // on board
+    createAttribute({
+        label: '取样日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "SAMPLING_DATE"),
+        SYS_ORDER: 1000,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '捕获日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "CAPTURE_DATE"),
+        SYS_ORDER: 1010,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '温度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "ENV_TEMPERATURE"),
+        SYS_ORDER: 1020,
+        SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '℃',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '湿度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "ENV_HUMIDITY"),
+        SYS_ORDER: 1030,
+        SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '%RH',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '设备编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "INSTRUMENT_1"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 1010,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 1020,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+
+    // in excel
     let attrCPCode = await createAttribute({
         label: '捕获编号',
         SYS_CODE: 'SYS_CAPTURE_CODE',
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
         SYS_GENRE: capturePrepareClassGenre.id})
-    createAttribute({
-        label: '捕获日期',
-        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "DATE"),
+    let attrCPQubit = await createAttribute({
+        label: '捕获后浓度(ng/uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'QUBIT'),
         SYS_ORDER: 20,
-        SYS_TYPE: 'date',
+        SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
     let attrCPCount = await createAttribute({
         label: '杂交数',
@@ -1761,38 +1817,17 @@ module.exports = async function(){
         SYS_ORDER: 30,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
-    let attrCPVolume = await createAttribute({
-        label: '混样体积',
-        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'VOLUME'),
+    let attrCPLibraryUsage = await createAttribute({
+        label: '文库投入量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'LIBRARY_USAGE'),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: capturePrepareClassGenre.id})
-    let attrCPQubit = await createAttribute({
-        label: '捕获文库浓度',
-        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'QUBIT'),
+    let attrCPVolume = await createAttribute({
+        label: '混样体积(uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'VOLUME'),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
-        SYS_GENRE: capturePrepareClassGenre.id})
-    let attrCPFragementSize = await createAttribute({
-        label: '片段大小',
-        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, 'FRAGMENT_SIZE'),
-        SYS_ORDER: 60,
-        SYS_TYPE: 'number',
-        SYS_GENRE: capturePrepareClassGenre.id})
-    createAttribute({
-        label: '操作人',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 70,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
-        SYS_GENRE: capturePrepareClassGenre.id})
-    createAttribute({
-        label: '操作日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 80,
-        SYS_TYPE: 'date',
         SYS_GENRE: capturePrepareClassGenre.id})
     //}}}
 
