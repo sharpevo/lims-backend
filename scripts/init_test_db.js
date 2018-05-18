@@ -1336,8 +1336,6 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
-                attrGPReportDeliveryDate.id,
-                attrDEQCGrade.id,
                 attrDEAmount.id,
                 attrGPSampleType.id,
             ]),
@@ -1400,10 +1398,6 @@ module.exports = async function(){
             'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
-                attrDENanodrop.id,
-                attrDEQubit.id,
-                attrDE280.id,
-                attrDE230.id,
                 attrDEVolume.id,
                 attrDEAmount.id,
             ]),
@@ -1486,8 +1480,6 @@ module.exports = async function(){
                 attrDSRemainAmount.id,
                 attrPAStart.id,
                 attrPAWarn.id,
-                attrDEQCGrade.id,
-                attrDEQCRemark.id,
             ],
         })
 
@@ -1634,7 +1626,6 @@ module.exports = async function(){
                 attrLPAmount.id,
                 attrLPCycle.id,
                 attrLPResult.id,
-                attrDEQCGrade.id,
             ],
         })
 
