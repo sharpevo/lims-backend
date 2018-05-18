@@ -948,24 +948,6 @@ module.exports = async function(){
         SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPSampleMedium = await createAttribute({
-        label: '保存介质',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "MEDIUM"),
-        SYS_ORDER: 110,
-        SYS_TYPE: 'string',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPConc = await createAttribute({
-        label: '样品浓度(ng/ul)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "CONC"),
-        SYS_ORDER: 120,
-        SYS_TYPE: 'number',
-        SYS_GENRE: generalProjectClassGenre.id})
-    let attrGPVolume = await createAttribute({
-        label: '样品体积(ul)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "VOLUME"),
-        SYS_ORDER: 130,
-        SYS_TYPE: 'number',
-        SYS_GENRE: generalProjectClassGenre.id})
     let attrGPSampleRemark = await createAttribute({
         label: '备注',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REMARK"),
@@ -1026,14 +1008,14 @@ module.exports = async function(){
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "QC_START_DATE"),
         SYS_ORDER: 140,
         SYS_TYPE: 'date',
-        SYS_IS_ON_BOARD: true,
+        SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreLiquid.id})
-    let attrGPReportDeliveryDate = await createAttribute({
-        label: '报告交付时间(液相)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "REPORT_DELIVERY_DATE"),
+    let attrGPQCDeliveryDate = await createAttribute({
+        label: '质检交付时间(液相)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "QC_DELIVERY_DATE"),
         SYS_ORDER: 150,
         SYS_TYPE: 'date',
-        SYS_IS_ON_BOARD: true,
+        SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreLiquid.id})
 
     let generalProjectClassGenreMultiplex = await createGenreWithAttributes(
@@ -1047,23 +1029,29 @@ module.exports = async function(){
             'visible': true,
         }
     )
+    let attrGPProjectStartDate = await createAttribute({
+        label: '项目启动时间(多重)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_START_DATE"),
+        SYS_ORDER: 160,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: false,
+        SYS_GENRE: generalProjectClassGenreMultiplex.id})
     let attrGPProjectWarnDate = await createAttribute({
         label: '项目预警时间(多重)',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_WARN_DATE"),
-        SYS_ORDER: 160,
+        SYS_ORDER: 170,
         SYS_TYPE: 'date',
-        SYS_IS_ON_BOARD: true,
+        SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
     let attrGPProjectDeliveryDate = await createAttribute({
         label: '项目交付时间(多重)',
         SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "PROJECT_DELIVERY_DATE"),
-        SYS_ORDER: 170,
+        SYS_ORDER: 180,
         SYS_TYPE: 'date',
-        SYS_IS_ON_BOARD: true,
+        SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
     let attrGP = [
-        attrGPSerialNumber.id,
         attrGPProjectManager.id,
         attrGPProjectCode.id,
         attrGPPanelCode.id,
