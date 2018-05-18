@@ -1508,15 +1508,9 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrDSCode.id,
-                attrGPPanelCode.id,
-                attrGPDepth.id,
-                attrGPSampleName.id,
+                attrGPProjectCode.id,
                 attrGPSampleCode.id,
-                attrGPSampleType.id,
-                attrDSUsageAmount.id,
-                attrPAStart.id,
-                attrPAWarn.id,
+                attrDSCode.id,
             ],
         })
 
@@ -1543,6 +1537,65 @@ module.exports = async function(){
         }
     )
 
+    // on board
+    createAttribute({
+        label: '取样日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "SAMPLING_DATE"),
+        SYS_ORDER: 1000,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '建库日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "PREPARE_DATE"),
+        SYS_ORDER: 1010,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '温度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "ENV_TEMPERATURE"),
+        SYS_ORDER: 1020,
+        SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '℃',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '湿度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "ENV_HUMIDITY"),
+        SYS_ORDER: 1030,
+        SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '%RH',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '设备编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "INSTRUMENT_1"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '操作人',
+        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
+        SYS_ORDER: 1010,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: hrClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
+        label: '操作日期',
+        SYS_CODE: 'SYS_DATE_COMPLETED',
+        SYS_ORDER: 1020,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+
     createAttribute({
         label: 'BoM',
         SYS_LABEL: 'label',
@@ -1556,90 +1609,79 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
     })
 
-    let attrLPDate = await createAttribute({
-        label: '建库日期',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "DATE"),
-        SYS_ORDER: 10,
-        SYS_TYPE: 'date',
-        SYS_GENRE: libraryPrepareClassGenre.id})
+    // in excel
     let attrLPCode = await createAttribute({
         label: '建库编号',
         SYS_CODE: 'SYS_LIBRARY_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPTpe1 = await createAttribute({
+        label: 'TPE 1.0编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_1_CODE'),
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPQubit = await createAttribute({
-        label: 'Qubit(ng/ul)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'QUBIT'),
+    let attrLPTpe2 = await createAttribute({
+        label: 'TPE 2.0编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_2_CODE'),
         SYS_ORDER: 30,
-        SYS_TYPE: 'number',
+        SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPVolume = await createAttribute({
-        label: '体积',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'VOLUME'),
+    let attrLPConc = await createAttribute({
+        label: '文库浓度(ng/uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CONC'),
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPAmount = await createAttribute({
-        label: 'Total(ng)',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'AMOUNT'),
+    let attrLPVolume = await createAttribute({
+        label: '文库体积(uL)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'VOLUME'),
         SYS_ORDER: 50,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPLength = await createAttribute({
-        label: '文库长度',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'LENGTH'),
+    let attrLPAmount = await createAttribute({
+        label: '文库总量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'AMOUNT'),
         SYS_ORDER: 60,
-        SYS_TYPE: 'number',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPCycle = await createAttribute({
-        label: '循环数',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CYCLE'),
-        SYS_ORDER: 70,
         SYS_TYPE: 'number',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPResult = await createAttribute({
         label: '建库结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "RESULT"),
+        SYS_ORDER: 70,
+        SYS_TYPE: 'string',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPCycle = await createAttribute({
+        label: '循环数',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'CYCLE'),
         SYS_ORDER: 80,
-        SYS_TYPE: 'list',
-        SYS_TYPE_LIST: '1:合格,0:风险,-1:不合格',
+        SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPDnaUsage = await createAttribute({
+        label: 'DNA投入量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'DNA_USAGE'),
+        SYS_ORDER: 90,
+        SYS_TYPE: 'number',
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    let attrLPRemark = await createAttribute({
+        label: '备注',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, '_REMARK'),
+        SYS_ORDER: 100,
+        SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
         SYS_CODE: 'SYS_S_INDEX_CODE_I7',
-        SYS_ORDER: 90,
+        SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
         SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
-        SYS_ORDER: 100,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '备注',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, '_REMARK'),
-        SYS_ORDER: 110,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '操作人',
-        SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
         SYS_ORDER: 120,
-        SYS_TYPE: 'entity',
-        SYS_TYPE_ENTITY: hrClassEntity.id,
-        SYS_TYPE_ENTITY_REF: true,
-        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    createAttribute({
-        label: '操作日期',
-        SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 130,
-        SYS_TYPE: 'date',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-
-
     //}}}
 
     // Capture Prepare{{{
@@ -1648,7 +1690,6 @@ module.exports = async function(){
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_WORKCENTER_PLUGIN_INDEX_VALIDATOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': [
-                attrLPDate.id,
                 attrLPCode.id,
                 attrGPPanelCode.id,
                 attrGPDepth.id,
@@ -1886,7 +1927,6 @@ module.exports = async function(){
                 attrMLPIndexSeqI7.id,
                 attrMLPIndexCodeI5.id,
                 attrMLPIndexSeqI5.id,
-                attrLPLength.id,
             ],
         })
     let poolingClassGenre = await createGenreWithAttributes(
