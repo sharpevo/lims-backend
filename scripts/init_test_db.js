@@ -1186,7 +1186,7 @@ module.exports = async function(){
         SYS_ORDER: 1030,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
-        SYS_TYPE_ENTITY: gunClassEntity.id,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: DNAExtractClassGenre.id})
@@ -1396,10 +1396,8 @@ module.exports = async function(){
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
             'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
-                attrGPSampleName.id,
+                attrGPProjectCode.id,
                 attrGPSampleCode.id,
-                attrDEVolume.id,
-                attrDEAmount.id,
             ]),
         })
     let dnaShearClassGenre = await createGenreWithAttributes(
@@ -1412,56 +1410,96 @@ module.exports = async function(){
             'visible': false,
         }
     )
+
+    // on board
+    createAttribute({
+        label: '取样日期',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "SAMPLING_DATE"),
+        SYS_ORDER: 1000,
+        SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
         label: '打断日期',
-        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "DATE"),
-        SYS_ORDER: 10,
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "SHEAR_DATE"),
+        SYS_ORDER: 1010,
         SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
-    let attrDSCode = await createAttribute({
-        label: '打断编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, 'CODE'),
-        SYS_ORDER: 20,
+    createAttribute({
+        label: '温度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "ENV_TEMPERATURE"),
+        SYS_ORDER: 1020,
         SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '℃',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
-    let attrDSUsageAmount = await createAttribute({
-        label: '样品投入量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_AMOUNT"),
-        SYS_ORDER: 30,
-        SYS_TYPE: 'number',
+    createAttribute({
+        label: '湿度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "ENV_HUMIDITY"),
+        SYS_ORDER: 1030,
+        SYS_TYPE: 'string',
+        SYS_ATTRIBUTE_UNIT: '%RH',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
-    let attrDSRemainAmount = await createAttribute({
-        label: '样品剩余量',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "REMAIN_AMOUNT"),
-        SYS_ORDER: 40,
-        SYS_TYPE: 'number',
-        SYS_GENRE: dnaShearClassGenre.id})
-    let attrDSUsageVolume = await createAttribute({
-        label: '取样体积',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "USAGE_VOLUME"),
-        SYS_ORDER: 50,
-        SYS_TYPE: 'number',
-        SYS_GENRE: dnaShearClassGenre.id})
-    let attrDSWaterVolume = await createAttribute({
-        label: '补水体积',
-        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "WATER_VOLUME"),
-        SYS_ORDER: 60,
-        SYS_TYPE: 'number',
+    createAttribute({
+        label: '设备编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "INSTRUMENT_1"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 70,
+        SYS_ORDER: 1010,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
         SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 80,
+        SYS_ORDER: 1020,
         SYS_TYPE: 'date',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: dnaShearClassGenre.id})
+
+    // in excel
+    let attrDSCode = await createAttribute({
+        label: '打断编号',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, 'CODE'),
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSUsageAmount = await createAttribute({
+        label: '投入量(ng)',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "USAGE_AMOUNT"),
+        SYS_ORDER: 20,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSUsageVolume = await createAttribute({
+        label: '取样体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "USAGE_VOLUME"),
+        SYS_ORDER: 30,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSWaterVolume = await createAttribute({
+        label: '补水体积',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "WATER_VOLUME"),
+        SYS_ORDER: 40,
+        SYS_TYPE: 'number',
+        SYS_GENRE: dnaShearClassGenre.id})
+    let attrDSRemark = await createAttribute({
+        label: '备注',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "REMARK"),
+        SYS_ORDER: 180,
+        SYS_TYPE: 'string',
         SYS_GENRE: dnaShearClassGenre.id})
     //}}}
 
@@ -1477,7 +1515,6 @@ module.exports = async function(){
                 attrGPSampleCode.id,
                 attrGPSampleType.id,
                 attrDSUsageAmount.id,
-                attrDSRemainAmount.id,
                 attrPAStart.id,
                 attrPAWarn.id,
             ],
