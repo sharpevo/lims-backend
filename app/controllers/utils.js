@@ -186,19 +186,52 @@ exports.excelExport = async function(req, res, next){
     let _attributeHeaders = attributeHeaders
         .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
 
+
+    let sampleMap = {}
+    for (let sampleDoc of sampleList){
+        let sample = sampleDoc.toObject()
+        sampleMap[sample['SYS_SAMPLE_CODE']] = await Entity.find({
+            'SYS_SAMPLE_CODE': sample['SYS_SAMPLE_CODE'],
+            'SYS_DATE_COMPLETED': {$ne: ''},
+        })
+    }
+    //console.log(sampleMap)
+
     let data = []
     for (let i = 0; i < sampleList.length; i++) {
         let sample = sampleList[i].toObject()
         let prevLength = 0
+
+        // traverse attributes for each submitted samples in requset
+
         for (let column of columnList){
             let attributeList = column['attributes']
             for (let j = 0; j < attributeList.length; j ++){
                 let attribute = attributeList[j]
+
+                let latest = new Date(1993)
+                let value = ''
+
+                // get the latest value of attributes by the same sample code
+
+                for (let item of sampleMap[sample['SYS_SAMPLE_CODE']]){
+                    let s = item.toObject()
+                    let v = s[attribute['SYS_CODE']]
+                    let d = new Date(s['SYS_DATE_COMPLETED'])
+                    if (s.hasOwnProperty(attribute['SYS_CODE'])) {
+                        if (d > latest) {
+                            latest = new Date(s['SYS_DATE_COMPLETED'])
+                            //console.log(">>> ",attribute['SYS_CODE'], v, ' > ', value)
+                            value = v
+                        }
+                    }
+                }
                 data.push(
                     Object.assign(
                         {},
                         {
-                            v: sample[attribute['SYS_CODE']],
+                            //v: sample[attribute['SYS_CODE']],
+                            v: value,
                             position: numToAlpha(prevLength + j) + (i + 3)
                         }
                     )
@@ -209,7 +242,7 @@ exports.excelExport = async function(req, res, next){
     }
     let _data = data
         .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {})
-    console.log(_data)
+    //console.log(_data)
 
     let output = Object.assign({}, _workcenterHeaders, _attributeHeaders, _data)
     let outputPos = Object.keys(output)
