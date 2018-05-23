@@ -1051,13 +1051,6 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
-    let attrGP = [
-        attrGPProjectManager.id,
-        attrGPProjectCode.id,
-        attrGPPanelCode.id,
-        attrGPDepth.id,
-        attrGPDataSize.id,
-    ]
     //}}}
 
     // Product Workcenter Domain{{{
@@ -1117,11 +1110,15 @@ module.exports = async function(){
     let DNAExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_EXTRACT, 1, "样品提取", 10,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectManager.id,
                 attrGPProjectCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPDataSize.id,
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
-            ]),
+            ],
         })
 
     let DNAExtractClassGenre = await createGenreWithAttributes(
@@ -1335,10 +1332,14 @@ module.exports = async function(){
     let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SHEAR, 1, "打断", 30,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectManager.id,
                 attrGPProjectCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPDataSize.id,
                 attrGPSampleCode.id,
-            ]),
+            ],
         })
     let dnaShearClassGenre = await createGenreWithAttributes(
         dnaShearClassEntity,
