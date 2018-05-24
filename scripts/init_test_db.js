@@ -315,18 +315,18 @@ module.exports = async function(){
     let instrumentDomainGenre = await createGenre(instrumentDomainEntity)
     let shearingClassEntity = await createEntity(instrumentDomainGenre, "SHEARING", 1, "Shearing " + instrumentDomainGenre.label)
     let shearingClassGenre = await createGenre(shearingClassEntity)
-    createEntity(shearingClassGenre, "COVARIS_II", 3, "Covaris II")
-    createEntity(shearingClassGenre, "METARUPTOR_I", 3, "Metaruptor I")
+    createEntity(shearingClassGenre, "COVARIS_II", 2, "Covaris II")
+    createEntity(shearingClassGenre, "METARUPTOR_I", 2, "Metaruptor I")
 
     let gunClassEntity = await createEntity(instrumentDomainGenre, "GUN", 1, "Gun " + instrumentDomainGenre.label)
     let gunClassGenre = await createGenre(gunClassEntity)
-    createEntity(gunClassGenre, "BAI_DE", 3, "BD_1")
-    createEntity(gunClassGenre, "LIAN_HUA", 3, "LH_2")
+    createEntity(gunClassGenre, "BAI_DE", 2, "BD_1")
+    createEntity(gunClassGenre, "LIAN_HUA", 2, "LH_2")
 
     let sequencingClassEntity = await createEntity(instrumentDomainGenre, "SEQUENCING", 1, "Sequencing " + instrumentDomainGenre.label)
     let sequencingClassGenre = await createGenre(sequencingClassEntity)
-    createEntity(sequencingClassGenre, "X10", 3, "HiSeq X10")
-    createEntity(sequencingClassGenre, "NOVASEQ", 3, "NovaSeq")
+    createEntity(sequencingClassGenre, "X10", 2, "HiSeq X10")
+    createEntity(sequencingClassGenre, "NOVASEQ", 2, "NovaSeq")
     //}}}
 
     // Purchase Domain{{{
