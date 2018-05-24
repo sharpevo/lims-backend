@@ -315,18 +315,18 @@ module.exports = async function(){
     let instrumentDomainGenre = await createGenre(instrumentDomainEntity)
     let shearingClassEntity = await createEntity(instrumentDomainGenre, "SHEARING", 1, "Shearing " + instrumentDomainGenre.label)
     let shearingClassGenre = await createGenre(shearingClassEntity)
-    createEntity(shearingClassGenre, "COVARIS_II", 3, "Covaris II")
-    createEntity(shearingClassGenre, "METARUPTOR_I", 3, "Metaruptor I")
+    createEntity(shearingClassGenre, "COVARIS_II", 2, "Covaris II")
+    createEntity(shearingClassGenre, "METARUPTOR_I", 2, "Metaruptor I")
 
     let gunClassEntity = await createEntity(instrumentDomainGenre, "GUN", 1, "Gun " + instrumentDomainGenre.label)
     let gunClassGenre = await createGenre(gunClassEntity)
-    createEntity(gunClassGenre, "BAI_DE", 3, "BD_1")
-    createEntity(gunClassGenre, "LIAN_HUA", 3, "LH_2")
+    createEntity(gunClassGenre, "BAI_DE", 2, "BD_1")
+    createEntity(gunClassGenre, "LIAN_HUA", 2, "LH_2")
 
     let sequencingClassEntity = await createEntity(instrumentDomainGenre, "SEQUENCING", 1, "Sequencing " + instrumentDomainGenre.label)
     let sequencingClassGenre = await createGenre(sequencingClassEntity)
-    createEntity(sequencingClassGenre, "X10", 3, "HiSeq X10")
-    createEntity(sequencingClassGenre, "NOVASEQ", 3, "NovaSeq")
+    createEntity(sequencingClassGenre, "X10", 2, "HiSeq X10")
+    createEntity(sequencingClassGenre, "NOVASEQ", 2, "NovaSeq")
     //}}}
 
     // Purchase Domain{{{
@@ -1051,13 +1051,6 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
-    let attrGP = [
-        attrGPProjectManager.id,
-        attrGPProjectCode.id,
-        attrGPPanelCode.id,
-        attrGPDepth.id,
-        attrGPDataSize.id,
-    ]
     //}}}
 
     // Product Workcenter Domain{{{
@@ -1117,11 +1110,15 @@ module.exports = async function(){
     let DNAExtractClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_EXTRACT, 1, "样品提取", 10,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectManager.id,
                 attrGPProjectCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPDataSize.id,
                 attrGPSampleName.id,
                 attrGPSampleCode.id,
-            ]),
+            ],
         })
 
     let DNAExtractClassGenre = await createGenreWithAttributes(
@@ -1335,10 +1332,14 @@ module.exports = async function(){
     let dnaShearClassEntity = await createEntityWithOrder(prodWCDomainGenre, WC_ID_SHEAR, 1, "打断", 30,
         {
             'SYS_WORKCENTER_PLUGIN_EXCEL_PROCESSOR': true,
-            'SYS_AUXILIARY_ATTRIBUTE_LIST': attrGP.concat([
+            'SYS_AUXILIARY_ATTRIBUTE_LIST': [
+                attrGPProjectManager.id,
                 attrGPProjectCode.id,
+                attrGPPanelCode.id,
+                attrGPDepth.id,
+                attrGPDataSize.id,
                 attrGPSampleCode.id,
-            ]),
+            ],
         })
     let dnaShearClassGenre = await createGenreWithAttributes(
         dnaShearClassEntity,
