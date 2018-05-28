@@ -1178,7 +1178,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "INSTRUMENT_1"),
         SYS_ORDER: 1030,
         SYS_TYPE: 'entity',
@@ -1188,9 +1188,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "INSTRUMENT_2"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: DNAExtractClassGenre.id})
+    createAttribute({
         label: '温度',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "ENV_TEMPERATURE"),
-        SYS_ORDER: 1040,
+        SYS_ORDER: 1050,
         SYS_TYPE: 'string',
         SYS_ATTRIBUTE_UNIT: '℃',
         SYS_IS_ON_BOARD: true,
@@ -1198,7 +1208,7 @@ module.exports = async function(){
     createAttribute({
         label: '湿度',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "ENV_HUMIDITY"),
-        SYS_ORDER: 1050,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'string',
         SYS_ATTRIBUTE_UNIT: '%RH',
         SYS_IS_ON_BOARD: true,
