@@ -1394,7 +1394,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "INSTRUMENT_1"),
         SYS_ORDER: 1040,
         SYS_TYPE: 'entity',
@@ -1404,9 +1404,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "INSTRUMENT_2"),
+        SYS_ORDER: 1050,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: dnaShearClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 1010,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -1416,7 +1426,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 1020,
+        SYS_ORDER: 1070,
         SYS_TYPE: 'date',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
