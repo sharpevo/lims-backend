@@ -1051,6 +1051,46 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
+    let generalProjectClassGenreExternalLibrary = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_EXTERNAL_LIBRARY/',
+            'SYS_LABEL': 'label',
+            'label': '外来文库',
+            'SYS_ORDER': 40,
+            'enabled': true,
+            'visible': true,
+        }
+    )
+    let attrGPLibraryType = await createAttribute({
+        SYS_LABEL: 'label',
+        label: '文库类型',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "LIBRARY_TYPE"),
+        SYS_ORDER: 210,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: '文库长度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "LIBRARY_LENGTH"),
+        SYS_ORDER: 220,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: 'Index序列(I7)',
+        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
+        SYS_ORDER: 230,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: 'Index序列(I5)',
+        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I5',
+        SYS_ORDER: 240,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+
     //}}}
 
     // Product Workcenter Domain{{{
@@ -2278,6 +2318,39 @@ module.exports = async function(){
                 'duration': 2,
                 'checked': true,
             },
+            {
+                'workcenter': poolingClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': dataSequenceClassEntity,
+                'duration': 7,
+                'checked': true,
+            },
+        ]
+    )
+    //}}}
+
+    // External Library Routing{{{
+    let externalLibraryRoutingEntity = await createEntity(productRoutingClassGenre, "EXTERNAL_LIBRARY_ROUTING", 2, "外来文库流程")
+    let externalLibraryRoutingGenre = await createGenre(externalLibraryRoutingEntity)
+    createAttribute({
+        label: 'Routing',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: externalLibraryRoutingEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id
+    })
+    createRoutingAttributes(externalLibraryRoutingGenre, productRoutingClassEntity)
+    createRoutingSubEntity(
+        externalLibraryRoutingGenre,
+        [
             {
                 'workcenter': poolingClassEntity,
                 'duration': 5,
