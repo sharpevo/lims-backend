@@ -101,6 +101,21 @@ function createMaterialEntity(genre, identifier, label, unit){
         })
 }
 
+function createIndexEntity(genre, identifier, code, sequence){
+    return Entity({
+        SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
+        SYS_ENTITY_TYPE: ENTITY_TYPE[2],
+        SYS_GENRE: genre,
+        SYS_LABEL: "SYS_INDEX_CODE",
+        SYS_INDEX_CODE: code,
+        SYS_INDEX_SEQUENCE: sequence,
+    })
+        .save()
+        .catch(err => {
+            console.log("createEntity", err)
+        })
+}
+
 function createBomAttributes(bomGenre, materialDomainEntity){
     createAttribute({
         // leave label blank as a leading checkbox
@@ -367,6 +382,50 @@ module.exports = async function(){
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+
+    let tpeClassEntity = await createEntity(materialDomainGenre, "TPE", 1, "Index TPE")
+    let tpeClassGenre = await createGenre(tpeClassEntity)
+    createAttribute({
+        label: 'Index 编号',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: tpeClassGenre.id})
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: 'Index 序列',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'string',
+        SYS_GENRE: tpeClassGenre.id})
+    createIndexEntity(tpeClassGenre, "TPE_001", "001", "AAAACCCC")
+    createIndexEntity(tpeClassGenre, "TPE_002", "002", "TTTTGGGG")
+    createIndexEntity(tpeClassGenre, "TPE_003", "003", "CCCCAAAA")
+    createIndexEntity(tpeClassGenre, "TPE_004", "004", "GGGGTTTT")
+
+    let igtClassEntity = await createEntity(materialDomainGenre, "IGT", 1, "Index IGT")
+    let igtClassGenre = await createGenre(igtClassEntity)
+    createAttribute({
+        label: 'Index 编号',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: igtClassGenre.id})
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: 'Index 序列',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'string',
+        SYS_GENRE: igtClassGenre.id})
+    createIndexEntity(igtClassGenre, "IGT_001", "001", "AAAATTTT")
+    createIndexEntity(igtClassGenre, "IGT_002", "002", "TTTTAAAA")
+    createIndexEntity(igtClassGenre, "IGT_003", "003", "CCCCGGGG")
+    createIndexEntity(igtClassGenre, "IGT_004", "004", "GGGGCCCC")
 
     // Extract{{{
     let materialBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLOOD_DNA_EXTRACT_KIT", "磁珠法血液DNA提取试剂盒", "T")
