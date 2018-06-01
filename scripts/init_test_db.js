@@ -2250,7 +2250,7 @@ module.exports = async function(){
     //}}}
 
     // Multiplex Routing{{{
-    let multiplexRoutingEntity = await createEntity(productRoutingClassGenre, "MULTIPLEX_ROUTING", 2, "多重生产流程")
+    let multiplexRoutingEntity = await createEntity(productRoutingClassGenre, "MULTIPLEX_LIBRARY_ROUTING", 2, "多重生产流程")
     let multiplexRoutingGenre = await createGenre(multiplexRoutingEntity)
     createAttribute({
         label: 'Routing',
