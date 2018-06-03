@@ -1138,14 +1138,14 @@ module.exports = async function(){
     await createAttribute({
         SYS_LABEL: 'label',
         label: 'Index序列(I7)',
-        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
         SYS_ORDER: 230,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
     await createAttribute({
         SYS_LABEL: 'label',
         label: 'Index序列(I5)',
-        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I5',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
         SYS_ORDER: 240,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
@@ -1742,13 +1742,13 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_S_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_INDEX_CODE_2',
         SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
         SYS_ORDER: 120,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
@@ -2031,25 +2031,25 @@ module.exports = async function(){
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI7 = await createAttribute({
         label: 'IGT-I7编号',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_INDEX_CODE_2',
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI7 = await createAttribute({
         label: 'IGT-I7序列',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
         SYS_ORDER: 60,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI5 = await createAttribute({
         label: 'IGT-I5编号',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I5',
+        SYS_CODE: 'SYS_INDEX_CODE_1',
         SYS_ORDER: 70,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI5 = await createAttribute({
         label: 'IGT-I5序列',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I5',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
         SYS_ORDER: 80,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
