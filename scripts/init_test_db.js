@@ -1686,17 +1686,25 @@ module.exports = async function(){
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPTpe1 = await createAttribute({
+    let attrLPIndexTpe1 = await createAttribute({
         label: 'TPE 1.0编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_1_CODE'),
+        SYS_CODE: 'SYS_INDEX_1',
+        SYS_LABEL: 'label',
         SYS_ORDER: 20,
-        SYS_TYPE: 'string',
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: tpeClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPTpe2 = await createAttribute({
+    let attrLPIndexTpe2 = await createAttribute({
         label: 'TPE 2.0编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_2_CODE'),
+        SYS_CODE: 'SYS_INDEX_2',
+        SYS_LABEL: 'label',
         SYS_ORDER: 30,
-        SYS_TYPE: 'string',
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: tpeClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPConc = await createAttribute({
         label: '文库浓度(ng/uL)',
@@ -1740,18 +1748,6 @@ module.exports = async function(){
         SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPIndexCodeI7 = await createAttribute({
-        label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_CODE_2',
-        SYS_ORDER: 110,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPIndexSeqI7 = await createAttribute({
-        label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
-        SYS_ORDER: 120,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
 
     // Capture Prepare{{{
@@ -1766,8 +1762,8 @@ module.exports = async function(){
                 attrGPDataSize.id,
                 attrGPSampleCode.id,
                 attrLPCode.id,
-                attrLPTpe1.id,
-                attrLPTpe2.id,
+                attrLPIndexTpe1.id,
+                attrLPIndexTpe2.id,
                 attrLPConc.id,
                 attrLPAmount.id,
             ],
@@ -2079,8 +2075,8 @@ module.exports = async function(){
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
                 attrGPSampleSpecies.id,
-                attrLPIndexCodeI7.id,
-                attrLPIndexSeqI7.id,
+                attrLPIndexTpe1.id,
+                attrLPIndexTpe2.id,
                 attrMLPIndexCodeI7.id,
                 attrMLPIndexSeqI7.id,
                 attrMLPIndexCodeI5.id,
