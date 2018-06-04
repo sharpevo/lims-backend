@@ -1686,17 +1686,25 @@ module.exports = async function(){
         SYS_ORDER: 10,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPTpe1 = await createAttribute({
+    let attrLPIndexTpe1 = await createAttribute({
         label: 'TPE 1.0编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_1_CODE'),
+        SYS_CODE: 'SYS_INDEX_1',
+        SYS_LABEL: 'label',
         SYS_ORDER: 20,
-        SYS_TYPE: 'string',
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: tpeClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPTpe2 = await createAttribute({
+    let attrLPIndexTpe2 = await createAttribute({
         label: 'TPE 2.0编号',
-        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, 'TPE_2_CODE'),
+        SYS_CODE: 'SYS_INDEX_2',
+        SYS_LABEL: 'label',
         SYS_ORDER: 30,
-        SYS_TYPE: 'string',
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: tpeClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPConc = await createAttribute({
         label: '文库浓度(ng/uL)',
@@ -1740,18 +1748,6 @@ module.exports = async function(){
         SYS_ORDER: 100,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPIndexCodeI7 = await createAttribute({
-        label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_CODE_2',
-        SYS_ORDER: 110,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
-    let attrLPIndexSeqI7 = await createAttribute({
-        label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
-        SYS_ORDER: 120,
-        SYS_TYPE: 'string',
-        SYS_GENRE: libraryPrepareClassGenre.id})
     //}}}
 
     // Capture Prepare{{{
@@ -1766,8 +1762,8 @@ module.exports = async function(){
                 attrGPDataSize.id,
                 attrGPSampleCode.id,
                 attrLPCode.id,
-                attrLPTpe1.id,
-                attrLPTpe2.id,
+                attrLPIndexTpe1.id,
+                attrLPIndexTpe2.id,
                 attrLPConc.id,
                 attrLPAmount.id,
             ],
@@ -2029,40 +2025,36 @@ module.exports = async function(){
         SYS_ORDER: 40,
         SYS_TYPE: 'number',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexCodeI7 = await createAttribute({
-        label: 'IGT-I7编号',
-        SYS_CODE: 'SYS_INDEX_CODE_2',
-        SYS_ORDER: 50,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexSeqI7 = await createAttribute({
-        label: 'IGT-I7序列',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
-        SYS_ORDER: 60,
-        SYS_TYPE: 'string',
-        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexCodeI5 = await createAttribute({
+    let attrMLPIndexI5 = await createAttribute({
         label: 'IGT-I5编号',
-        SYS_CODE: 'SYS_INDEX_CODE_1',
-        SYS_ORDER: 70,
-        SYS_TYPE: 'string',
+        SYS_LABLE: 'label',
+        SYS_CODE: 'SYS_INDEX_1',
+        SYS_ORDER: 50,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: igtClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
-    let attrMLPIndexSeqI5 = await createAttribute({
-        label: 'IGT-I5序列',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
-        SYS_ORDER: 80,
-        SYS_TYPE: 'string',
+    let attrMLPIndexI7 = await createAttribute({
+        label: 'IGT-I7编号',
+        SYS_LABLE: 'label',
+        SYS_CODE: 'SYS_INDEX_2',
+        SYS_ORDER: 60,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: igtClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPConc = await createAttribute({
         label: '文库浓度(ng/uL)',
         SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, 'CONC'),
-        SYS_ORDER: 90,
+        SYS_ORDER: 70,
         SYS_TYPE: 'number',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPResult = await createAttribute({
         label: '建库结论',
         SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "RESULT"),
-        SYS_ORDER: 100,
+        SYS_ORDER: 80,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     //}}}
@@ -2079,12 +2071,10 @@ module.exports = async function(){
                 attrGPPanelCode.id,
                 attrGPDataSize.id,
                 attrGPSampleSpecies.id,
-                attrLPIndexCodeI7.id,
-                attrLPIndexSeqI7.id,
-                attrMLPIndexCodeI7.id,
-                attrMLPIndexSeqI7.id,
-                attrMLPIndexCodeI5.id,
-                attrMLPIndexSeqI5.id,
+                attrLPIndexTpe1.id,
+                attrLPIndexTpe2.id,
+                attrMLPIndexI7.id,
+                attrMLPIndexI5.id,
             ],
         })
     let poolingClassGenre = await createGenreWithAttributes(
