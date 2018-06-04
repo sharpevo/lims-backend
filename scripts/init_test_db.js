@@ -101,6 +101,21 @@ function createMaterialEntity(genre, identifier, label, unit){
         })
 }
 
+function createIndexEntity(genre, identifier, code, sequence){
+    return Entity({
+        SYS_IDENTIFIER: genre.SYS_IDENTIFIER + identifier,
+        SYS_ENTITY_TYPE: ENTITY_TYPE[2],
+        SYS_GENRE: genre,
+        SYS_LABEL: "SYS_INDEX_CODE",
+        SYS_INDEX_CODE: code,
+        SYS_INDEX_SEQUENCE: sequence,
+    })
+        .save()
+        .catch(err => {
+            console.log("createEntity", err)
+        })
+}
+
 function createBomAttributes(bomGenre, materialDomainEntity){
     createAttribute({
         // leave label blank as a leading checkbox
@@ -367,6 +382,50 @@ module.exports = async function(){
     let primerClassEntity = await createEntity(materialDomainGenre, "PRIMER", 1, "Primer " + materialDomainGenre.label)
     let primerClassGenre = await createGenre(primerClassEntity)
     //createEntity(kapaGenre.SYS_IDENTIFIER + "001", 2, "M0293S")
+
+    let tpeClassEntity = await createEntity(materialDomainGenre, "TPE", 1, "Index TPE")
+    let tpeClassGenre = await createGenre(tpeClassEntity)
+    createAttribute({
+        label: 'Index 编号',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: tpeClassGenre.id})
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: 'Index 序列',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'string',
+        SYS_GENRE: tpeClassGenre.id})
+    createIndexEntity(tpeClassGenre, "TPE_001", "001", "AAAACCCC")
+    createIndexEntity(tpeClassGenre, "TPE_002", "002", "TTTTGGGG")
+    createIndexEntity(tpeClassGenre, "TPE_003", "003", "CCCCAAAA")
+    createIndexEntity(tpeClassGenre, "TPE_004", "004", "GGGGTTTT")
+
+    let igtClassEntity = await createEntity(materialDomainGenre, "IGT", 1, "Index IGT")
+    let igtClassGenre = await createGenre(igtClassEntity)
+    createAttribute({
+        label: 'Index 编号',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_CODE',
+        SYS_ORDER: 10,
+        SYS_TYPE: 'string',
+        SYS_GENRE: igtClassGenre.id})
+    createAttribute({
+        // leave label blank as a leading checkbox
+        label: 'Index 序列',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE',
+        SYS_ORDER: 20,
+        SYS_TYPE: 'string',
+        SYS_GENRE: igtClassGenre.id})
+    createIndexEntity(igtClassGenre, "IGT_001", "001", "AAAATTTT")
+    createIndexEntity(igtClassGenre, "IGT_002", "002", "TTTTAAAA")
+    createIndexEntity(igtClassGenre, "IGT_003", "003", "CCCCGGGG")
+    createIndexEntity(igtClassGenre, "IGT_004", "004", "GGGGCCCC")
 
     // Extract{{{
     let materialBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLOOD_DNA_EXTRACT_KIT", "磁珠法血液DNA提取试剂盒", "T")
@@ -1051,6 +1110,46 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: false,
         SYS_GENRE: generalProjectClassGenreMultiplex.id})
 
+    let generalProjectClassGenreExternalLibrary = await createGenreWithAttributes(
+        generalProjectClassEntity,
+        {
+            'SYS_IDENTIFIER': generalProjectClassEntity.SYS_IDENTIFIER + '_EXTERNAL_LIBRARY/',
+            'SYS_LABEL': 'label',
+            'label': '外来文库',
+            'SYS_ORDER': 40,
+            'enabled': true,
+            'visible': true,
+        }
+    )
+    let attrGPLibraryType = await createAttribute({
+        SYS_LABEL: 'label',
+        label: '文库类型',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "LIBRARY_TYPE"),
+        SYS_ORDER: 210,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: '文库长度',
+        SYS_CODE: getAttributeIdentifier(WC_ID_GENERAL_PROJECT, "LIBRARY_LENGTH"),
+        SYS_ORDER: 220,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: 'Index序列(I7)',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
+        SYS_ORDER: 230,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+    await createAttribute({
+        SYS_LABEL: 'label',
+        label: 'Index序列(I5)',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
+        SYS_ORDER: 240,
+        SYS_TYPE: 'string',
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
+
     //}}}
 
     // Product Workcenter Domain{{{
@@ -1178,7 +1277,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "INSTRUMENT_1"),
         SYS_ORDER: 1030,
         SYS_TYPE: 'entity',
@@ -1188,9 +1287,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: DNAExtractClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "INSTRUMENT_2"),
+        SYS_ORDER: 1040,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: DNAExtractClassGenre.id})
+    createAttribute({
         label: '温度',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "ENV_TEMPERATURE"),
-        SYS_ORDER: 1040,
+        SYS_ORDER: 1050,
         SYS_TYPE: 'string',
         SYS_ATTRIBUTE_UNIT: '℃',
         SYS_IS_ON_BOARD: true,
@@ -1198,7 +1307,7 @@ module.exports = async function(){
     createAttribute({
         label: '湿度',
         SYS_CODE: getAttributeIdentifier(WC_ID_EXTRACT, "ENV_HUMIDITY"),
-        SYS_ORDER: 1050,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'string',
         SYS_ATTRIBUTE_UNIT: '%RH',
         SYS_IS_ON_BOARD: true,
@@ -1384,7 +1493,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "INSTRUMENT_1"),
         SYS_ORDER: 1040,
         SYS_TYPE: 'entity',
@@ -1394,9 +1503,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_SHEAR, "INSTRUMENT_2"),
+        SYS_ORDER: 1050,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: dnaShearClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 1010,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -1406,7 +1525,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 1020,
+        SYS_ORDER: 1070,
         SYS_TYPE: 'date',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: dnaShearClassGenre.id})
@@ -1510,7 +1629,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "INSTRUMENT_1"),
         SYS_ORDER: 1040,
         SYS_TYPE: 'entity',
@@ -1520,9 +1639,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: libraryPrepareClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_LIBRARY_PREPARE, "INSTRUMENT_2"),
+        SYS_ORDER: 1050,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: libraryPrepareClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 1010,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -1532,7 +1661,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 1020,
+        SYS_ORDER: 1070,
         SYS_TYPE: 'date',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: libraryPrepareClassGenre.id})
@@ -1613,13 +1742,13 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexCodeI7 = await createAttribute({
         label: 'Index编号 #1 (I7)',
-        SYS_CODE: 'SYS_S_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_INDEX_CODE_2',
         SYS_ORDER: 110,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexSeqI7 = await createAttribute({
         label: 'Index序列 #1 (I7)',
-        SYS_CODE: 'SYS_S_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
         SYS_ORDER: 120,
         SYS_TYPE: 'string',
         SYS_GENRE: libraryPrepareClassGenre.id})
@@ -1712,7 +1841,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: capturePrepareClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "INSTRUMENT_1"),
         SYS_ORDER: 1040,
         SYS_TYPE: 'entity',
@@ -1722,9 +1851,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: capturePrepareClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_CAPTURE, "INSTRUMENT_2"),
+        SYS_ORDER: 1050,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: capturePrepareClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 1010,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -1734,7 +1873,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 1020,
+        SYS_ORDER: 1070,
         SYS_TYPE: 'date',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: capturePrepareClassGenre.id})
@@ -1828,7 +1967,7 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
-        label: '设备编号',
+        label: '设备编号-1',
         SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "INSTRUMENT_1"),
         SYS_ORDER: 1040,
         SYS_TYPE: 'entity',
@@ -1838,9 +1977,19 @@ module.exports = async function(){
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     createAttribute({
+        label: '设备编号-2',
+        SYS_CODE: getAttributeIdentifier(WC_ID_MULTIPLEX_LIBRARY_PREPARE, "INSTRUMENT_2"),
+        SYS_ORDER: 1050,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY_REF: true,
+        SYS_TYPE_ENTITY: sequencingClassEntity.id,
+        SYS_FLOOR_ENTITY_TYPE: 'collection',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
+    createAttribute({
         label: '操作人',
         SYS_CODE: 'SYS_WORKCENTER_OPERATOR',
-        SYS_ORDER: 1010,
+        SYS_ORDER: 1060,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
         SYS_TYPE_ENTITY: hrClassEntity.id,
@@ -1850,7 +1999,7 @@ module.exports = async function(){
     createAttribute({
         label: '操作日期',
         SYS_CODE: 'SYS_DATE_COMPLETED',
-        SYS_ORDER: 1020,
+        SYS_ORDER: 1070,
         SYS_TYPE: 'date',
         SYS_IS_ON_BOARD: true,
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
@@ -1882,25 +2031,25 @@ module.exports = async function(){
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI7 = await createAttribute({
         label: 'IGT-I7编号',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I7',
+        SYS_CODE: 'SYS_INDEX_CODE_2',
         SYS_ORDER: 50,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI7 = await createAttribute({
         label: 'IGT-I7序列',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I7',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
         SYS_ORDER: 60,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexCodeI5 = await createAttribute({
         label: 'IGT-I5编号',
-        SYS_CODE: 'SYS_M_INDEX_CODE_I5',
+        SYS_CODE: 'SYS_INDEX_CODE_1',
         SYS_ORDER: 70,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
     let attrMLPIndexSeqI5 = await createAttribute({
         label: 'IGT-I5序列',
-        SYS_CODE: 'SYS_M_INDEX_SEQUENCE_I5',
+        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
         SYS_ORDER: 80,
         SYS_TYPE: 'string',
         SYS_GENRE: multiplexLibraryPrepareClassGenre.id})
@@ -2200,7 +2349,7 @@ module.exports = async function(){
     //}}}
 
     // Multiplex Routing{{{
-    let multiplexRoutingEntity = await createEntity(productRoutingClassGenre, "MULTIPLEX_ROUTING", 2, "多重生产流程")
+    let multiplexRoutingEntity = await createEntity(productRoutingClassGenre, "MULTIPLEX_LIBRARY_ROUTING", 2, "多重生产流程")
     let multiplexRoutingGenre = await createGenre(multiplexRoutingEntity)
     createAttribute({
         label: 'Routing',
@@ -2228,6 +2377,39 @@ module.exports = async function(){
                 'duration': 2,
                 'checked': true,
             },
+            {
+                'workcenter': poolingClassEntity,
+                'duration': 5,
+                'checked': true,
+            },
+            {
+                'workcenter': dataSequenceClassEntity,
+                'duration': 7,
+                'checked': true,
+            },
+        ]
+    )
+    //}}}
+
+    // External Library Routing{{{
+    let externalLibraryRoutingEntity = await createEntity(productRoutingClassGenre, "EXTERNAL_LIBRARY_ROUTING", 2, "外来文库流程")
+    let externalLibraryRoutingGenre = await createGenre(externalLibraryRoutingEntity)
+    createAttribute({
+        label: 'Routing',
+        SYS_LABEL: 'label',
+        SYS_CODE: 'ROUTING',
+        SYS_ORDER: 500,
+        SYS_TYPE: 'entity',
+        SYS_TYPE_ENTITY: externalLibraryRoutingEntity.id,
+        SYS_TYPE_ENTITY_REF: false,
+        SYS_FLOOR_ENTITY_TYPE: 'class',
+        SYS_IS_ON_BOARD: true,
+        SYS_GENRE: generalProjectClassGenreExternalLibrary.id
+    })
+    createRoutingAttributes(externalLibraryRoutingGenre, productRoutingClassEntity)
+    createRoutingSubEntity(
+        externalLibraryRoutingGenre,
+        [
             {
                 'workcenter': poolingClassEntity,
                 'duration': 5,
