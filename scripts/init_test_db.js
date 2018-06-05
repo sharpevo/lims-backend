@@ -400,10 +400,10 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: tpeClassGenre.id})
-    createIndexEntity(tpeClassGenre, "TPE_001", "001", "AAAACCCC")
-    createIndexEntity(tpeClassGenre, "TPE_002", "002", "TTTTGGGG")
-    createIndexEntity(tpeClassGenre, "TPE_003", "003", "CCCCAAAA")
-    createIndexEntity(tpeClassGenre, "TPE_004", "004", "GGGGTTTT")
+    createIndexEntity(tpeClassGenre, "TPE_1", "1", "AAAACCCC")
+    createIndexEntity(tpeClassGenre, "TPE_2", "2", "TTTTGGGG")
+    createIndexEntity(tpeClassGenre, "TPE_3", "3", "CCCCAAAA")
+    createIndexEntity(tpeClassGenre, "TPE_4", "4", "GGGGTTTT")
 
     let igtClassEntity = await createEntity(materialDomainGenre, "IGT", 1, "Index IGT")
     let igtClassGenre = await createGenre(igtClassEntity)
@@ -422,10 +422,10 @@ module.exports = async function(){
         SYS_ORDER: 20,
         SYS_TYPE: 'string',
         SYS_GENRE: igtClassGenre.id})
-    createIndexEntity(igtClassGenre, "IGT_001", "001", "AAAATTTT")
-    createIndexEntity(igtClassGenre, "IGT_002", "002", "TTTTAAAA")
-    createIndexEntity(igtClassGenre, "IGT_003", "003", "CCCCGGGG")
-    createIndexEntity(igtClassGenre, "IGT_004", "004", "GGGGCCCC")
+    createIndexEntity(igtClassGenre, "IGT_1", "1", "AAAATTTT")
+    createIndexEntity(igtClassGenre, "IGT_2", "2", "TTTTAAAA")
+    createIndexEntity(igtClassGenre, "IGT_3", "3", "CCCCGGGG")
+    createIndexEntity(igtClassGenre, "IGT_4", "4", "GGGGCCCC")
 
     // Extract{{{
     let materialBloodExtractKitClassEntity = await createMaterialEntity(materialDomainGenre, "BLOOD_DNA_EXTRACT_KIT", "磁珠法血液DNA提取试剂盒", "T")
