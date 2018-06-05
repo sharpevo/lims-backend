@@ -1688,7 +1688,7 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexTpe1 = await createAttribute({
         label: 'TPE 1.0编号',
-        SYS_CODE: 'SYS_INDEX_1',
+        SYS_CODE: 'SYS_INDEX_TPE_1',
         SYS_LABEL: 'label',
         SYS_ORDER: 20,
         SYS_TYPE: 'entity',
@@ -1698,7 +1698,7 @@ module.exports = async function(){
         SYS_GENRE: libraryPrepareClassGenre.id})
     let attrLPIndexTpe2 = await createAttribute({
         label: 'TPE 2.0编号',
-        SYS_CODE: 'SYS_INDEX_2',
+        SYS_CODE: 'SYS_INDEX_TPE_2',
         SYS_LABEL: 'label',
         SYS_ORDER: 30,
         SYS_TYPE: 'entity',
@@ -2028,7 +2028,7 @@ module.exports = async function(){
     let attrMLPIndexI5 = await createAttribute({
         label: 'IGT-I5编号',
         SYS_LABLE: 'label',
-        SYS_CODE: 'SYS_INDEX_1',
+        SYS_CODE: 'SYS_INDEX_IGT_I5',
         SYS_ORDER: 50,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
@@ -2038,7 +2038,7 @@ module.exports = async function(){
     let attrMLPIndexI7 = await createAttribute({
         label: 'IGT-I7编号',
         SYS_LABLE: 'label',
-        SYS_CODE: 'SYS_INDEX_2',
+        SYS_CODE: 'SYS_INDEX_IGT_I7',
         SYS_ORDER: 60,
         SYS_TYPE: 'entity',
         SYS_TYPE_ENTITY_REF: true,
