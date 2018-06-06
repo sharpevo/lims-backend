@@ -1138,14 +1138,14 @@ module.exports = async function(){
     await createAttribute({
         SYS_LABEL: 'label',
         label: 'Index序列(I7)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_2',
+        SYS_CODE: 'SYS_INDEX_EXT_SEQUENCE_I7',
         SYS_ORDER: 230,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
     await createAttribute({
         SYS_LABEL: 'label',
         label: 'Index序列(I5)',
-        SYS_CODE: 'SYS_INDEX_SEQUENCE_1',
+        SYS_CODE: 'SYS_INDEX_EXT_SEQUENCE_I5',
         SYS_ORDER: 240,
         SYS_TYPE: 'string',
         SYS_GENRE: generalProjectClassGenreExternalLibrary.id})
